@@ -41,7 +41,7 @@
 - **`next.config.ts`**: ไฟล์ตั้งค่าหลักของโปรเจกต์ Next.js
 - **`package.json`**: ระบุข้อมูลของโปรเจกต์, dependencies, และคำสั่ง script ต่างๆ
 - **`pnpm-lock.yaml`**: Lock file ที่สร้างโดย `pnpm` เพื่อล็อกเวอร์ชันของ dependencies
-- **`tailwind.config.js`**: ไฟล์ตั้งค่าสำหรับ Tailwind CSS Framework
+- **`hero.ts`**: ไฟล์สำหรับ import package ที่เกี่ยวข้องกับ hero ui
 - **`tsconfig.json`**: ไฟล์ตั้งค่าสำหรับ TypeScript Compiler
 - **`eslint.config.mjs`**: ไฟล์ตั้งค่าสำหรับ ESLint (Code Linter)
 
