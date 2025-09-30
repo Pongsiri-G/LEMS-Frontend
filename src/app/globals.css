@@ -23,3 +23,14 @@
   }
 } */
 
+@keyframes floatX {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(40px); }  
+  100% { transform: translateX(0); }
+}
+
+.animate-floatX {
+  animation: floatX 5s ease-in-out infinite;
+}
+
+

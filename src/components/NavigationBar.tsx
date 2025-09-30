@@ -1,0 +1,85 @@
+"use client";
+
+import React from "react";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Link,
+} from "@heroui/react";
+import Image from "next/image";
+
+export function NavigationBar() {
+  return (
+    <Navbar
+      maxWidth="full"
+      className="border-b border-[1px] border-[rgba(0,0,0,0.045)] py-[1px] sm:px-[10px] md:px-[45px] px-[25px]"
+    >
+      <NavbarBrand className="!flex-none mr-3">
+        {" "}
+        {/* Optional spacing tweak */}
+        <Link href="/" className="font-bold text-xl flex items-center">
+          <Image
+            src="/images/cnclogo.png"
+            width={64}
+            height={45}
+            priority
+            alt="logo"
+          />
+        </Link>
+      </NavbarBrand>
+
+      <NavbarContent justify="start" className="flex gap-5 items-center">
+        <NavbarItem>
+          <Link
+            href="/"
+            className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
+          >
+            ยืม-คืนสิ่งของ
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link
+            href="/"
+            className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
+          >
+            คำร้อง
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link
+            href="/"
+            className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
+          >
+            จัดการสิ่งของ
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link
+            href="/"
+            className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
+          >
+            จัดการผู้ใช้
+          </Link>
+        </NavbarItem>
+      </NavbarContent>
+
+      {/* Right Content */}
+      <NavbarContent justify="end">
+        <NavbarItem>
+          <div className="flex items-center">
+            <Link
+              href="/login"
+              className="rounded-full border-black border-[1px] py-[11px] px-[22px] font-[400] text-[16px] hover:scale-90 transition-all text-[rgba(27,160,240,1)] hover:bg-black hover:text-white inline-flex items-center justify-center"
+            >
+              เข้าสู่ระบบ
+            </Link>
+          </div>
+        </NavbarItem>
+      </NavbarContent>
+    </Navbar>
+  );
+}
+
+export default NavigationBar;
