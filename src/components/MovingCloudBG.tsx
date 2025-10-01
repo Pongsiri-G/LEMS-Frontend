@@ -29,7 +29,7 @@ export default function MovingCloudBG() {
   }, []);
 
   return (
-    <div className="absolute inset-0 -z-10 overflow-hidden bg-[radial-gradient(ellipse_at_center,_rgba(0,163,247,0.2)_0%,_rgba(0,163,247,0.08)_40%,_transparent_80%)]">
+    <div className="absolute inset-0 z-0 overflow-hidden bg-[radial-gradient(ellipse_at_center,_rgba(0,163,247,0.2)_0%,_rgba(0,163,247,0.08)_40%,_transparent_80%)]">
       {Array.from({ length: repeatRows }).map((_, rowIndex) =>
         cloudData.map((cloud, index) => (
           <Image
