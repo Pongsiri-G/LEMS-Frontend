@@ -7,7 +7,7 @@ export default function SearchBar() {
       <div className="flex flex-col items-center w-full max-w gap-4">
         <div className="relative w-full flex items-center justify-center">
           <Link
-            href="/items"
+            href="/borrow-return/my-borrow"
             className="absolute left-0 h-12 px-4 rounded-full bg-[rgb(255,225,106)] border-black border flex items-center justify-center text-[rgb(1,51,82)] font-[400] text-[16px] hover:scale-90 hover:bg-black hover:text-white transition-all"
           >
             การยืมของฉัน

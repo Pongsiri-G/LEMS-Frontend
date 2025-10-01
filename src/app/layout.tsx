@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./provider";
-import Navbar from "../components/Navbar";
+import NavigationBar from "../components/NavigationBar";
 
 
 export const metadata: Metadata = {
@@ -27,11 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-      className="pt-[100px]"
-      // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      // className="pt-[64px]"
       >
+        <NavigationBar />
         <Providers>
-          <Navbar />
           {children}
         </Providers>
       </body>

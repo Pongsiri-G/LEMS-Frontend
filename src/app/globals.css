@@ -30,7 +30,7 @@
   .scrollbar-hide {
     scrollbar-width: none;
   }
-} */
+} 
 
 @keyframes floatX {
   0% { transform: translateX(0); }

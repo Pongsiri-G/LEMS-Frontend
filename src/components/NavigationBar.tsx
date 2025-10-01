@@ -1,16 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
   Link,
+  Dropdown,
+  Button,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  SharedSelection,
 } from "@heroui/react";
 import Image from "next/image";
 
 export function NavigationBar() {
+  const [selectedKeys, setSelectedKeys] = useState("TH (ภาษาไทย)");
+  const onSelect = (key: SharedSelection) => {
+    setSelectedKeys(key.currentKey ?? "TH (ภาษาไทย)")
+    console.log(key)
+  }
   return (
     <Navbar
       maxWidth="full"
@@ -31,7 +42,7 @@ export function NavigationBar() {
       <NavbarContent justify="start" className="flex gap-5 items-center">
         <NavbarItem>
           <Link
-            href="/items"
+            href="/borrow-return"
             className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
           >
             ยืม-คืนสิ่งของ
@@ -69,16 +80,36 @@ export function NavigationBar() {
           <div className="flex items-center">
             <Link
               href="/login"
-              className="rounded-full border-black border-[1px] py-[11px] px-[22px] font-[400] text-[16px] hover:scale-90 transition-all text-[rgba(27,160,240,1)] hover:bg-black hover:text-white inline-flex items-center justify-center"
+              className="rounded-full border-[1px] py-2 px-4 transition-all hover:scale-95 inline-flex items-center justify-center"
             >
               เข้าสู่ระบบ
             </Link>
           </div>
         </NavbarItem>
+        {/* <NavbarItem>
+          <Dropdown className="hover:scale-95">
+            <DropdownTrigger>
+              <Button className="capitalize" variant="bordered">
+                {selectedKeys}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              disallowEmptySelection
+              aria-label="Single selection example"
+              selectedKeys={selectedKeys}
+              selectionMode="single"
+              variant="flat"
+              onSelectionChange={onSelect}
+            >
+              <DropdownItem key="TH (ภาษาไทย)">TH (ภาษาไทย) </DropdownItem>
+              <DropdownItem key="EN (English)">EN (English) </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </NavbarItem> */}
         <NavbarItem>
           <Link href="/" className="flex items-center">
             <Image
-              src="/images/to-be-added-later" 
+              src="/images/to-be-added-later"
               alt="User Avatar"
               width={60}
               height={60}
