@@ -16,7 +16,7 @@ export default function LoginPage(){
             </div>
             <form className="w-full max-w-md space-y-4">
                 <CustomInput
-                    label="Email KU"
+                    label="Email"
                     type="email"
                     placeholder="you@ku.th"
                     svgSrc="/icons/mail.svg"

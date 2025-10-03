@@ -106,7 +106,7 @@ export function NavigationBar() {
             </DropdownMenu>
           </Dropdown>
         </NavbarItem> */}
-        <NavbarItem>
+        {/* </NavbarItem >
           <Link href="/" className="flex items-center">
             <Image
               src="/images/to-be-added-later"
@@ -116,7 +116,7 @@ export function NavigationBar() {
               className="rounded-full border-2 border-gray-300 hover:border-primary transition"
             />
           </Link>
-        </NavbarItem>
+        </NavbarItem>*/}
       </NavbarContent>
     </Navbar>
   );
