@@ -13,7 +13,6 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
-        config.headers.set("Accept-Version", "1.0");
         return config;
     },
     (error: AxiosError) => {
