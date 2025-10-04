@@ -31,7 +31,7 @@ export default function SearchBar( { children }: UserButtonProps ) {
         </div>
 
         
-        <button className="h-10 px-6 w-45 rounded-full bg-[rgb(0,163,247)] border-black border text-white font-[400] text-[16px] hover:scale-90 hover:bg-black transition-all flex items-center justify-center">
+        <button className="z-10 h-10 px-6 w-45 rounded-full bg-[rgb(0,163,247)] border-black border text-white font-[400] text-[16px] cursor-pointer hover:scale-90 hover:bg-black transition-all flex items-center justify-center">
           ค้นหา
         </button>
       </div>
