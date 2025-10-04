@@ -32,8 +32,16 @@ export default function LoginPage(){
             console.log("📥 Response data:", res.data);
 
             if (res.status === 200){
-                console.log("📥 Login successful:", res.data);
+                console.log("📥 Login successful:");
+
+                // 📦 เก็บไว้ใน localStorage
+                const { access_token, refresh_token } = res.data;
+                localStorage.setItem("access_token", access_token);
+                localStorage.setItem("refresh_token", refresh_token);
+                console.log("🎉 Tokens saved to localStorage");
+                console.log("Access Token:", access_token);
                 router.replace("/")
+
             } else {
                 const errorMsg = typeof res.data?.error === "string" ? res.data.error : `error ${res.status}`;
                 console.log("⚠️ Non-200 status:", errorMsg);
