@@ -3,14 +3,17 @@ import {Button, Link} from "@heroui/react";
 
 export default function LoginPage(){
     return (
-        <div className="p-6 bg-white rounded-xl shadow-lg w-[400px]">
+        <div className="p-6 bg-background rounded-xl shadow-lg w-[400px]">
             <h1 className="text-3xl font-semibold mb-5 text-center">Login</h1>
             <div className="text-center">
-                <Button color="primary" type="submit" className="mb-2 w-[280px]">
-                    Register
-                </Button>
-                <Button color="primary" type="submit" className="mb-8 w-[280px]">
-                    Register
+                <Button name="google-login" type="submit" className="w-4/5 mx-auto mb-2 bg-neutral-second ">
+                    <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
+                        <img
+                            src="/icons/google-icon.svg"
+                            className="w-5 h-5"
+                        />
+                    </div>
+                    Continue with Google
                 </Button>
                 <p className="text-2xl text-center">Or</p>
             </div>
