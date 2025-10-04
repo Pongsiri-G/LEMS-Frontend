@@ -7,13 +7,17 @@ import SearchBar from "@/src/components/SearchBar";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
 
 export default function Home() {
-  const data: { id: string; status: string, amount: number }[] = [
+  const data: { id: string; status: string; amount: number }[] = [
     { id: "Nvidia RTX5090", status: "Available", amount: 10 },
     { id: "Router", status: "Available", amount: 7 },
     { id: "Raspberry Pi", status: "Disappeared", amount: 0 },
     { id: "RJ45", status: "In use - Due 2025/10/11", amount: 0 },
     { id: "360 Camera", status: "Available", amount: 1 },
-    { id: "Fundmentals of Artificial Intelligence Books", status: "Available", amount: 13 },
+    {
+      id: "Fundmentals of Artificial Intelligence Books",
+      status: "Available",
+      amount: 13,
+    },
     { id: "Mac Mini", status: "In use - Due 2025/10/08", amount: 0 },
     { id: "USB Hub", status: "Disappeared", amount: 0 },
   ];
@@ -29,24 +33,30 @@ export default function Home() {
               </h3>
             </div>
 
-            <SearchBar />
+          <SearchBar>
+            <Link
+              href="/borrow-return/my-borrow"
+              className="absolute left-0 h-12 px-4 rounded-full bg-[rgb(255,225,106)] border-black border flex items-center justify-center text-[rgb(1,51,82)] font-[400] text-[16px] hover:scale-90 hover:bg-black hover:text-white transition-all"
+            >
+              การยืมของฉัน
+            </Link>
+          </SearchBar>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
-              {data.map((index) => (
-                <ItemCard
-                  key={index.id}
-                  id={index.id}
-                  amount={index.amount}
-                  status={index.status}
-                  setShowPopup={() => {}}
-                  showPopup={false}
-                  setID={() => {}}
-                />
-              ))}
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
+            {data.map((index) => (
+              <ItemCard
+                key={index.id}
+                id={index.id}
+                amount={index.amount}
+                status={index.status}
+                setShowPopup={() => {}}
+                showPopup={false}
+                setID={() => {}}
+              />
+            ))}
           </div>
         </div>
-      </main>
-    </ProtectedRoute>
-  )
+      </div>
+    </main>
+  );
 }
