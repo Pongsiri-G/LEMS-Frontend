@@ -7,7 +7,14 @@ export default function RegisterPage() {
         <h1 className="text-2xl font-semibold mb-10 text-center">Register</h1>
         <form className="w-full max-w-md space-y-4">
             <CustomInput
-                label="Email KU"
+                label="Full Name"
+                type="text"
+                placeholder="Your name"
+                svgSrc="/icons/user-round.svg"
+                isRequired
+            />
+            <CustomInput
+                label="Email"
                 type="email"
                 placeholder="you@ku.th"
                 svgSrc="/icons/mail.svg"
