@@ -9,6 +9,8 @@ interface CustomInputProps {
   placeholder?: string;
   svgSrc: string;
   isRequired?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function CustomInput({
@@ -18,6 +20,8 @@ export default function CustomInput({
   placeholder,
   svgSrc,
   isRequired = true,
+  value,
+  onChange,
 }: CustomInputProps) {
   return (
     <div className="space-y-1">
@@ -30,6 +34,8 @@ export default function CustomInput({
         placeholder={placeholder}
         variant="bordered"
         radius="full"
+        value={value}
+        onChange={onChange}
         isRequired={isRequired}
         startContent={
           <img
