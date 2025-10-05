@@ -15,9 +15,14 @@ import {
   SharedSelection,
 } from "@heroui/react";
 import Image from "next/image";
+import { useAuth } from "../contexts/authContext";
+import { userRoles } from "../constants/user";
 
 export function NavigationBar() {
   const [selectedKeys, setSelectedKeys] = useState("TH (ภาษาไทย)");
+
+  const { user } = useAuth();
+
   const onSelect = (key: SharedSelection) => {
     setSelectedKeys(key.currentKey ?? "TH (ภาษาไทย)")
     console.log(key)
@@ -64,14 +69,16 @@ export function NavigationBar() {
             จัดการสิ่งของ
           </Link>
         </NavbarItem>
-        <NavbarItem>
-          <Link
-            href="/"
-            className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
-          >
-            จัดการผู้ใช้
-          </Link>
-        </NavbarItem>
+        {user?.userRole === userRoles.ADMIN && (
+          <NavbarItem>
+            <Link
+              href="/"
+              className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
+            >
+              จัดการผู้ใช้
+            </Link>
+          </NavbarItem>
+        )}
       </NavbarContent>
 
       {/* TODO: นำ user token มาเช็ก หากมี user token (already logged in) ให้โชว์แค่ profile หากไม่มีให้โชว์ปุ่ม login ไม่โชว์ทั้งคู่พร้อมกัน */}
@@ -119,7 +126,7 @@ export function NavigationBar() {
         </NavbarItem>*/}
       </NavbarContent>
     </Navbar>
-  );
+  )
 }
 
 export default NavigationBar;
