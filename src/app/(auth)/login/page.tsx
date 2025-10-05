@@ -1,78 +1,29 @@
-"use client";
+"use client"
 
 import CustomInput from "@/src/components/CustomInput"
 import { Button, Link } from "@heroui/react"
 
-import { useEffect, useState } from "react"
-import { redirect, useRouter, useSearchParams } from "next/navigation"
-import { apiClient } from "@/src/services/apiClient"
-import { useAuthService } from "@/src/services/authService"
+import { useState } from "react"
+import {
+  useHandleGoogleLogin,
+  useHandleLoginSubmit,
+} from "@/src/services/authService/handlers"
 
 export default function LoginPage() {
-  const searchParams = useSearchParams()
-  const code = searchParams.get("code")
-
-  const router = useRouter()
   const [msg, setMsg] = useState("")
   const [loading, setLoading] = useState(false)
 
-  const { googleLogin } = useAuthService()
+  const handleLogin = useHandleLoginSubmit()
+  const handleGoogleLogin = useHandleGoogleLogin()
 
-  async function googleLoginHandler() {
-    const url = await googleLogin()
-    redirect(url.data)
+  const onLocalSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const form = new FormData(e.currentTarget)
+    await handleLogin(form, setMsg, setLoading)
   }
 
-  async function onLocalSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setLoading(true)
-    setMsg("")
-
-    const form = new FormData(e.currentTarget)
-    const email = String(form.get("email"))
-    const password = String(form.get("password"))
-
-    // ⭐ Debug: ดูว่าส่งอะไรไป
-    console.log("📤 Sending login request:", { email, password })
-
-    try {
-      const res = await apiClient.post("/v1/auth/login", { email, password })
-
-      // ⭐ Debug: ดู response ที่ได้กลับมา
-      console.log("📥 Response status:", res.status)
-      console.log("📥 Response data:", res.data)
-
-      if (res.status === 200) {
-        console.log("📥 Login successful:")
-
-        // 📦 เก็บไว้ใน localStorage
-        const { access_token, refresh_token } = res.data
-        localStorage.setItem("access_token", access_token)
-        localStorage.setItem("refresh_token", refresh_token)
-        console.log("🎉 Tokens saved to localStorage")
-        console.log("Access Token:", access_token)
-        router.replace("/")
-      } else {
-        const errorMsg =
-          typeof res.data?.error === "string"
-            ? res.data.error
-            : `error ${res.status}`
-        console.log("⚠️ Non-200 status:", errorMsg)
-
-        setMsg(errorMsg)
-      }
-    } catch (err: any) {
-      // ⭐ Debug: ดู error ที่เกิดขึ้น
-      console.log("❌ Login error occurred")
-      console.log("Error status:", err?.response?.status)
-      console.log("Error data:", err?.response?.data)
-      console.log("Full error:", err)
-
-      const errorMsg = err?.response?.data?.error ?? "login failed"
-      setMsg(errorMsg)
-    } finally {
-      setLoading(false)
-    }
+  const onGoogleLogin = async () => {
+    await handleGoogleLogin(setMsg, setLoading)
   }
 
   return (
@@ -82,8 +33,9 @@ export default function LoginPage() {
         <Button
           name="google-login"
           type="submit"
-          className="w-4/5 mx-auto mb-2 bg-neutral-second"
-          onPress={googleLoginHandler}
+          className="w-4/5 mx-auto mb-2 bg-neutral-second "
+          onPress={onGoogleLogin}
+          isLoading={loading}
         >
           <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
             <img src="/icons/google-icon.svg" className="w-5 h-5" />

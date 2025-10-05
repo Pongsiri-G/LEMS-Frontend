@@ -14,7 +14,7 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
         // อย่าแนบ token ใน public routes
-        const publicRoutes = ["/auth/login", "/auth/register", "/auth/refresh"];
+        const publicRoutes = ["v1/auth/login", "v1/auth/register", "v1/auth/refresh"];
         if (publicRoutes.some(route => config.url?.includes(route))) {
             return config;
         }
@@ -41,9 +41,9 @@ apiClient.interceptors.response.use(
         if (
             error.response?.status === 401 &&
             !originalRequest._retry &&
-            !originalRequest.url?.includes("/auth/refresh") &&
-            !originalRequest.url?.includes("/auth/login") &&
-            !originalRequest.url?.includes("/auth/register")
+            !originalRequest.url?.includes("v1/auth/refresh") &&
+            !originalRequest.url?.includes("v1/auth/login") &&
+            !originalRequest.url?.includes("v1/auth/register")
         ) {
             originalRequest._retry = true;
             console.log("🔄 Access token expired, trying to refresh...");
