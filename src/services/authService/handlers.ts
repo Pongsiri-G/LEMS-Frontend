@@ -1,6 +1,7 @@
 import { useRouter } from "next/navigation";
 import { login } from "./login";
 import { register } from "./register";
+import { googleLogin } from "./googleLogin";
 
 export const useHandleLoginSubmit = () => {
     const router = useRouter();
@@ -73,15 +74,14 @@ export const useHandleGoogleLogin = () => {
     const router = useRouter();
 
     return async (
-        idToken: string,
         setMsg: (msg: string) => void,
         setLoading: (loading: boolean) => void
     ) => {
         setLoading(true);
         setMsg("");
 
-        // dummy
-        await new Promise((res) => setTimeout(res, 1000));
+        await googleLogin()
+        
         localStorage.setItem("access_token", "dummy_access_token");
         localStorage.setItem("refresh_token", "dummy_refresh_token");
 
