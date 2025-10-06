@@ -1,4 +1,5 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/WaYwYwBk)
+
 # 📂 โครงสร้างโปรเจกต์ (Project Structure)
 
 โปรเจกต์นี้พัฒนาด้วย **Next.js** โดยใช้ **App Router** ซึ่งเป็นโครงสร้างที่ทันสมัยและนิยมใช้กันในปัจจุบัน มีการจัดระเบียบไฟล์และโฟลเดอร์อย่างเป็นระบบ ทำให้ง่ายต่อการพัฒนาและบำรุงรักษา
@@ -27,7 +28,7 @@
 - **`constants`**: สำหรับเก็บค่าคงที่ (Constant values) ที่ใช้ในโปรเจกต์
 - **`feature`**:โฟลเดอร์ที่ใช้สถาปัตยกรรม Feature-Sliced Design เพื่อแบ่งโค้ดตามขอบเขตของฟีเจอร์ (feature-based) โดยแต่ละ slice ที่สร้างจาก Redux Toolkit จะถูกจัดเก็บไว้ในโฟลเดอร์ของฟีเจอร์ที่ตัวเองสังกัดอยู่
 - **`services`**: ใช้สำหรับจัดการ Logic ที่เกี่ยวข้องกับการติดต่อกับภายนอก เช่น การเรียกใช้ API
-- **`store`**: 🗄️ โฟลเดอร์สำหรับจัดการ State ของแอปพลิเคชันด้วย Redux 
+- **`store`**: 🗄️ โฟลเดอร์สำหรับจัดการ State ของแอปพลิเคชันด้วย Redux
 - **`types`**: สำหรับประกาศ TypeScript types และ interfaces
 - **`utils`**: ใช้เก็บฟังก์ชันช่วยเหลือ (Utility functions) ที่สามารถใช้ซ้ำได้ทั่วทั้งโปรเจกต์
 
@@ -48,7 +49,9 @@
 ---
 
 # 📦 การจัดการแพ็กเกจ (Package Management)
-โปรเจกต์นี้ใช้เครื่องมือ pnpm ในการจัดการ package 
+
+โปรเจกต์นี้ใช้เครื่องมือ pnpm ในการจัดการ package
+
 - คำสั่งสำหรับ start project
   ```cli
   pnpm dev
@@ -59,4 +62,5 @@
   ```
 
 # 🧸 UI Component Libraly (Hero UI)
+
 - สามารถอ่านเพิ่มเติมได้ที่ [HERO UI](https://www.heroui.com/docs/components/button)
