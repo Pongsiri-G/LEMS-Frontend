@@ -83,7 +83,7 @@ export function NavigationBar() {
 
       {/* TODO: นำ user token มาเช็ก หากมี user token (already logged in) ให้โชว์แค่ profile หากไม่มีให้โชว์ปุ่ม login ไม่โชว์ทั้งคู่พร้อมกัน */}
       <NavbarContent justify="end">
-        {isAuthenticated ? (
+        {!isAuthenticated || !user ? (
           <NavbarItem>
             <div className="flex items-center">
               <Link

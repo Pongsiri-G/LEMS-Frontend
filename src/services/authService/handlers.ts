@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { login } from "./login";
 import { register } from "./register";
 import { googleLogin } from "./googleLogin";
@@ -80,12 +80,16 @@ export const useHandleGoogleLogin = () => {
         setLoading(true);
         setMsg("");
 
-        await googleLogin()
-        
-        localStorage.setItem("access_token", "dummy_access_token");
-        localStorage.setItem("refresh_token", "dummy_refresh_token");
+        const res = await googleLogin();
 
-        router.replace("/");
+        if (typeof res === "string") {
+            redirect(res)
+        } else if (res && res.success) {
+            router.replace("/");
+        } else {
+            setMsg("Google login failed");
+        }
+        
         setLoading(false);
     };
 };

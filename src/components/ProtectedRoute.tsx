@@ -23,7 +23,7 @@ export default function ProtectedRoute({
     // else if (roles && user) { // !roles.includes(user.role)
     //   router.replace("/403")
     // }
-  }, [isAuthenticated])
+  }, [isAuthenticated, isLoading])
 
   if (isLoading) return <p>Loading...</p>
   
