@@ -33,30 +33,31 @@ export default function Home() {
               </h3>
             </div>
 
-          <SearchBar>
-            <Link
-              href="/borrow-return/my-borrow"
-              className="absolute left-0 h-12 px-4 rounded-full bg-[rgb(255,225,106)] border-black border flex items-center justify-center text-[rgb(1,51,82)] font-[400] text-[16px] hover:scale-90 hover:bg-black hover:text-white transition-all"
-            >
-              การยืมของฉัน
-            </Link>
-          </SearchBar>
+            <SearchBar>
+              <Link
+                href="/borrow-return/my-borrow"
+                className="absolute left-0 h-12 px-4 rounded-full bg-[rgb(255,225,106)] border-black border flex items-center justify-center text-[rgb(1,51,82)] font-[400] text-[16px] hover:scale-90 hover:bg-black hover:text-white transition-all"
+              >
+                การยืมของฉัน
+              </Link>
+            </SearchBar>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
-            {data.map((index) => (
-              <ItemCard
-                key={index.id}
-                id={index.id}
-                amount={index.amount}
-                status={index.status}
-                setShowPopup={() => {}}
-                showPopup={false}
-                setID={() => {}}
-              />
-            ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
+              {data.map((index) => (
+                <ItemCard
+                  key={index.id}
+                  id={index.id}
+                  amount={index.amount}
+                  status={index.status}
+                  setShowPopup={() => { }}
+                  showPopup={false}
+                  setID={() => { }}
+                />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </ProtectedRoute>
   );
 }
