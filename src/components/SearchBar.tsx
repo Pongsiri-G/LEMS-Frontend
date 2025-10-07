@@ -8,7 +8,7 @@ type UserButtonProps = {
 };
 
 
-export default function SearchBar( { children }: UserButtonProps ) {
+export default function SearchBar({ children }: UserButtonProps) {
   return (
     <div className="flex justify-center w-full mt-5">
       <div className="flex flex-col items-center w-full max-w gap-4">
@@ -24,14 +24,14 @@ export default function SearchBar( { children }: UserButtonProps ) {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <input
               type="text"
-              placeholder="Search..."
-              className="w-full h-12 pl-10 pr-4 border rounded-full text-start"
+              placeholder="ค้นหา..."
+              className="w-full h-12 pl-10 pr-4 border rounded-full text-start outline-none border-neutral-300 focus:border-neutral bg-background"
             />
           </div>
         </div>
 
-        
-        <button className="z-10 h-10 px-6 w-45 rounded-full bg-[rgb(0,163,247)] border-black border text-white font-[400] text-[16px] cursor-pointer hover:scale-90 hover:bg-black transition-all flex items-center justify-center">
+
+        <button className="z-10 h-10 px-6 w-45 rounded-full  text-foreground font-[400] text-[16px] cursor-pointer hover:scale-90 transition-all flex items-center justify-center active:scale-100 border-neutral border-1 backdrop-blur-2xl">
           ค้นหา
         </button>
       </div>

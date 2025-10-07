@@ -3,33 +3,39 @@
 import { Input } from "@heroui/react";
 
 interface CustomInputProps {
-  id?: string;
+  name?: string;
   label: string;
   type?: string;
   placeholder?: string;
   svgSrc: string;
   isRequired?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function CustomInput({
-  id,
+  name,
   label,
   type = "text",
   placeholder,
   svgSrc,
   isRequired = true,
+  value,
+  onChange,
 }: CustomInputProps) {
   return (
     <div className="space-y-1">
-      <label htmlFor={id} className="text-l ml-5 font-medium">
+      <label htmlFor={name} className="text-l ml-5 font-medium">
         {label}
       </label>
       <Input
-        id={id}
+        name={name}
         type={type}
         placeholder={placeholder}
         variant="bordered"
         radius="full"
+        value={value}
+        onChange={onChange}
         isRequired={isRequired}
         startContent={
           <img
