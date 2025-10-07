@@ -63,7 +63,7 @@ export function NavigationBar() {
         </NavbarItem>
         <NavbarItem>
           <Link
-            href="/"
+            href="/equipment-manage"
             className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
           >
             จัดการสิ่งของ

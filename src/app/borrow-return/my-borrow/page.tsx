@@ -4,7 +4,7 @@ import Link from "next/link";
 import MovingCloudBG from "@/src/components/MovingCloudBG";
 import ItemCard from "@/src/components/ItemCard";
 import SearchBar from "@/src/components/SearchBar";
-import { Undo2 } from "lucide-react";
+import { ArrowLeft, Undo2 } from "lucide-react";
 
 export default function Home() {
   const data: { id: string; status: string; amount: number }[] = [
@@ -30,7 +30,7 @@ export default function Home() {
               href="/borrow-return"
               className="absolute left-0 h-12 px-4 gap-2 rounded-full bg-[rgb(255,225,106)] border-black border flex items-center justify-center text-[rgb(1,51,82)] font-[400] text-[16px] hover:scale-90 hover:bg-black hover:text-white transition-all"
             >
-              <Undo2></Undo2>
+              <ArrowLeft />
               ถอยหลัง
             </Link>
           </SearchBar>
@@ -42,9 +42,9 @@ export default function Home() {
                 id={index.id}
                 amount={index.amount}
                 status={index.status}
-                setShowPopup={() => {}}
+                setShowPopup={() => { }}
                 showPopup={false}
-                setID={() => {}}
+                setID={() => { }}
               />
             ))}
           </div>
