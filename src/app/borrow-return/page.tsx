@@ -5,6 +5,7 @@ import MovingCloudBG from "../../components/MovingCloudBG";
 import ItemCard from "../../components/ItemCard";
 import SearchBar from "@/src/components/SearchBar";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
+import { BookCheck } from "lucide-react";
 
 export default function Home() {
   const data: { id: string; status: string; amount: number }[] = [
@@ -23,8 +24,8 @@ export default function Home() {
   ];
   return (
     <ProtectedRoute>
-      <main className="flex flex-col justify-start items-center gap-20 mt-5 pt-5">
-        <div className="relative min-h-screen !gap !mt w-full flex flex-col justify-start items-center">
+      <main className="flex flex-col justify-start items-center gap-20 pt-5">
+        <div className="relative !gap !mt w-full flex flex-col justify-start items-center">
           <MovingCloudBG />
           <div className="flex flex-col justify-start items-center gap-20 mt-5">
             <div className="flex flex-col justify-start justify-items-center sm:justify-items-start items-center sm:items-start text-center gap-5 ">
@@ -36,9 +37,12 @@ export default function Home() {
             <SearchBar>
               <Link
                 href="/borrow-return/my-borrow"
-                className="absolute left-0 h-12 px-4 rounded-full bg-[rgb(255,225,106)] border-black border flex items-center justify-center text-[rgb(1,51,82)] font-[400] text-[16px] hover:scale-90 hover:bg-black hover:text-white transition-all"
+                className="absolute left-0 h-12 px-4 rounded-full bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white"
               >
-                การยืมของฉัน
+                <div className="flex justify-center items-center gap-3">
+                  <BookCheck />
+                  <p className="">การยืมของฉัน</p>
+                </div>
               </Link>
             </SearchBar>
 

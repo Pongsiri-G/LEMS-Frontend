@@ -1,0 +1,67 @@
+*   [33mbc49ad8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/borrow-return-list[m[33m, [m[1;31morigin/feature/rugsit[m[33m, [m[1;31morigin/develop[m[33m, [m[1;32mfeature/rugsit[m[33m)[m chore: merge pull request #6 from 471-68-SE-Classroom/feature/rugsit
+[31m|[m[32m\[m  
+[31m|[m * [33m47016da[m fix: rebase conflict from branch feature/item-manage
+[31m|[m * [33m5d8b9e6[m feat(item-detail): integrate api in item-detail page
+[31m|[m[31m/[m  
+*   [33mae60074[m[33m ([m[1;32mdevelop[m[33m)[m chore: merge pull request #5 from 471-68-SE-Classroom/feature/item-manage
+[33m|[m[34m\[m  
+[33m|[m * [33m069041b[m[33m ([m[1;31morigin/feature/item-manage[m[33m, [m[1;32mfeature/item-manage[m[33m)[m feat(item-equiqment) : add popup for create and add tag
+[33m|[m * [33mab72a99[m fix(borrow-return): disable cursor interaction on cloud background and restore SearchBar's button interactivity
+[33m|[m * [33m75174b8[m feat(borrow-return): add my-borrow page and allow passing a custom component as a prop to SearchBar
+[33m|[m[33m/[m  
+*   [33mafad726[m chore: merge pull request #4 from 471-68-SE-Classroom/feature/auth
+[35m|[m[36m\[m  
+[35m|[m * [33mc2179f3[m[33m ([m[1;31morigin/feature/auth[m[33m)[m refoctor(auth): restructure google login, modify some style
+[35m|[m * [33mb8feefe[m refoctorI(auth): google login
+[35m|[m *   [33m560a7d2[m Merge branch 'feature/auth' of github.com-PerTrakanjan:471-68-SE-Classroom/p1-final-project-lems-ya into feature/auth
+[35m|[m [1;31m|[m[1;32m\[m  
+[35m|[m [1;31m|[m * [33m124f4b8[m refactor(auth): seperate function to service -> authService
+[35m|[m * [1;32m|[m [33mfc99fbc[m faet(auth): add loading state
+[35m|[m * [1;32m|[m [33m788bdc8[m style: format code
+[35m|[m * [1;32m|[m [33m2f67dae[m feat(auth): add google login function and add route protection and guard
+[35m|[m * [1;32m|[m [33me67580c[m chore(style): fomat code
+[35m|[m * [1;32m|[m [33mcfa7419[m chore(deps): add prettierrc
+[35m|[m [1;32m|[m[1;32m/[m  
+[35m|[m * [33mbb129a4[m feat(register): Connect frontedn to Backend
+[35m|[m * [33mb44b5a8[m feat(register-UI): add name text-field
+[35m|[m * [33mf4758fe[m feat(api): setup axios client with auth interceptors
+[35m|[m * [33m7e9f1e1[m feat(login-local): Make site store token
+[35m|[m * [33m0e0cb5d[m feat(login-local): Connect frontend to Backend
+[35m|[m * [33m78cf609[m feat(UI;login): Adjuts google login button
+[35m|[m * [33mbbbc5b0[m feat(auth): chnage bg to moving clound
+[35m|[m *   [33m1336b53[m Merge branch 'develop' of https://github.com/471-68-SE-Classroom/p1-final-project-lems-ya into feature/auth
+[35m|[m [1;33m|[m[35m\[m  
+[35m|[m [1;33m|[m[35m/[m  
+[35m|[m[35m/[m[1;33m|[m   
+[35m|[m * [33mf201d72[m[33m ([m[1;32mfeature/auth[m[33m)[m send your pull request
+[35m|[m [1;34m|[m * [33m37d714d[m[33m ([m[1;35mrefs/stash[m[33m)[m WIP on feature/rugsit: b60324d chore: merge pull request #3 from 471-68-SE-Classroom/feature/rugsit
+[35m|[m [1;34m|[m[35m/[m[1;36m|[m 
+[35m|[m[35m/[m[1;34m|[m [1;36m|[m 
+[35m|[m [1;34m|[m * [33mca2c4db[m index on feature/rugsit: b60324d chore: merge pull request #3 from 471-68-SE-Classroom/feature/rugsit
+[35m|[m [1;34m|[m[35m/[m  
+[35m|[m[35m/[m[1;34m|[m   
+[35m|[m [1;34m|[m * [33mf0dd594[m[33m ([m[1;31morigin/feature/borrow-return-list[m[33m)[m fix(borrow-return): disable cursor interaction on cloud background and restore SearchBar's button interactivity
+[35m|[m [1;34m|[m * [33maf748c7[m feat(borrow-return): add my-borrow page and allow passing a custom component as a prop to SearchBar
+[35m|[m [1;34m|[m[35m/[m  
+[35m|[m[35m/[m[1;34m|[m   
+* [1;34m|[m   [33mb60324d[m chore: merge pull request #3 from 471-68-SE-Classroom/feature/rugsit
+[32m|[m[33m\[m [1;34m\[m  
+[32m|[m * [1;34m|[m [33m124c7c0[m fix(borrow-return): cloud background missing
+* [33m|[m [1;34m|[m [33mdb1c93e[m chore: merge pull request #2 from 471-68-SE-Classroom/feature/rugsit
+[34m|[m[33m\[m[33m|[m [1;34m|[m 
+[34m|[m * [1;34m|[m [33ma865abb[m refactor(borrow-return): fix confict with branch borrow-return-list and refact page structure
+[34m|[m * [1;34m|[m [33mfea4d01[m feat(item-details): create Navbar component, Item details component and add design system
+[34m|[m * [1;34m|[m [33m6cae5de[m feat(item): add item-list page
+[34m|[m * [1;34m|[m [33mdecca92[m feat(item): add item/equipment card component
+[34m|[m * [1;34m|[m [33ma93fc9e[m feat(ui): make MovingCloudBG component dynamically scale with screen height
+[34m|[m * [1;34m|[m [33mcf961f1[m feat(ui): add navbar, animated cloud component, etc.
+[34m|[m[34m/[m [1;34m/[m  
+* [1;34m|[m [33ma495fca[m feat(api): init axios api
+* [1;34m|[m [33m4c32d1a[m chore(deps): add axios
+[1;34m|[m[1;34m/[m  
+* [33m0668914[m plain auth pages
+* [33m2619df4[m docs: update README.md
+* [33m7c42d44[m docs: update README.md
+* [33m812c993[m chore(deps): add heroui, redux, and redux toolkit
+* [33me7356e0[m chore: init project folder structure
+* [33mf180cdf[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m add deadline

@@ -7,7 +7,7 @@ import SearchBar from "@/src/components/SearchBar";
 import { ClipboardPlus, Plus } from "lucide-react";
 import { Button } from "@heroui/button";
 
-import {  Modal,  ModalContent,  ModalHeader,  ModalBody,  ModalFooter, useDisclosure} from "@heroui/modal";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/modal";
 import Popup from "@/src/components/equipment-mange/CreatePopUp";
 
 export default function Home() {
@@ -40,9 +40,11 @@ export default function Home() {
           </div>
 
           <div className="flex w-full justify-between items-center px-10 mb-[-5rem]">
-             <Button
-            radius="full"
-            className="
+            <Button
+              as={Link}
+              href="/equipment-manage/equipment-log"
+              radius="full"
+              className="
             rounded-full
             bg-[rgb(255,225,106)] border-black border
             flex items-center justify-center
@@ -51,25 +53,25 @@ export default function Home() {
             transition-all gap-2
             px-4
             "
-          >
-            <ClipboardPlus />
-            <span className="hidden lg:inline">ดูบันทึกการจัดการสิ่งของ</span>
-          </Button>
-          <Button 
-          color="primary"
-          className="text-[16px]
+            >
+              <ClipboardPlus />
+              <span className="hidden lg:inline">ดูบันทึกการจัดการสิ่งของ</span>
+            </Button>
+            <Button
+              color="primary"
+              className="text-[16px]
             hover:scale-90 hover:bg-black hover:text-white
             transition-all"
-            onPress={onOpen}
+              onPress={onOpen}
             >
-            <Plus color="white" />
-            <span className="hidden lg:inline">เพิ่มสิ่งของ</span>
-          </Button>
-          <Popup isOpen={isOpen} onOpen={onOpen} onOpenChange={onOpenChange}/>
+              <Plus color="white" />
+              <span className="hidden lg:inline">เพิ่มสิ่งของ</span>
+            </Button>
+            <Popup isOpen={isOpen} onOpen={onOpen} onOpenChange={onOpenChange} />
           </div>
           <SearchBar />
-          
-         
+
+
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
             {data.map((index) => (
@@ -78,9 +80,9 @@ export default function Home() {
                 id={index.id}
                 amount={index.amount}
                 status={index.status}
-                setShowPopup={() => {}}
+                setShowPopup={() => { }}
                 showPopup={false}
-                setID={() => {}}
+                setID={() => { }}
               />
             ))}
           </div>
