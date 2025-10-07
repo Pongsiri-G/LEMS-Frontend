@@ -1,10 +1,15 @@
 "use client";
 import Image from "next/image";
 import MaximizeIcon from "./icon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { apiClient } from "../services/apiClient";
+import { useParams } from "next/navigation";
 
 export default function ItemCard({
   id,
+  image,
+  name,
   status,
   amount,
   setShowPopup,
@@ -12,18 +17,39 @@ export default function ItemCard({
   setID,
 }: {
   id: string;
+  image: string
+  name: string;
   status: string;
   amount: number;
   setShowPopup: Function;
   showPopup: boolean;
   setID: Function;
 }) {
-  const data: { tag: string }[] = [
-    { tag: "Electronic" },
-    { tag: "Computer" },
-    { tag: "Accessories" },
-    { tag: "Gadget" },
-  ];
+  const [itemTags, setItemTags] = useState<ItemTag[]>()
+  const [imageURL, setImageURL] = useState<string>()
+
+
+  const fetchImage = async (imageURL: string) => {
+    const url = `/v1/image`
+    const res = await apiClient.post(url, {
+      "url": imageURL
+    }, { responseType: 'blob' })
+    const blob = res.data as Blob
+    setImageURL(URL.createObjectURL(blob))
+  }
+    const fetchItemTag = async () => {
+    const url = `/v1/tag/${id}`
+    const res = await apiClient.get(url)
+    const data = res.data
+    const tags: ItemTag[] = data.map((element: any) => {
+      return { id: element["id"], name: element["name"], color: element["color"] }
+    })
+    setItemTags([...tags])
+  }
+  useEffect(() => {
+    fetchImage(image)
+    fetchItemTag()
+  }, [])
   const [isCardHovered, setIsCardHovered] = useState(false);
   return (
     true && (
@@ -36,13 +62,10 @@ export default function ItemCard({
             className="relative w-full h-[300px] overflow-hidden rounded-[16px]"
             onClick={() => {}}
           >
-            <Image
-              src="/images/image-placeholder.jpg"
-              width={300}
-              height={300}
-              priority
+            <img
+              src={imageURL!}
               alt="logo"
-              className={`transition duration-300 ease-in-out hover:scale-105 cursor-pointer`}
+              className={`transition duration-300 ease-in-out hover:scale-105 cursor-pointer object-fit w-full h-full`}
               style={{
                 objectFit: "cover",
                 borderRadius: "16px",
@@ -54,34 +77,38 @@ export default function ItemCard({
             </div>
           </div>
         </div>
-        <p className="text-lg font-semibold h-fit">{id}</p>
+        <p className="text-lg font-semibold h-fit">{name}</p>
         <p
           className={`text-sm text-balance font-bold`}
           style={{
             color:
-              status === "Available"
+              status === "AVAILABLE"
                 ? "rgba(28,172,110,1)"
-                : status === "Disappeared"
+                : status === "DISAPPEARED"
                 ? "rgba(245,54,92,1)"
                 : "rgb(0,109,165)",
           }}
         >
-          {status}
+          {(status[0] + status.slice(1).toLowerCase())}
         </p>
         <div className="flex items-center w-full">
           <div className="flex gap-2 flex-wrap flex-1">
-            {data.map((tag, index) => (
+            {itemTags?.map((tag, index) => (
               <p
                 key={index}
-                className="bg-[rgba(27,160,240,0.1)] text-[rgba(27,160,240,1)] text-xs px-2 py-1 rounded-full whitespace-nowrap"
+                className={`text-[rgba(255,255,255,1)] text-xs px-2 py-1 rounded-full whitespace-nowrap`}
+                style={{ background: tag.color }}
               >
-                {tag.tag}
+                {tag.name}
               </p>
             ))}
           </div>
-          <button
+          <Link
+            href={`/borrow-return/item/${id}`}
             className={`block cursor-pointer text-sm text-balance`}
-            onClick={() => {}}
+            onClick={() => {
+              
+            }}
             onMouseEnter={() => {
               setIsCardHovered(true);
             }}
@@ -90,7 +117,7 @@ export default function ItemCard({
             }}
           >
             <MaximizeIcon isHovered={isCardHovered} />
-          </button>
+          </Link>
         </div>
       </div>
     )
