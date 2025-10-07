@@ -1,10 +1,12 @@
 import { Button } from "@heroui/button";
 import ItemDetails from "./ItemDetails";
 import Link from "next/link"
+import MovingCloudBG from "../MovingCloudBG";
 
 export default function ItemDetailsHeader() {
   return <>
     <div className="w-full max-w-[1300px] mx-auto px-10 mt-9">
+      <MovingCloudBG />
       <Button as={Link} href="/borrow-return" variant="bordered">
         ย้อนกลับ
       </Button>
