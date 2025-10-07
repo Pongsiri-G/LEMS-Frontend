@@ -7,26 +7,43 @@ import { apiClient } from "@/src/services/apiClient";
 import { useParams } from "next/navigation";
 import { blob } from "node:stream/consumers";
 import path from "node:path";
+import { Card, CardBody } from "@heroui/react";
+import VerifyBorrowPopup from "./VerifyBorrowPopup";
 // import { fs } from "node:fs"; // Removed because 'fs' is not available in the browser
 
 export default function ItemDetails() {
   const [isBorrow, setIsBorrow] = useState(false)
   const [returnPopupOpen, setReturnPopupOpen] = useState(false)
+  const [verifyPopupOpen, setVerifyPopupOpen] = useState(false)
   const [itemDetail, setItemDetail] = useState<Item>()
   const [itemTags, setItemTags] = useState<ItemTag[]>()
   const [childItems, setChildItems] = useState<Item[]>()
   const [imageURL, setImageURL] = useState<string>()
+  const [childImageURL, setChildImageURL] = useState<string[]>()
 
   const param = useParams();
   const id = param.id;
 
-  const fetchImage = async (imageURL: string) => {
+  const fetchImage = async (imageURL: string): Promise<string> => {
     const url = `/v1/image`
     const res = await apiClient.post(url, {
       "url": imageURL
     }, { responseType: 'blob' })
     const blob = res.data as Blob
-    setImageURL(URL.createObjectURL(blob))
+    const newimageURL: string = URL.createObjectURL(blob)
+    return newimageURL
+  }
+
+  const UpdateChildImageURL = async (items: Item[]) => {
+    if (items !== undefined) {
+      const newItems: Item[] = await Promise.all(
+        items.map(async (e) => {
+          e.itemPictureURL = await fetchImage(e.itemPictureURL)
+          return e
+        })
+      )
+      setChildItems([...newItems])
+    }
   }
 
   const fetchItemDetail = async () => {
@@ -44,7 +61,8 @@ export default function ItemDetails() {
       createdAt: new Date(data["created_at"]),
       updatedAt: new Date(data["updated_at"])
     }
-    fetchImage(item.itemPictureURL)
+    setImageURL(await fetchImage(item.itemPictureURL))
+
     setItemDetail(item)
   }
 
@@ -75,6 +93,7 @@ export default function ItemDetails() {
         updatedAt: new Date(element["updated_at"])
       }
     })
+    UpdateChildImageURL(items)
     setChildItems([...items])
   }
 
@@ -85,7 +104,8 @@ export default function ItemDetails() {
   }, [])
 
   return <>
-    <div className="flex flex-col 2xl:flex-row gap-4 my-20 relative z-0">
+    <Card className="flex flex-col 2xl:flex-row gap-4 my-10 relative z-0 p-10">
+      <VerifyBorrowPopup isOpen={verifyPopupOpen} closePopup={() => { setVerifyPopupOpen(false) }} itemName={itemDetail?.itemName} itemChild={childItems} />
       <ReturnItemPopup isOpen={returnPopupOpen} closePopup={() => { setReturnPopupOpen(false) }} />
       <div className="fixed right-0 top-1/2 -translate-y-1/2 flex flex-col gap-3.5 translate-x-[195px]">
         <button className="rounded-full bg-primary p-3 flex gap-4 text-white  hover:-translate-x-[165px] transition-all cursor-pointer active:scale-95 active:opacity-90">
@@ -102,6 +122,8 @@ export default function ItemDetails() {
         })} onClick={() => {
           if (isBorrow) {
             setReturnPopupOpen(true)
+          } else {
+            setVerifyPopupOpen(true)
           }
         }}>
           {isBorrow ? <>
@@ -138,15 +160,21 @@ export default function ItemDetails() {
           </div>
           <div className="flex-1 bg-neutral-second p-4 rounded-xl h-fit">
             <p className="text-neutral">ต้องยืมร่วมกับ</p>
-            <div className="text-xl font-bold flex flex-wrap">{
-              childItems?.map((element) => {
-                return (
-                  <p key={element.itemID}>
-                    {element.itemName}
-                  </p>
-                )
-              })
-            }</div>
+            <div className="text-xl font-bold flex flex-wrap">
+              <ul className="list-disc list-inside">
+                {
+                  childItems !== undefined && childItems.length !== 0 ? childItems?.map((element) => {
+                    return (
+                      <li key={element.itemID} className="text-medium">
+                        {element.itemName}
+                      </li>
+                    )
+                  })
+                    :
+                    <p className="text-medium">ไม่มีอุปกรณ์ที่ต้องยืมเพิ่มเติม</p>
+                }
+              </ul>
+            </div>
           </div>
           <div className="flex gap-3 flex-col justify-center">
             <p className="text-neutral">คำอธิบาย: </p>
@@ -176,6 +204,6 @@ export default function ItemDetails() {
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   </>
 }

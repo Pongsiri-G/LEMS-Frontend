@@ -30,7 +30,7 @@ export function NavigationBar() {
   return (
     <Navbar
       maxWidth="full"
-      className="border-b border-[1px] border-[rgba(0,0,0,0.045)] py-[1px] sm:px-[10px] md:px-[45px] px-[25px]"
+      className="border-b border-[1px] border-[rgba(0,0,0,0.045)] py-[1px] sm:px-[10px] md:px-[45px] px-[25px] relative z-0"
     >
       <NavbarBrand className="!flex-none mr-3">
         <Link href="/" className="font-bold text-xl flex items-center">
