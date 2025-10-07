@@ -5,13 +5,44 @@ import MovingCloudBG from "@/src/components/MovingCloudBG";
 import ItemCard from "@/src/components/ItemCard";
 import SearchBar from "@/src/components/SearchBar";
 import { ArrowLeft, Undo2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { apiClient } from "@/src/services/apiClient";
+import ItemDetails from "@/src/components/item-details/ItemDetails";
 
 export default function Home() {
-  const data: { id: string; status: string; amount: number }[] = [
-    { id: "Router", status: "Due 2025/10/11", amount: 7 },
-    { id: "RJ45", status: "Due 2025/10/11", amount: 0 },
-    { id: "Mac Mini", status: "Due 2025/10/08", amount: 0 },
-  ];
+    const [itemDetail, setItemDetail] = useState<Item[]>()
+  
+    const param = useParams();
+
+  
+    const fetchItemDetail = async () => {
+      const url = `/v1/item/list`
+      const res = await apiClient.get(url)
+      const data = res.data
+      var response: Item[] = data
+      var items: Item[] = []
+      console.log(response[0]) 
+      for (let i = 0; i < response.length; i++) {
+        const item: Item = {
+          itemID: data[i]["id"],
+          itemName: data[i]["name"],
+          itemDescription: data[i]["desc"],
+          itemPictureURL: data[i]["picture_url"],
+          itemStatus: data[i]["status"],
+          itemQuantity: data[i]["quantity"],
+          itemCurrentQuantity: data[i]["current_quantity"],
+          createdAt: new Date(data[i]["created_at"]),
+          updatedAt: new Date(data[i]["updated_at"])
+        }
+        items.push(item)
+      }
+      setItemDetail(items)
+    }
+  
+    useEffect(() => {
+      fetchItemDetail()
+    }, [])
   return (
     <main className="flex flex-col justify-start items-center gap-20 mt-5 pt-5">
       <div className="relative min-h-screen !gap !mt w-full flex flex-col justify-start items-center">
@@ -36,12 +67,13 @@ export default function Home() {
           </SearchBar>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
-            {data.map((index) => (
+            {itemDetail?.map((index) => (
               <ItemCard
-                key={index.id}
-                id={index.id}
-                amount={index.amount}
-                status={index.status}
+                key={index.itemID}
+                id={index.itemID}
+                name={index.itemName}
+                amount={index.itemQuantity}
+                status={index.itemStatus}
                 setShowPopup={() => { }}
                 showPopup={false}
                 setID={() => { }}
