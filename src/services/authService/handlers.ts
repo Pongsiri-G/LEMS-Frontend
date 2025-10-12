@@ -2,6 +2,9 @@ import { redirect, useRouter } from "next/navigation";
 import { login } from "./login";
 import { register } from "./register";
 import { googleLogin } from "./googleLogin";
+import { refreshToken } from "./refreshToken";
+import { REFRES_TOKEN } from "@/src/constants/token";
+import { jwtDecode } from "jwt-decode";
 
 export const useHandleLoginSubmit = () => {
     const router = useRouter();
@@ -93,3 +96,17 @@ export const useHandleGoogleLogin = () => {
         setLoading(false);
     };
 };
+
+export const useHandleRefreshToken = async () => {
+    const res = await refreshToken(localStorage.getItem(REFRES_TOKEN) ?? "")
+    if (!res.success || !res.data ) throw new Error("refresh failed");
+    const { access_token: newToken, user: newUser } = res.data;
+
+    const { exp } = jwtDecode<Jwt>(newToken);
+
+    return {
+        user: newUser,
+        accessToken: newToken,
+        expiresAt: exp * 1000
+    }
+}

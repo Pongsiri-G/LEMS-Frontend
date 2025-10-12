@@ -1,5 +1,10 @@
 "use client"
 
+import { REFRES_TOKEN } from "@/src/constants/token"
+import { setCredentials, setUser } from "@/src/feature/authSlice"
+import { useHandleGetMe } from "@/src/services/userService/handlers"
+import { useAppDispatch } from "@/src/store"
+import { jwtDecode } from "jwt-decode"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 
@@ -7,18 +12,39 @@ export default function OAuthCallback() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
+  const dispatch = useAppDispatch()
+
   const accessToken = searchParams.get("accessToken")
   const refreshToken = searchParams.get("refreshToken")
 
   useEffect(() => {
     if (accessToken && refreshToken) {
-      localStorage.setItem("access_token", accessToken)
-      localStorage.setItem("refresh_token", refreshToken)
+      localStorage.setItem(REFRES_TOKEN, refreshToken)
+
+      const { exp } = jwtDecode<Jwt>(accessToken ?? "")
+      dispatch(
+        setCredentials({
+          accessToken: accessToken ?? "",
+          expiresAt: exp * 1000,
+        }),
+      )
+
+      onGetMe()
       router.push("/") 
     } else {
       router.back()
     }
-  }, [router])
+  }, [])
+
+  const onGetMe = async () => {
+    const { user }= await useHandleGetMe()
+    if (user) {
+      
+      dispatch(
+        setUser({ user })
+      )
+    }
+  }
 
   if (!accessToken || !refreshToken) {
     return null

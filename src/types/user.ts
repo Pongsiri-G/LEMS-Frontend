@@ -3,9 +3,9 @@ export interface User {
   userFullName: string
   userEmail: string
   userPhone: string
-  userRole:  "admin" | "user"
+  userRole: "ADMIN" | "USER"
   userStatus: string
-  userProfileURL: string
+  userProfileUrl: string
   authProvider: string
   lastLoggedIn: string
 };

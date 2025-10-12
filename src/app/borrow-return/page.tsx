@@ -59,47 +59,45 @@ export default function Home() {
       fetchItemDetail()
     }, [])
   return (
-    <ProtectedRoute>
-      <main className="flex flex-col justify-start items-center gap-20 pt-5">
-        <div className="relative !gap !mt w-full flex flex-col justify-start items-center">
-          <MovingCloudBG />
-          <div className="flex flex-col justify-start items-center gap-20 mt-5">
-            <div className="flex flex-col justify-start justify-items-center sm:justify-items-start items-center sm:items-start text-center gap-5 ">
-              <h3 className="text-3xl sm:text-3xl md:text-4xl font-bold">
-                <span className="">ระบบยืม-คืนสิ่งของ </span>
-              </h3>
-            </div>
+    <main className="flex flex-col justify-start items-center gap-20 pt-5">
+      <div className="relative !gap !mt w-full flex flex-col justify-start items-center">
+        <MovingCloudBG />
+        <div className="flex flex-col justify-start items-center gap-20 mt-5">
+          <div className="flex flex-col justify-start justify-items-center sm:justify-items-start items-center sm:items-start text-center gap-5 ">
+            <h3 className="text-3xl sm:text-3xl md:text-4xl font-bold">
+              <span className="">ระบบยืม-คืนสิ่งของ </span>
+            </h3>
+          </div>
 
-            <SearchBar>
-              <Link
-                href="/borrow-return/my-borrow"
-                className="absolute left-0 h-12 px-4 rounded-full bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white"
-              >
-                <div className="flex justify-center items-center gap-3">
-                  <BookCheck />
-                  <p className="">การยืมของฉัน</p>
-                </div>
-              </Link>
-            </SearchBar>
+          <SearchBar>
+            <Link
+              href="/borrow-return/my-borrow"
+              className="absolute left-0 h-12 px-4 rounded-full bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white"
+            >
+              <div className="flex justify-center items-center gap-3">
+                <BookCheck />
+                <p className="">การยืมของฉัน</p>
+              </div>
+            </Link>
+          </SearchBar>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
-              {itemDetail?.map((index) => (
-                <ItemCard
-                  key={index.itemID}
-                  id={index.itemID}
-                  image={index.itemPictureURL}
-                  name={index.itemName}
-                  amount={index.itemQuantity}
-                  status={index.itemStatus}
-                  setShowPopup={() => { }}
-                  showPopup={false}
-                  setID={() => { }}
-                />
-              ))}
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
+            {itemDetail?.map((index) => (
+              <ItemCard
+                key={index.itemID}
+                id={index.itemID}
+                image={index.itemPictureURL}
+                name={index.itemName}
+                amount={index.itemQuantity}
+                status={index.itemStatus}
+                setShowPopup={() => { }}
+                showPopup={false}
+                setID={() => { }}
+              />
+            ))}
           </div>
         </div>
-      </main>
-    </ProtectedRoute>
+      </div>
+    </main>
   );
 }
