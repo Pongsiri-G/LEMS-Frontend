@@ -5,7 +5,7 @@ export async function getAllUsers(): Promise<User[]> {
   const res = await apiClient.get("/v1/admin/users");
   return (res.data as any[]).map((x) => ({
     userId: x.user_id,
-    userFullName: x.user_full_name,
+    userFullName: x.user_fullname,
     userEmail: x.user_email,
     userPhone: x.user_phone,
     userRole: x.user_role as "ADMIN" | "USER",
