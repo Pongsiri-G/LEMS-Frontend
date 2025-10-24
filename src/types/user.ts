@@ -3,9 +3,21 @@ export interface User {
   userFullName: string
   userEmail: string
   userPhone: string
-  userRole:  "admin" | "user"
-  userStatus: string
-  userProfileURL: string
+  userRole: "ADMIN" | "USER"
+  userStatus: UserStatus
+  userProfileUrl: string
   authProvider: string
-  lastLoggedIn: string
+  lastLoggedIn: string | null
 };
+
+export enum UserRole {
+  Admin = "ADMIN",
+  User = "USER",
+}
+
+export enum UserStatus {
+  Pending = "PENDING",
+  Active = "ACTIVE",
+  Rejected = "REJECTED",
+  Deactivated = "DEACTIVATED",
+}

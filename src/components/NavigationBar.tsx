@@ -15,13 +15,14 @@ import {
   SharedSelection,
 } from "@heroui/react";
 import Image from "next/image";
-import { useAuth } from "../contexts/authContext";
 import { userRoles } from "../constants/user";
+import { authSelector } from "../feature/authSlice";
+import { useAppSelector } from "../hook/useAppSelector";
 
 export function NavigationBar() {
   const [selectedKeys, setSelectedKeys] = useState("TH (ภาษาไทย)");
 
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAppSelector(authSelector);
 
   const onSelect = (key: SharedSelection) => {
     setSelectedKeys(key.currentKey ?? "TH (ภาษาไทย)")
@@ -83,7 +84,7 @@ export function NavigationBar() {
 
       {/* TODO: นำ user token มาเช็ก หากมี user token (already logged in) ให้โชว์แค่ profile หากไม่มีให้โชว์ปุ่ม login ไม่โชว์ทั้งคู่พร้อมกัน */}
       <NavbarContent justify="end">
-        {!isAuthenticated || !user ? (
+        {!isAuthenticated && !user ? (
           <NavbarItem>
             <div className="flex items-center">
               <Link
@@ -95,7 +96,7 @@ export function NavigationBar() {
             </div>
           </NavbarItem>
         ) : (
-          <div>
+          <div className="flex space-x-2 items-center">
             <NavbarItem>
               <Dropdown className="hover:scale-95">
                 <DropdownTrigger>
@@ -119,7 +120,7 @@ export function NavigationBar() {
             <NavbarItem>
               <Link href="/" className="flex items-center">
                 <Image
-                  src="/images/to-be-added-later"
+                  src={user?.userProfileUrl || ""}
                   alt="User Avatar"
                   width={60}
                   height={60}

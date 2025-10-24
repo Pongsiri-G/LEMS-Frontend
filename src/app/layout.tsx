@@ -3,7 +3,7 @@ import { Noto_Sans_Thai } from "next/font/google"
 import "./globals.css"
 import { Providers } from "./provider"
 import NavigationBar from "../components/NavigationBar"
-import { AuthProvider } from "../contexts/authContext"
+import AuthGuard from "../components/AuthGuard"
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -29,12 +29,12 @@ export default function RootLayout({
       <body
       // className="pt-[64px]"
       >
-      <Providers>
-        <AuthProvider>
-          <NavigationBar />
-          {children}
-        </AuthProvider>
-      </Providers>
+        <Providers>
+          <AuthGuard>
+            <NavigationBar />
+            {children}
+          </AuthGuard>
+        </Providers>
       </body>
     </html>
   )
