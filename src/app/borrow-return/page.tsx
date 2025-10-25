@@ -9,6 +9,7 @@ import { BookCheck } from "lucide-react";
 import { apiClient } from "@/src/services/apiClient";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { useRoleGuard } from "@/src/hook/useRoleGuard";
 
 export default function Home() {
   // const data: { id: string; status: string; amount: number }[] = [
@@ -24,40 +25,45 @@ export default function Home() {
   //   },
   //   { id: "Mac Mini", status: "In use - Due 2025/10/08", amount: 0 },
   //   { id: "USB Hub", status: "Disappeared", amount: 0 },
-  // ];
+  // ]; 
 
-    const [itemDetail, setItemDetail] = useState<Item[]>()
-  
-    const param = useParams();
+  const [itemDetail, setItemDetail] = useState<Item[]>()
 
-  
-    const fetchItemDetail = async () => {
-      const url = `/v1/item/list`
-      const res = await apiClient.get(url)
-      const data = res.data
-      var response: Item[] = data
-      var items: Item[] = []
-      console.log(response[0]) 
-      for (let i = 0; i < response.length; i++) {
-        const item: Item = {
-          itemID: data[i]["id"],
-          itemName: data[i]["name"],
-          itemDescription: data[i]["desc"],
-          itemPictureURL: data[i]["picture_url"],
-          itemStatus: data[i]["status"],
-          itemQuantity: data[i]["quantity"],
-          itemCurrentQuantity: data[i]["current_quantity"],
-          createdAt: new Date(data[i]["created_at"]),
-          updatedAt: new Date(data[i]["updated_at"])
-        }
-        items.push(item)
+  const param = useParams()
+
+  const canRender = useRoleGuard(["USER"])
+
+  const fetchItemDetail = async () => {
+    const url = `/v1/item/list`
+    const res = await apiClient.get(url)
+    const data = res.data
+    var response: Item[] = data
+    var items: Item[] = []
+    console.log(response[0])
+    for (let i = 0; i < response.length; i++) {
+      const item: Item = {
+        itemID: data[i]["id"],
+        itemName: data[i]["name"],
+        itemDescription: data[i]["desc"],
+        itemPictureURL: data[i]["picture_url"],
+        itemStatus: data[i]["status"],
+        itemQuantity: data[i]["quantity"],
+        itemCurrentQuantity: data[i]["current_quantity"],
+        createdAt: new Date(data[i]["created_at"]),
+        updatedAt: new Date(data[i]["updated_at"]),
       }
-      setItemDetail(items)
+      items.push(item)
     }
+    setItemDetail(items)
+  }
+
+  useEffect(() => {
+    if (!canRender) return; 
+    fetchItemDetail()
+  }, [])
+
+  if (!canRender) return null 
   
-    useEffect(() => {
-      fetchItemDetail()
-    }, [])
   return (
     <main className="flex flex-col justify-start items-center gap-20 pt-5">
       <div className="relative !gap !mt w-full flex flex-col justify-start items-center">
@@ -90,14 +96,14 @@ export default function Home() {
                 name={index.itemName}
                 amount={index.itemQuantity}
                 status={index.itemStatus}
-                setShowPopup={() => { }}
+                setShowPopup={() => {}}
                 showPopup={false}
-                setID={() => { }}
+                setID={() => {}}
               />
             ))}
           </div>
         </div>
       </div>
     </main>
-  );
+  )
 }

@@ -15,7 +15,7 @@ import {
   SharedSelection,
 } from "@heroui/react";
 import Image from "next/image";
-import { userRoles } from "../constants/user";
+import { UserRoles } from "../constants/user";
 import { authSelector } from "../feature/authSlice";
 import { useAppSelector } from "../hook/useAppSelector";
 
@@ -70,7 +70,7 @@ export function NavigationBar() {
             จัดการสิ่งของ
           </Link>
         </NavbarItem>
-        {user?.userRole === userRoles.ADMIN && (
+        {user && user.userRole === UserRoles.ADMIN && (
           <NavbarItem>
             <Link
               href="/"
@@ -120,7 +120,10 @@ export function NavigationBar() {
             <NavbarItem>
               <Link href="/" className="flex items-center">
                 <Image
-                  src={user?.userProfileUrl || ""}
+                  src={
+                    user?.userProfileUrl ||
+                    "https://avatar.iran.liara.run/public"
+                  }
                   alt="User Avatar"
                   width={60}
                   height={60}
