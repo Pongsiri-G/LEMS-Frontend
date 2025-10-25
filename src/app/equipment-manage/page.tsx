@@ -80,10 +80,10 @@ export default function Home() {
                 id={index.id}
                 amount={index.amount}
                 status={index.status}
-                setShowPopup={() => { }}
+                setShowPopup={() => { } }
                 showPopup={false}
-                setID={() => { }}
-              />
+                setID={() => { } } image={""} name={""}
+                />
             ))}
           </div>
         </div>
