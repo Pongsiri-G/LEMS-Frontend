@@ -7,6 +7,7 @@ interface AuthState {
     accessToken: string | null;
     isAuthenticated: boolean;
     expiresAt: number | null;
+    proccessing: boolean
 }
 
 const initialState: AuthState = {
@@ -14,6 +15,7 @@ const initialState: AuthState = {
     accessToken: null, 
     isAuthenticated: false,
     expiresAt: null,
+    proccessing: true
 };
 
 interface AuthPalLoadAction {
@@ -36,10 +38,10 @@ const authSlice = createSlice({
             state.user = action.payload.user ?? null
             state.accessToken = action.payload.accessToken ?? "";
             state.expiresAt = action.payload.expiresAt!;
-            state.isAuthenticated = true;
         },
         setUser(state, action: PayloadAction<AuthPalLoadAction>) {
             state.user = action.payload.user!
+            state.isAuthenticated = true
         },
         logout(state) {
             state.user = null;
@@ -47,9 +49,12 @@ const authSlice = createSlice({
             state.expiresAt = null;
             state.isAuthenticated = false;
         },
+        setProccessing(state, action) {
+            state.proccessing = action.payload.proccessing;
+        }
     },
 });
 
-export const { setCredentials, setUser, logout } = authSlice.actions;
+export const { setCredentials, setUser, logout, setProccessing } = authSlice.actions;
 export const authSelector = (s: { auth: AuthState }) => s.auth
 export default authSlice.reducer;
