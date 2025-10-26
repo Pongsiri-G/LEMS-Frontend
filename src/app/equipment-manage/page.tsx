@@ -138,8 +138,9 @@ export default function Home() {
                 status={index.itemStatus}
                 setShowPopup={() => { }}
                 showPopup={false}
-                setID={() => { } }
-                />
+                setID={() => { }}
+                isBorrow={false}
+              />
             ))}
           </div>
         </div>

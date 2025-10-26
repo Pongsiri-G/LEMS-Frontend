@@ -3,15 +3,39 @@ import { useState } from "react";
 import clsx from "clsx";
 import { Paperclip, Upload, X } from "lucide-react";
 import { Button } from "@heroui/button";
+import { useToast } from "@/src/hook/ToastContext";
+import { apiClient } from "@/src/services/apiClient";
 
 interface EditPopupProps {
   isOpen: boolean
   closePopup: () => void
+  borrowID: string
 }
 
-export default function ReturnItemPopup({ isOpen, closePopup }: EditPopupProps) {
+export default function ReturnItemPopup({ isOpen, closePopup, borrowID }: EditPopupProps) {
   const [imageUrl, setImageUrl] = useState("")
   const [dragFile, setDragFile] = useState(false)
+  const { showToast } = useToast()
+  console.log("INSIDE: ", borrowID)
+
+  const handdleReturn = async () => {
+    try {
+      if (imageUrl.trim() === "") {
+        showToast("กรุณาอัปโหลดภาพการคืนสิ่งของก่อนคืนของ", "error")
+      } else {
+        const res = await apiClient.post("/v1/borrow/return", {
+          borrow_id: borrowID
+        })
+        showToast(`คืนสำเร็จ`, "success")
+        console.log(res.data)
+        closePopup()
+      }
+    } catch (e: any) {
+      showToast(e.response.data.message, "error")
+      closePopup()
+    } finally {
+    }
+  }
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files != null) {
@@ -89,7 +113,7 @@ export default function ReturnItemPopup({ isOpen, closePopup }: EditPopupProps) 
         </div>
         <div className="w-full max-w-[500px] flex gap-5">
           <Button className="bg-primary text-white flex-1" onClick={() => { }} onPress={() => {
-            closePopup()
+            handdleReturn()
           }}>
             <p>ยืนยัน</p>
           </Button>

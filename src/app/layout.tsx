@@ -4,6 +4,7 @@ import "./globals.css"
 import { Providers } from "./provider"
 import NavigationBar from "../components/NavigationBar"
 import AuthGuard from "../components/AuthGuard"
+import { ToastProvider } from "../hook/ToastContext"
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -31,8 +32,10 @@ export default function RootLayout({
       >
         <Providers>
           <AuthGuard>
-            <NavigationBar />
-            {children}
+            <ToastProvider>
+              <NavigationBar />
+              {children}
+            </ToastProvider>
           </AuthGuard>
         </Providers>
       </body>

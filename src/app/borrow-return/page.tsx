@@ -56,7 +56,7 @@ export default function Home() {
                 </div>
               </Link>
               <Link
-                href="/borrow-return/my-borrow"
+                href="/borrow-return/borrow-history"
                 className=""
               >
                 <div className="p-3 rounded-full bg-primary flex items-center justify-center hover:scale-90 transition-all h-12 w-40 active:scale-100 text-white w-fit gap-3">
@@ -89,6 +89,7 @@ export default function Home() {
                 name={index.itemName}
                 amount={index.itemQuantity}
                 status={index.itemStatus}
+                isBorrow={false}
               />
             ))}
           </div>
