@@ -13,18 +13,12 @@ export default function ItemCard({
   name,
   status,
   amount,
-  setShowPopup,
-  showPopup,
-  setID,
 }: {
   id: string;
   image: string
   name: string;
   status: string;
   amount: number;
-  setShowPopup: Function;
-  showPopup: boolean;
-  setID: Function;
 }) {
   const [itemTags, setItemTags] = useState<ItemTag[]>()
   const [imageURL, setImageURL] = useState<string>()
@@ -55,23 +49,27 @@ export default function ItemCard({
   return (
     true && (
       <Link href={`/borrow-return/item/${id}`}>
-        <Card className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10 cursor-pointer hover:scale-95 transition-all">
+      <div className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10">
+        <Card className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10 hover:scale-95 transition-all">
+        <div
+          className="w-full h-[300px] overflow-hidden rounded-[16px]"
+          onClick={() => {}}
+        >
           <div
-            className="w-full h-[300px] overflow-hidden "
-            onClick={() => { }}
+            className="relative w-full h-[300px] overflow-hidden rounded-[16px]"
+            onClick={() => {}}
           >
-            <div
-              className="relative w-full h-[300px] overflow-hidden"
-              onClick={() => { }}
-            >
+            
               <img
                 src={imageURL!}
                 alt="logo"
-                className={`transition duration-300 ease-in-out w-full h-full`}
+                className={`transition duration-300 ease-in-out hover:scale-105 cursor-pointer object-fit w-full h-full`}
                 style={{
                   objectFit: "cover",
+                  borderRadius: "16px",
                 }}
               />
+            
 
               <div className="absolute top-3 right-2 p-3 bg-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
                 จำนวน {amount}
@@ -122,6 +120,7 @@ export default function ItemCard({
             </div>
           </div>
         </Card>
+      </div>
       </Link>
     )
   );

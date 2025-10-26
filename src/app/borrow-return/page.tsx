@@ -9,62 +9,31 @@ import { BookCheck, History } from "lucide-react";
 import { apiClient } from "@/src/services/apiClient";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { fetchItemDetail } from "@/src/utils/itemUtils";
 import { useRoleGuard } from "@/src/hook/useRoleGuard";
 
 export default function Home() {
-  // const data: { id: string; status: string; amount: number }[] = [
-  //   { id: "Nvidia RTX5090", status: "Available", amount: 10 },
-  //   { id: "Router", status: "Available", amount: 7 },
-  //   { id: "Raspberry Pi", status: "Disappeared", amount: 0 },
-  //   { id: "RJ45", status: "In use - Due 2025/10/11", amount: 0 },
-  //   { id: "360 Camera", status: "Available", amount: 1 },
-  //   {
-  //     id: "Fundmentals of Artificial Intelligence Books",
-  //     status: "Available",
-  //     amount: 13,
-  //   },
-  //   { id: "Mac Mini", status: "In use - Due 2025/10/08", amount: 0 },
-  //   { id: "USB Hub", status: "Disappeared", amount: 0 },
-  // ]; 
 
   const [itemDetail, setItemDetail] = useState<Item[]>()
 
-  const param = useParams()
+
+  
+  const fetchItem = async (name: string, tag:string, status:string) => {
+    const items = await fetchItemDetail(name, tag, status);
+    setItemDetail(items);
+  }
 
   const canRender = useRoleGuard(["USER", "ADMIN"])
 
-  const fetchItemDetail = async () => {
-    const url = `/v1/item/list`
-    const res = await apiClient.get(url)
-    const data = res.data
-    var response: Item[] = data
-    var items: Item[] = []
-    console.log(response[0])
-    for (let i = 0; i < response.length; i++) {
-      const item: Item = {
-        itemID: data[i]["id"],
-        itemName: data[i]["name"],
-        itemDescription: data[i]["desc"],
-        itemPictureURL: data[i]["picture_url"],
-        itemStatus: data[i]["status"],
-        itemQuantity: data[i]["quantity"],
-        itemCurrentQuantity: data[i]["current_quantity"],
-        createdAt: new Date(data[i]["created_at"]),
-        updatedAt: new Date(data[i]["updated_at"]),
-      }
-      items.push(item)
-    }
-    setItemDetail(items)
-  }
-
   useEffect(() => {
     if (!canRender) return; 
-    fetchItemDetail()
+    fetchItem("", "", "")
   }, [])
 
   if (!canRender) return null 
   
   return (
+    <ProtectedRoute>
     <main className="flex flex-col justify-start items-center gap-10 pt-5 mt-5">
       <div className="relative !gap !mt w-full flex flex-col justify-start items-center max-w-[1500px]">
         <MovingCloudBG />
@@ -75,44 +44,57 @@ export default function Home() {
             </h3>
           </div>
 
-          <SearchBar>
-            <Link
-              href="/borrow-return/my-borrow"
-              className=""
-            >
-              <div className="p-3 rounded-xl bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white w-fit gap-3">
-                <BookCheck />
-                <p className="">การยืมของฉัน</p>
-              </div>
-            </Link>
-            <Link
-              href="/borrow-return/my-borrow"
-              className=""
-            >
-              <div className="p-3 rounded-xl bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white w-fit gap-3">
-                <History />
-                <p className="">ตรวจสอบประวัติการยืม</p>
-              </div>
-            </Link>
+          <SearchBar onSearch={({name, tag, status}) => fetchItem(name ?? "", tag ?? "", status ?? "")}>
+            <div className="flex flex-row gap-2">
+              <Link
+                href="/borrow-return/my-borrow"
+                className="h-12 w-40 px-4 rounded-full bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white"
+              >
+                <div className="flex justify-center items-center gap-3">
+                  <BookCheck />
+                  <p className="">การยืมของฉัน</p>
+                </div>
+              </Link>
+              <Link
+                href="/borrow-return/my-borrow"
+                className=""
+              >
+                <div className="p-3 rounded-full bg-primary flex items-center justify-center hover:scale-90 transition-all h-12 w-40 active:scale-100 text-white w-fit gap-3">
+                  <History />
+                  <p className="">ตรวจสอบประวัติการยืม</p>
+                </div>
+              </Link>
+            </div>
           </SearchBar>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
-          {itemDetail?.map((index) => (
-            <ItemCard
-              key={index.itemID}
-              id={index.itemID}
-              image={index.itemPictureURL}
-              name={index.itemName}
-              amount={index.itemQuantity}
-              status={index.itemStatus}
-              setShowPopup={() => {}}
-              showPopup={false}
-              setID={() => {}}
-            />
-          ))}
+          {itemDetail?.length === 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
+              <div></div>
+              <div className="flex flex-col justify-center items-center gap-5 col-span-1 sm:col-span-2 lg:col-span-3 z-10">
+                <img
+                  src="/images/item_not_found.png"
+                  alt="No items found" 
+                  width={500}
+                  height={500} 
+                  ></img>
+              </div>
+              </div>
+              )
+          }
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-25 pb-10 items-center">
+            {itemDetail?.map((index) => (
+              <ItemCard
+                key={index.itemID}
+                id={index.itemID}
+                image={index.itemPictureURL}
+                name={index.itemName}
+                amount={index.itemQuantity}
+                status={index.itemStatus}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
     </main>
-  )
+    </ProtectedRoute>
+  );
 }
