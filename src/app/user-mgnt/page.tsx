@@ -21,12 +21,12 @@ export default function UsersPage() {
   const canRender = useRoleGuard(["ADMIN"])
 
   useEffect(() => {
-    if (!canRender) return;
+    if (!canRender) return
     getAllUsers()
       .then(setUsers)
       .catch(() => alert("โหลดข้อมูลล้มเหลว"))
-      .finally(() => setLoading(false));
-  }, []);
+      .finally(() => setLoading(false))
+  }, [canRender])
 
   if (!canRender) return null;
 
