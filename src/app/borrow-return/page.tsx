@@ -31,7 +31,7 @@ export default function Home() {
 
   const param = useParams()
 
-  const canRender = useRoleGuard(["USER"])
+  const canRender = useRoleGuard(["USER", "ADMIN"])
 
   const fetchItemDetail = async () => {
     const url = `/v1/item/list`
