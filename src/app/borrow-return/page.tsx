@@ -5,7 +5,7 @@ import MovingCloudBG from "../../components/MovingCloudBG";
 import ItemCard from "../../components/ItemCard";
 import SearchBar from "@/src/components/SearchBar";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
-import { BookCheck } from "lucide-react";
+import { BookCheck, History } from "lucide-react";
 import { apiClient } from "@/src/services/apiClient";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -78,6 +78,15 @@ export default function Home() {
                 <div className="p-3 rounded-xl bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white w-fit gap-3">
                   <BookCheck />
                   <p className="">การยืมของฉัน</p>
+                </div>
+              </Link>
+              <Link
+                href="/borrow-return/my-borrow"
+                className=""
+              >
+                <div className="p-3 rounded-xl bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white w-fit gap-3">
+                  <History />
+                  <p className="">ตรวจสอบประวัติการยืม</p>
                 </div>
               </Link>
             </SearchBar>

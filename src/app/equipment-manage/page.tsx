@@ -4,7 +4,7 @@ import Link from "next/link";
 import MovingCloudBG from "../../components/MovingCloudBG";
 import ItemCard from "../../components/ItemCard";
 import SearchBar from "@/src/components/SearchBar";
-import { ClipboardPlus, Plus, Search } from "lucide-react";
+import { ClipboardPlus, History, Plus, Search } from "lucide-react";
 import { Button } from "@heroui/button";
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/modal";
@@ -70,10 +70,11 @@ export default function Home() {
           </div>
 
           <div className="flex w-full justify-between items-start gap-5">
-            <Button
-              as={Link}
-              href="/equipment-manage/equipment-log"
-              className="
+            <div className="flex flex-col gap-4">
+              <Button
+                as={Link}
+                href="/equipment-manage/equipment-log"
+                className="
             rounded-xl
             bg-primary  
             flex items-center justify-center
@@ -83,10 +84,20 @@ export default function Home() {
             p-6 text-[16px]
             w-fit
             "
-            >
-              <ClipboardPlus />
-              <span className="hidden lg:inline">ดูบันทึกการจัดการสิ่งของ</span>
-            </Button>
+              >
+                <ClipboardPlus />
+                <span className="hidden lg:inline">ดูบันทึกการจัดการสิ่งของ</span>
+              </Button>
+              <Link
+                href="/borrow-return/my-borrow"
+                className=""
+              >
+                <div className="p-3 rounded-xl bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white gap-3 w-full">
+                  <History />
+                  <p className="">ตรวจสอบประวัติการยืม</p>
+                </div>
+              </Link>
+            </div>
             <div className="flex-1 flex flex-col justify-center items-center gap-5">
               <div className="relative w-full max-w">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
