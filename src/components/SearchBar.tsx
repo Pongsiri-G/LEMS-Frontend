@@ -1,40 +1,176 @@
-import Link from "next/link";
 import { Search } from "lucide-react";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Selection, SharedSelection } from "@heroui/react";
+import { apiClient } from "../services/apiClient";
+import { AxiosResponse } from "axios";
 
 type UserButtonProps = {
   children?: ReactNode;
 };
 
+type SearchBarProps = UserButtonProps & {
+  onSearch?: (params: {name?: string, tag?:string, status?:string}) => void;
+  noFilter?: boolean
+};
 
-export default function SearchBar({ children }: UserButtonProps) {
-  return (
-    <div className="flex justify-center w-full mt-5">
+export default function SearchBar({ children, onSearch, noFilter }: SearchBarProps) {
+    const [query, setQuery] = useState("");
+    const [selected, setSelected] = useState<string>("All");
+    const [selectedTags, setSelectedTags] = useState(new Set(["All"]));
+    const [allTags, setAllTags] = useState<string[]>();
+    const [isReady, setIsReady] = useState(false)
+
+    const selectedTagsString = Array.from(selectedTags).join(",") || "All";
+
+    const onSelectTag = (keys: Selection) => {
+      // Convert Selection to Set<string>
+      const keysSet = keys === "all" 
+        ? new Set(allTags) 
+        : new Set(Array.from(keys).map(String));
+      
+      // Handle "All" selection logic
+      if (keysSet.has("All")) {
+        // If "All" was just selected, clear other selections
+        if (!selectedTags.has("All")) {
+          setSelectedTags(new Set(["All"]));
+        } else if (keysSet.size > 1) {
+          keysSet.delete("All");
+          setSelectedTags(keysSet);
+        }
+      } else if (keysSet.size === 0) {
+        // If nothing is selected, default to "All"
+        setSelectedTags(new Set(["All"]));
+      } else {
+        setSelectedTags(keysSet);
+      }
+    }
+
+    const onSelect = (key: SharedSelection) => {
+      setSelected(key.currentKey ?? "All")
+      console.log(key)
+    }
+
+    useEffect(() => {
+      const delay = setTimeout(() => {
+        console.log(selectedTagsString)
+        if (onSearch) onSearch({name: query.trim(), status: selected === "All" ? "" : selected, tag: selectedTagsString === "All" ? "" : selectedTagsString});
+      }, 400); // debounce 400ms
+
+      return () => clearTimeout(delay);
+    }, [query, selected, selectedTagsString]);
+
+    useEffect(() => {
+      const fetchTags = async () => {
+        try {
+          interface tagResponse {
+            id: string
+            name: string
+            color: string
+          }
+
+          const res: AxiosResponse<tagResponse[]> = await apiClient.get("/v1/tags")
+
+          const tags = res.data.map((tag) => tag.name);
+          
+          setAllTags(tags)
+          setIsReady(true)
+        } catch (error) {
+          console.error("Failed to fetch tags:", error);
+        }
+      }
+      fetchTags()
+    },[])
+
+    if (!isReady) return;
+
+
+  return <div className="flex justify-center w-full mt-5 z-10">
       <div className="flex flex-col items-center w-full max-w gap-4">
-        <div className="relative w-full flex items-center justify-center gap-6">
+        {/* <div className="relative w-full flex items-center justify-center">
+         */}
+         <div className="grid grid-cols-[1fr_auto_1fr] items-center w-full gap-4">
           {/* <Link
             href="/borrow-return/my-borrow"
             className="absolute left-0 h-12 px-4 rounded-full bg-[rgb(255,225,106)] border-black border flex items-center justify-center text-[rgb(1,51,82)] font-[400] text-[16px] hover:scale-90 hover:bg-black hover:text-white transition-all"
           >
             การยืมของฉัน
           </Link> */}
-          {children ?? null}
-          <div className="relative flex-1">
+          <div className="flex justify-start">
+            {children ?? null}
+          </div>
+          
+          <div className="relative w-[700px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <input
               type="text"
               placeholder="ค้นหา..."
               className="w-full h-12 pl-10 pr-4 border rounded-full text-start outline-none border-neutral-300 focus:border-neutral bg-background"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
             />
           </div>
+
+          {!noFilter &&(<div className="flex justify-end gap-5">
+
+                <Dropdown className="hover:scale-95">
+                  <DropdownTrigger>
+                    <Button className="flex capitalize w-50 bg-white whitespace-normal h-10 overflow-hidden text-left" variant="bordered">
+                      <span className="font-bold">Tag:</span>
+                      <span className="truncate">{selectedTagsString.replaceAll(",", ", ")}</span>
+                      
+                    </Button>
+                  </DropdownTrigger>
+
+                  <DropdownMenu
+                    aria-label="Multiple selection with checkboxes"
+                    variant="shadow"
+                    closeOnSelect={false}        
+                    selectionMode="multiple"     
+                    selectedKeys={selectedTags}
+                    onSelectionChange={onSelectTag}
+                    className="overflow-auto max-h-40"
+                  >
+                    {allTags!.map((tag) => (
+                      <DropdownItem key={tag}>{tag}</DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </Dropdown>
+
+              <Dropdown className="hover:scale-95">
+              <DropdownTrigger>
+                <Button className="capitalize w-35 h-10 bg-white" variant="bordered">
+                  <span className="font-bold">Status:</span>{selected}
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Single selection example"
+                selectedKeys={selected}
+                selectionMode="single"
+                variant="shadow"
+                onSelectionChange={onSelect}
+              >
+                <DropdownItem key="All" className="">All </DropdownItem>
+                <DropdownItem key="Available">Available </DropdownItem>
+                <DropdownItem key="In-use">In-Use </DropdownItem>
+                <DropdownItem key="Disappeared">Disappeared </DropdownItem>
+                <DropdownItem key="In-Lab Only">In-Lab Only </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>)}
         </div>
 
 
-        <button className="z-10 h-10 px-6 w-45 rounded-full  text-foreground font-[400] text-[16px] cursor-pointer hover:scale-90 transition-all flex items-center justify-center active:scale-100 border-neutral border-1 backdrop-blur-2xl">
+
+        {/* <button className="z-10 h-10 px-6 w-45 rounded-full  text-foreground font-[400] text-[16px] cursor-pointer 
+                            hover:scale-90 transition-all flex items-center justify-center active:scale-100 
+                            border-neutral border-1 backdrop-blur-2xl"
+                            onClick={() => onSearch?.(query.trim())}
+                            >
           ค้นหา
-        </button>
+        </button> */}
+        
       </div>
     </div>
-  );
 }
