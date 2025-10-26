@@ -11,18 +11,24 @@ import {
 } from "@/src/services/userMgntService/userMgntService";
 
 import { useState, useEffect } from "react";
+import { useRoleGuard } from "@/src/hook/useRoleGuard";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const canRender = useRoleGuard(["ADMIN"])
+
   useEffect(() => {
+    if (!canRender) return
     getAllUsers()
       .then(setUsers)
       .catch(() => alert("โหลดข้อมูลล้มเหลว"))
-      .finally(() => setLoading(false));
-  }, []);
+      .finally(() => setLoading(false))
+  }, [canRender])
+
+  if (!canRender) return null;
 
   async function handleAction(fn: () => Promise<any>, id: string, cb: () => void) {
     setBusyId(id);

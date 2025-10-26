@@ -5,9 +5,13 @@ import { googleLogin } from "./googleLogin";
 import { refreshToken } from "./refreshToken";
 import { REFRES_TOKEN } from "@/src/constants/token";
 import { jwtDecode } from "jwt-decode";
+import { useAppDispatch } from "@/src/store";
+import { logout, setCredentials, setUser } from "@/src/feature/authSlice";
+import { useHandleGetMe } from "../userService/handlers";
 
 export const useHandleLoginSubmit = () => {
     const router = useRouter();
+    const dispatch = useAppDispatch()
 
     return async (
         form: FormData,
@@ -22,7 +26,33 @@ export const useHandleLoginSubmit = () => {
 
         const result = await login({ email, password });
 
-        if (result.success) {
+        if (result.success && result.data) {
+            localStorage.setItem(REFRES_TOKEN, result.data.refresh_token)
+
+            // dispatch auth state
+            const { exp } = jwtDecode<Jwt>(result.data.access_token ?? "")
+            dispatch(
+                setCredentials({
+                    accessToken: result.data.access_token ?? "",
+                    expiresAt: exp * 1000,
+                }),
+            )
+            // await getCurrentUser()
+
+            try {
+                const { user } = await useHandleGetMe()
+                if (user) {
+
+                    dispatch(
+                        setUser({ user })
+                    )
+                }
+            } catch (error) {
+                dispatch(
+                    logout()
+                )
+            }
+
             router.replace("/");
         } else {
             setMsg(result.error ?? "Login failed");
