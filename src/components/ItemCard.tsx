@@ -48,8 +48,9 @@ export default function ItemCard({
   const [isCardHovered, setIsCardHovered] = useState(false);
   return (
     true && (
+      <Link href={`/borrow-return/item/${id}`}>
       <div className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10">
-        <Card className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10 cursor-pointer hover:scale-95 transition-all">
+        <Card className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10 hover:scale-95 transition-all">
         <div
           className="w-full h-[300px] overflow-hidden rounded-[16px]"
           onClick={() => {}}
@@ -58,7 +59,7 @@ export default function ItemCard({
             className="relative w-full h-[300px] overflow-hidden rounded-[16px]"
             onClick={() => {}}
           >
-            <Link href={`/borrow-return/item/${id}`}>
+            
               <img
                 src={imageURL!}
                 alt="logo"
@@ -68,7 +69,7 @@ export default function ItemCard({
                   borderRadius: "16px",
                 }}
               />
-            </Link>
+            
 
               <div className="absolute top-3 right-2 p-3 bg-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
                 จำนวน {amount}
@@ -120,6 +121,7 @@ export default function ItemCard({
           </div>
         </Card>
       </div>
+      </Link>
     )
   );
 }
