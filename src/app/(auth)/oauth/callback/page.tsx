@@ -41,7 +41,7 @@ export default function OAuthCallback() {
     if (user) {
       
       dispatch(
-        setUser({ user })
+        setUser({ user }),
       )
     }
   }

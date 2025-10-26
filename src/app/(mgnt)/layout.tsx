@@ -1,7 +1,11 @@
+"use client";
+
 import RightNav from "@/src/components/user-mgnt/RightNav";
+import { useRoleGuard } from "@/src/hook/useRoleGuard";
 import type { ReactNode } from "react";
 
 export default function MgmtLayout({ children }: { children: ReactNode }) {
+  const canRender = useRoleGuard(["ADMIN"])
   return (
     <div className="w-full mx-auto px-4 py-10">
       {/* หัวข้ออยู่ตรงกลาง */}

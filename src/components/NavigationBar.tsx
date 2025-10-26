@@ -15,14 +15,16 @@ import {
   SharedSelection,
 } from "@heroui/react";
 import Image from "next/image";
-import { userRoles } from "../constants/user";
-import { authSelector } from "../feature/authSlice";
+import { UserRoles } from "../constants/user";
+import { authSelector, logout } from "../feature/authSlice";
 import { useAppSelector } from "../hook/useAppSelector";
+import { useAppDispatch } from "../store";
 
 export function NavigationBar() {
   const [selectedKeys, setSelectedKeys] = useState("TH (ภาษาไทย)");
 
   const { user, isAuthenticated } = useAppSelector(authSelector);
+  const dispatch = useAppDispatch()
 
   const onSelect = (key: SharedSelection) => {
     setSelectedKeys(key.currentKey ?? "TH (ภาษาไทย)")
@@ -70,10 +72,10 @@ export function NavigationBar() {
             จัดการสิ่งของ
           </Link>
         </NavbarItem>
-        {user?.userRole === userRoles.ADMIN && (
+        {user && user.userRole === UserRoles.ADMIN && (
           <NavbarItem>
             <Link
-              href="/"
+              href="/user-mgnt"
               className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
             >
               จัดการผู้ใช้
@@ -118,15 +120,34 @@ export function NavigationBar() {
               </Dropdown>
             </NavbarItem>
             <NavbarItem>
-              <Link href="/" className="flex items-center">
-                <Image
-                  src={user?.userProfileUrl || ""}
-                  alt="User Avatar"
-                  width={60}
-                  height={60}
-                  className="rounded-full border-2 border-gray-300 hover:border-primary transition"
-                />
-              </Link>
+              <Dropdown placement="bottom-end">
+                <DropdownTrigger>
+                  <Image
+                    src={
+                      user?.userProfileUrl ||
+                      "https://avatar.iran.liara.run/public"
+                    }
+                    alt="User Avatar"
+                    width={60}
+                    height={60}
+                    className="rounded-full border-2 border-gray-300 hover:border-primary transition cursor-pointer"
+                  />
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Profile Actions" variant="flat">
+                  <DropdownItem key="profile" className="h-18 gap-2">
+                    <p className="font-semibold">Signed in as</p>
+                    <p className="font-semibold">{user?.userEmail}</p>
+                    <p className="font-normal">{user?.userFullName}</p>
+                  </DropdownItem>
+                  <DropdownItem
+                    key="logout"
+                    color="danger"
+                    onClick={() => dispatch(logout())}
+                  >
+                    Log out
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             </NavbarItem>
           </div>
         )}
