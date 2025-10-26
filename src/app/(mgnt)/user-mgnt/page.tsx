@@ -96,12 +96,10 @@ export default function UsersPage() {
   if (loading) return <p className="text-center mt-10">Loading...</p>;
 
   return (
-    <div className="max-w-6xl mx-auto mt-10 p-4">
-      <h1 className="text-3xl font-semibold text-center">ระบบจัดการผู้ใช้</h1>
+    <>  
       <div className="flex items-center justify-between gap-4 mb-4">
         <h1 className="text-2xl font-semibold">รายชื่อผู้ใช้</h1>
       </div>
-
       {/* Filters */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex gap-2">
@@ -190,6 +188,6 @@ export default function UsersPage() {
           )
         }
       />
-    </div>
+    </>
   );
 }

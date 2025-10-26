@@ -22,8 +22,8 @@ export default function UserTable({
 }: Props) {
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
-      {/* กำหนดให้เลื่อนเฉพาะภายใน table */}
-      <div className="max-h-[480px] overflow-auto">
+      {/* กำหนดให้เลื่อนเฉพาะภายใน table — ขยายตามความสูงของ viewport */}
+      <div className="h-[calc(80vh-200px)] overflow-auto">
         <table className="w-full">
           <thead className="bg-blue-100 sticky top-0 z-10">
             <tr className="text-left">
