@@ -5,7 +5,6 @@ import { googleLogin } from "./googleLogin";
 import { refreshToken } from "./refreshToken";
 import { REFRES_TOKEN } from "@/src/constants/token";
 import { jwtDecode } from "jwt-decode";
-import { getCurrentUser } from "@/src/utils";
 import { useAppDispatch } from "@/src/store";
 import { logout, setCredentials, setUser } from "@/src/feature/authSlice";
 import { useHandleGetMe } from "../userService/handlers";

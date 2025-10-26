@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../store";
 import { User } from "../types";
+import { REFRES_TOKEN } from "../constants/token";
 
 interface AuthState {
     user: User | null;
@@ -48,6 +48,8 @@ const authSlice = createSlice({
             state.accessToken = null;
             state.expiresAt = null;
             state.isAuthenticated = false;
+
+            localStorage.removeItem(REFRES_TOKEN)
         },
         setProccessing(state, action) {
             state.proccessing = action.payload.proccessing;
