@@ -1,4 +1,5 @@
 "use client"
+import BackButton from "@/src/components/BackButton";
 import MovingCloudBG from "@/src/components/MovingCloudBG";
 import { Button, getKeyValue, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
 import { ArrowLeft } from "lucide-react";
@@ -58,16 +59,11 @@ const columns = [
 ];
 export default function EquipmentLog() {
   return <>
-    <main className="flex flex-col justify-start items-center gap-20">
+    <main className="flex flex-col justify-start items-center gap-10 mt-5 pt-5">
       <div className="relative !gap !mt w-full flex flex-col justify-center items-center">
         <MovingCloudBG />
         <div className="mt-5 w-full max-w-[1300px] px-10">
-          <Button as={Link} href="/equipment-manage" variant="bordered" className="w-fit hover:scale-95 transition-all">
-            <div className="flex gap-3 items-center justify-center">
-              <ArrowLeft />
-              <p>ย้อนกลับ</p>
-            </div>
-          </Button>
+          <BackButton />
           <h3 className="text-3xl sm:text-3xl md:text-4xl font-bold w-full text-center">
             <span className="">ระบบจัดการสิ่งของ </span>
           </h3>

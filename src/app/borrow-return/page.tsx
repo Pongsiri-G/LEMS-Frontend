@@ -5,7 +5,7 @@ import MovingCloudBG from "../../components/MovingCloudBG";
 import ItemCard from "../../components/ItemCard";
 import SearchBar from "@/src/components/SearchBar";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
-import { BookCheck } from "lucide-react";
+import { BookCheck, History } from "lucide-react";
 import { apiClient } from "@/src/services/apiClient";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -65,10 +65,10 @@ export default function Home() {
   if (!canRender) return null 
   
   return (
-    <main className="flex flex-col justify-start items-center gap-20 pt-5">
-      <div className="relative !gap !mt w-full flex flex-col justify-start items-center">
+    <main className="flex flex-col justify-start items-center gap-10 pt-5 mt-5">
+      <div className="relative !gap !mt w-full flex flex-col justify-start items-center max-w-[1500px]">
         <MovingCloudBG />
-        <div className="flex flex-col justify-start items-center gap-20 mt-5">
+        <div className="flex flex-col justify-start items-center gap-10 mt-5">
           <div className="flex flex-col justify-start justify-items-center sm:justify-items-start items-center sm:items-start text-center gap-5 ">
             <h3 className="text-3xl sm:text-3xl md:text-4xl font-bold">
               <span className="">ระบบยืม-คืนสิ่งของ </span>
@@ -78,32 +78,41 @@ export default function Home() {
           <SearchBar>
             <Link
               href="/borrow-return/my-borrow"
-              className="absolute left-0 h-12 px-4 rounded-full bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white"
+              className=""
             >
-              <div className="flex justify-center items-center gap-3">
+              <div className="p-3 rounded-xl bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white w-fit gap-3">
                 <BookCheck />
                 <p className="">การยืมของฉัน</p>
               </div>
             </Link>
+            <Link
+              href="/borrow-return/my-borrow"
+              className=""
+            >
+              <div className="p-3 rounded-xl bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white w-fit gap-3">
+                <History />
+                <p className="">ตรวจสอบประวัติการยืม</p>
+              </div>
+            </Link>
           </SearchBar>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
-            {itemDetail?.map((index) => (
-              <ItemCard
-                key={index.itemID}
-                id={index.itemID}
-                image={index.itemPictureURL}
-                name={index.itemName}
-                amount={index.itemQuantity}
-                status={index.itemStatus}
-                setShowPopup={() => {}}
-                showPopup={false}
-                setID={() => {}}
-              />
-            ))}
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
+          {itemDetail?.map((index) => (
+            <ItemCard
+              key={index.itemID}
+              id={index.itemID}
+              image={index.itemPictureURL}
+              name={index.itemName}
+              amount={index.itemQuantity}
+              status={index.itemStatus}
+              setShowPopup={() => {}}
+              showPopup={false}
+              setID={() => {}}
+            />
+          ))}
         </div>
       </div>
+    </div>
     </main>
   )
 }
