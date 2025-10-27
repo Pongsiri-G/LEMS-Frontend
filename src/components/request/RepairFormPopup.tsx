@@ -6,6 +6,7 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, SharedSel
 import { fetchItemDetail } from "@/src/utils/itemUtils";
 import { apiClient } from "@/src/services/apiClient";
 import { useToast } from "@/src/hook/ToastContext";
+import { Item } from "@/src/types/item";
 
 type FormPopupStatus = "Edit" | "Create" | "View" | "Manage"
 
