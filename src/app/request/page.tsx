@@ -110,7 +110,9 @@ export default function RequestPage() {
                         </h3>
                     </div>
                     <div className="flex flex-row w-full items-end justify-end gap-3">
-                        <Button className="w-35 h-10 bg-[#ffe16a] hover:scale-95">
+                        <Button className="w-35 h-10 bg-[#ffe16a] hover:scale-95"
+                            onPress={() => router.push("/request/my-submission")}
+                        >
                             <FilesIcon color="black" />
                             <span className="hidden lg:inline text-black">คำร้องของฉัน</span>
                         </Button>

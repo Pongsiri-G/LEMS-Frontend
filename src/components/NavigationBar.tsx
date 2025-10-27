@@ -61,7 +61,7 @@ export function NavigationBar() {
         {user && user.userRole === UserRoles.USER && (
           <NavbarItem>
             <Link
-              href="/"
+              href="/request"
               className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
             >
               คำร้อง
