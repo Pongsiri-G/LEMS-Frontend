@@ -62,6 +62,7 @@ const statusColor: Record<string, string> = {
     PENDING:  "#5cc7ff",
     ACCEPTED:  "#1cac6e",
     REJECTED:  "#f5365c",
+    CANCELED: "#f5365c",
     COMPLETED:  "#0088ce",
 }
 
