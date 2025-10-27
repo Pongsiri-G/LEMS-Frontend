@@ -136,9 +136,6 @@ export default function Home() {
                 image={index.itemPictureURL}
                 amount={index.itemQuantity}
                 status={index.itemStatus}
-                setShowPopup={() => { }}
-                showPopup={false}
-                setID={() => { }}
                 isBorrow={false}
               />
             ))}
