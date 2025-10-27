@@ -3,11 +3,12 @@
 import BackButton from "@/src/components/BackButton"
 import MovingCloudBG from "@/src/components/MovingCloudBG"
 import ProtectedRoute from "@/src/components/ProtectedRoute"
+import { useToast } from "@/src/hook/ToastContext"
 import { apiClient } from "@/src/services/apiClient"
 import { Button } from "@heroui/button"
 import { getKeyValue, TableBody, TableCell, TableColumn, TableHeader, TableRow, Table } from "@heroui/react"
 import { AxiosResponse } from "axios"
-import { PaperclipIcon } from "lucide-react"
+import { PaperclipIcon, TriangleAlertIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 
 const columns = [
@@ -46,6 +47,7 @@ const statusColor: Record<string, string> = {
     PENDING:  "#5cc7ff",
     ACCEPTED:  "#1cac6e",
     REJECTED:  "#f5365c",
+    CANCELED: "#f5365c",
     COMPLETED:  "#0088ce",
 }
 
@@ -64,29 +66,33 @@ interface Row {
 export default function MySubmission() {
     const [ isReady, setIsReady ] = useState(false)
     const [ rows, setRows ] = useState<Row[]>([])
-    useEffect(() => {
-        const loadRequests = async () => {
-            try {
-                const response: AxiosResponse<RequestForm[]> = await apiClient.get("/v1/requests/user")
+    const [ showModal, setShowModal ] = useState(false)
+    const [ selectedCancelRequest, setSelectedCancelRequest ] = useState("")
+    const {showToast} = useToast()
 
-                const row = response.data.map((req) => ({
-                    id: req.request_id,
-                    status: req.request_status,
-                    create_date: req.created_date,
-                    update_date: req.updated_date,
-                    form_type: req.request_type === "LOST" ? "ของเสีย/หาย" : "เบิกของ",
-                    title: req.request_item_name,
-                    attachment: req.request_image_url !== "" ? "yes" : "",
-                    owner: req.created_by
-                }))
+    const loadRequests = async () => {
+        try {
+            const response: AxiosResponse<RequestForm[]> = await apiClient.get("/v1/requests/user")
 
-                setRows(row)
-                setIsReady(true)
-            } catch(error) {
-                console.log(error)
-            }
-            
+            const row = response.data.map((req) => ({
+                id: req.request_id,
+                status: req.request_status,
+                create_date: req.created_date,
+                update_date: req.updated_date,
+                form_type: req.request_type === "LOST" ? "ของเสีย/หาย" : "เบิกของ",
+                title: req.request_item_name,
+                attachment: req.request_image_url !== "" ? "yes" : "",
+                owner: req.created_by
+            }))
+
+            setRows(row)
+            setIsReady(true)
+        } catch(error) {
+            console.log(error)
         }
+        
+    }
+    useEffect(() => {
         loadRequests()
     }, [])
 
@@ -133,8 +139,13 @@ export default function MySubmission() {
                                                 >
                                                     {item.status}
                                                 </span>
-                                            ) : columnKey === "cancel" ?
-                                            <div className="cursor-pointer text-[#f5365c]">
+                                            ) : columnKey === "cancel" && item.status != "CANCELED" ?
+                                            <div className="cursor-pointer text-[#f5365c]"
+                                                onClick={() => {
+                                                    setSelectedCancelRequest(item.id)
+                                                    setShowModal(true)
+                                                }}
+                                            >
                                                 <p className="text-[#f5365c]">ยกเลิก</p>
                                             </div>
                                             : (
@@ -146,6 +157,46 @@ export default function MySubmission() {
                             )}
                         </TableBody>
                     </Table>
+                    {showModal && 
+                        <div className="fixed inset-0 flex justify-center items-center bg-black/75 w-full h-full z-20">
+                            <div className="bg-white w-100 h-70 rounded-4xl p-10">
+                                <div className="flex flex-row justify-center items-center gap-2 mb-5">
+                                    <TriangleAlertIcon className="text-[#ff0033]"></TriangleAlertIcon>
+                                    <p className="text-[22px] flex justify-center">การกระทำนี้ไม่สามารถแก้ไขได้!</p>
+                                </div>
+                                <span className="text-[16px]">ท่านแน่ใจแล้วหรือไม่ที่จะยกเลิกใบคำร้องนี้ ?</span>
+                                <br></br>
+                                <span className="">โปรดตรวจสอบให้แน่ใจก่อนเนื่องจากหากยกเลิกไปแล้ว จะ</span>
+                                <span className="text-[#ff0033]">ไม่สามารถย้อนกลับมาเป็นสถานะปกติ</span>
+                                <span className="">ได้</span>
+                                <div className="flex flex-row justify-center gap-15 items-end mt-12">
+                                    <Button className="w-30 h-10 bg-[#c2e7ff] border hover:scale-110"
+                                        onPress={ async () => {
+                                            try {
+                                                const reqBody = {
+                                                    "request_id": selectedCancelRequest
+                                                }
+    
+                                                await apiClient.post("v1/request/cancel", reqBody)
+                                                await loadRequests()
+                                                showToast("ยกเลิกคำร้องสำเร็จ!", "success")
+                                                setShowModal(false)
+                                            } catch (error) {
+                                                showToast("เกิดข้อผิดพลาด กรุณาลองใหม่ภายหลัง", "error")
+                                            }
+                                        }}
+                                    >
+                                        แน่ใจ!
+                                    </Button>
+                                    <Button className="w-30 h-10 bg-transparent border hover:scale-110"
+                                        onPress={() => setShowModal(false)}
+                                    >
+                                        กลับไปทบทวน
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </main>
