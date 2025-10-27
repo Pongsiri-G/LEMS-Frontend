@@ -90,7 +90,7 @@ export default function RequestPage() {
                 <div className="flex flex-col justify-start w-full items-center gap-10 mt-5">
                     <div className="flex flex-col justify-start justify-items-center sm:justify-items-start items-center sm:items-start text-center gap-5 ">
                         <h3 className="text-3xl sm:text-3xl md:text-4xl font-bold">
-                            <span className="">ระบบคำร้อง </span>
+                            <span className="">ระบบคำร้องและแบบฟอร์ม</span>
                         </h3>
                     </div>
                     <div className="flex flex-row w-full items-end justify-end gap-3">
