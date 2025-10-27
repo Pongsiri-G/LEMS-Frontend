@@ -4,13 +4,14 @@ import { Button } from "@heroui/button";
 import { Modal, ModalContent, ModalBody, ModalHeader } from "@heroui/modal";
 import { Input } from "@heroui/input";
 import { useState } from "react";
-import {  Tag } from "lucide-react";
+import { Tag } from "lucide-react";
 import { SketchPicker, ColorResult } from 'react-color';
+import { apiClient } from "@/src/services/apiClient";
 
 interface ColorPickerPopupProps {
   isOpen: boolean;
   onOpenChange: () => void;
-  onTagCreated?: (tag: string, color?: string) => void;
+  onTagCreated?: (tag: string, color: string, id: string) => void;
 }
 
 export default function ColorPickerPopup(props: ColorPickerPopupProps) {
@@ -27,9 +28,9 @@ export default function ColorPickerPopup(props: ColorPickerPopupProps) {
     setPreviewTag(value);
   };
 
-  const handleCreateTag = () => {
+  const handleCreateTag = async () => {
     if (tagName.trim()) {
-      props.onTagCreated?.(tagName.trim(), selectedColor);
+      props.onTagCreated?.(tagName.trim(), selectedColor, "");
       setTagName("");
       setPreviewTag("");
       setSelectedColor("#3B82F6");
@@ -80,11 +81,11 @@ export default function ColorPickerPopup(props: ColorPickerPopupProps) {
                         ]}
                       />
                     </div>
-                    
+
                     {/* Color Preview */}
                     <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
                       <span className="text-sm font-semibold text-gray-700">สีที่เลือก:</span>
-                      <div 
+                      <div
                         className="w-8 h-8 rounded-full border-3 border-white shadow-lg ring-2 ring-gray-100"
                         style={{ backgroundColor: selectedColor }}
                       />
@@ -116,11 +117,11 @@ export default function ColorPickerPopup(props: ColorPickerPopupProps) {
                       <div className="flex items-center justify-center gap-3 p-6 bg-gray-50 rounded-xl min-h-[80px] border border-gray-200">
                         {previewTag ? (
                           <div className="flex items-center gap-3">
-                            <div 
+                            <div
                               className="w-4 h-4 rounded-full shadow-sm"
                               style={{ backgroundColor: selectedColor }}
                             />
-                            <span 
+                            <span
                               className="px-4 py-2 rounded-full text-sm font-semibold text-white shadow-lg transform hover:scale-105 transition-transform"
                               style={{ backgroundColor: selectedColor }}
                             >

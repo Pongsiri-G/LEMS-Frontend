@@ -1,63 +1,57 @@
 "use client"
 import BackButton from "@/src/components/BackButton";
 import MovingCloudBG from "@/src/components/MovingCloudBG";
-import { Button, getKeyValue, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
-const rows = [
-  {
-    log_id: "1",
-    user_id: "Tony Reichert",
-    log_type: "CEO",
-    log_message: "Active",
-    created_at: "Active",
-  },
-  {
-    log_id: "2",
-    user_id: "Tony Reichert",
-    log_type: "CEO",
-    log_message: "Active",
-    created_at: "Active",
-  },
-  {
-    log_id: "3",
-    user_id: "Tony Reichert",
-    log_type: "CEO",
-    log_message: "Active",
-    created_at: "Active",
-  },
-  {
-    log_id: "4",
-    user_id: "Tony Reichert",
-    log_type: "CEO",
-    log_message: "Active",
-    created_at: "Active",
-  },
-];
+import { apiClient } from "@/src/services/apiClient";
+import { BorrowLog } from "@/src/types/borrow-log";
+import { formatThaiDate } from "@/src/utils/FormatDate";
+import { getKeyValue, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
+import { useEffect, useState } from "react";
 
 const columns = [
   {
-    key: "log_id",
-    label: "Log ID",
+    key: "borrowID",
+    label: "รหัสการยืม",
   },
   {
-    key: "user_id",
-    label: "User ID",
+    key: "itemName",
+    label: "ชื่อสิ่งของ",
   },
   {
-    key: "log_type",
-    label: "Log Type",
+    key: "borrowDate",
+    label: "วันที่ยืม",
   },
   {
-    key: "log_message",
-    label: "Log message",
+    key: "returnDate",
+    label: "วันที่คืน",
   },
   {
-    key: "created_at",
-    label: "Create at",
+    key: "borrowStatus",
+    label: "สถานะการยืม",
   },
 ];
 export default function BorrowHistory() {
+  const [borrowLog, setBorrowLog] = useState<BorrowLog[]>([])
+
+  const fetchBorrowLog = async () => {
+    const res = await apiClient.get("/v1/borrow/user")
+    const data = res.data
+    const borrowData: BorrowLog[] = res.data.map((element: any) => {
+      return {
+        borrowID: element["borrow_id"],
+        itemName: element["item_name"],
+        borrowDate: formatThaiDate(element["borrow_date"]),
+        returnDate: formatThaiDate(element["return_date"]),
+        borrowStatus: element["borrow_status"],
+      }
+    })
+    console.log(borrowData)
+    setBorrowLog(borrowData)
+  }
+
+  useEffect(() => {
+    fetchBorrowLog()
+  }, [])
+
   return <>
     <main className="flex flex-col justify-start items-center gap-10 mt-5 pt-5">
       <div className="relative !gap !mt w-full flex flex-col justify-center items-center">
@@ -78,10 +72,10 @@ export default function BorrowHistory() {
                 ))}
               </TableHeader>
               <TableBody
-                items={rows}
-                emptyContent={"No logs to display."}>
+                items={borrowLog}
+                emptyContent={"ไม่มีประวัติที่สามารถแสดงได้."}>
                 {(item) => (
-                  <TableRow key={item.log_id} className="hover:bg-neutral-100 transition-all cursor-default rounded-xl">
+                  <TableRow key={item.borrowID} className="hover:bg-neutral-100 transition-all cursor-default rounded-xl">
                     {(columnKey) => <TableCell className="text-md">{getKeyValue(item, columnKey)}</TableCell>}
                   </TableRow>
                 )}

@@ -9,20 +9,21 @@ import { fetchItemDetail } from "@/src/utils/itemUtils";
 import BackButton from "@/src/components/BackButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
+import { Item } from "@/src/types/item";
 
 export default function Home() {
-    const [itemDetail, setItemDetail] = useState<Item[]>()
+  const [itemDetail, setItemDetail] = useState<Item[]>()
 
 
-  
-    const fetchItem = async (name: string, tag:string, status:string) => {
-      const items = await fetchItemDetail(name, tag, status, "borrowed");
-      setItemDetail(items);
-    }
-  
-    useEffect(() => {
-      fetchItem("", "", "")
-    }, [])
+
+  const fetchItem = async (name: string, tag: string, status: string) => {
+    const items = await fetchItemDetail(name, tag, status, "borrowed");
+    setItemDetail(items);
+  }
+
+  useEffect(() => {
+    fetchItem("", "", "")
+  }, [])
   return (
     <main className="flex flex-col justify-start items-start gap-10 mt-5 pt-5">
       <MovingCloudBG />
@@ -39,7 +40,7 @@ export default function Home() {
             </h3>
           </div>
 
-          <SearchBar onSearch={({name, tag, status}) => fetchItem(name ?? "", tag ?? "", status ?? "")}>
+          <SearchBar onSearch={({ name, tag, status }) => fetchItem(name ?? "", tag ?? "", status ?? "")}>
           </SearchBar>
           {itemDetail?.length === 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
@@ -47,13 +48,13 @@ export default function Home() {
               <div className="flex flex-col justify-center items-center gap-5 col-span-1 sm:col-span-2 lg:col-span-3 z-10">
                 <img
                   src="/images/item_not_found.png"
-                  alt="No items found" 
+                  alt="No items found"
                   width={500}
-                  height={500} 
-                  ></img>
+                  height={500}
+                ></img>
               </div>
-              </div>
-              )
+            </div>
+          )
           }
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-25 pb-10 items-center">
             {itemDetail?.map((e, index) => (
@@ -64,7 +65,7 @@ export default function Home() {
                 name={e.itemName}
                 amount={e.itemQuantity}
                 status={e.itemStatus}
-                isBorrow={true}
+                prePage="my-borrow"
                 borrowID={"haha"}
               />
             ))}

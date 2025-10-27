@@ -7,14 +7,16 @@ import { AxiosResponse } from "axios";
 
 type UserButtonProps = {
   children?: ReactNode;
+  rightChildren? : ReactNode
 };
 
 type SearchBarProps = UserButtonProps & {
   onSearch?: (params: {name?: string, tag?:string, status?:string}) => void;
   noFilter?: boolean
+  wrap?: boolean
 };
 
-export default function SearchBar({ children, onSearch, noFilter }: SearchBarProps) {
+export default function SearchBar({ children, onSearch, noFilter, rightChildren, wrap }: SearchBarProps) {
     const [query, setQuery] = useState("");
     const [selected, setSelected] = useState<string>("All");
     const [selectedTags, setSelectedTags] = useState(new Set(["All"]));
@@ -100,18 +102,19 @@ export default function SearchBar({ children, onSearch, noFilter }: SearchBarPro
             {children ?? null}
           </div>
           
-          <div className="relative w-[700px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-            <input
-              type="text"
-              placeholder="ค้นหา..."
-              className="w-full h-12 pl-10 pr-4 border rounded-full text-start outline-none border-neutral-300 focus:border-neutral bg-background"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
-
-          {!noFilter &&(<div className="flex justify-end gap-5">
+          <div className="relative w-[700px] flex flex-col">
+            <div className=" relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+              <input
+                type="text"
+                placeholder="ค้นหา..."
+                className="w-full h-12 pl-10 pr-4 border rounded-full text-start outline-none border-neutral-300 focus:border-neutral bg-background"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </div>
+            {rightChildren && 
+            <div className="flex justify-center gap-5 mt-3">
 
                 <Dropdown className="hover:scale-95">
                   <DropdownTrigger>
@@ -158,7 +161,64 @@ export default function SearchBar({ children, onSearch, noFilter }: SearchBarPro
                 <DropdownItem key="In-Lab Only">In-Lab Only </DropdownItem>
               </DropdownMenu>
             </Dropdown>
-          </div>)}
+          </div>
+            }
+          </div>
+            { rightChildren &&
+              <div className="flex justify-start">
+                {rightChildren ?? null}
+              </div>
+            }
+          {!noFilter && !rightChildren &&(
+            <div className="flex justify-end gap-5 ">
+
+                <Dropdown className="hover:scale-95">
+                  <DropdownTrigger>
+                    <Button className="flex capitalize w-50 bg-white whitespace-normal h-10 overflow-hidden text-left" variant="bordered">
+                      <span className="font-bold">Tag:</span>
+                      <span className="truncate">{selectedTagsString.replaceAll(",", ", ")}</span>
+                      
+                    </Button>
+                  </DropdownTrigger>
+
+                  <DropdownMenu
+                    aria-label="Multiple selection with checkboxes"
+                    variant="shadow"
+                    closeOnSelect={false}        
+                    selectionMode="multiple"     
+                    selectedKeys={selectedTags}
+                    onSelectionChange={onSelectTag}
+                    className="overflow-auto max-h-40"
+                  >
+                    {allTags!.map((tag) => (
+                      <DropdownItem key={tag}>{tag}</DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </Dropdown>
+
+              <Dropdown className="hover:scale-95">
+              <DropdownTrigger>
+                <Button className="capitalize w-35 h-10 bg-white" variant="bordered">
+                  <span className="font-bold">Status:</span>{selected}
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Single selection example"
+                selectedKeys={selected}
+                selectionMode="single"
+                variant="shadow"
+                onSelectionChange={onSelect}
+              >
+                <DropdownItem key="All" className="">All </DropdownItem>
+                <DropdownItem key="Available">Available </DropdownItem>
+                <DropdownItem key="In-use">In-Use </DropdownItem>
+                <DropdownItem key="Disappeared">Disappeared </DropdownItem>
+                <DropdownItem key="In-Lab Only">In-Lab Only </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
+        )}
         </div>
 
 
