@@ -7,6 +7,7 @@ import { Button } from "@heroui/button"
 import { getKeyValue, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react"
 import { AxiosResponse } from "axios"
 import { FilePlusIcon, FilesIcon, PaperclipIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 
@@ -66,26 +67,13 @@ const statusColor: Record<string, string> = {
 
 export default function RequestPage() {
     const [ isReady, setIsReady ] = useState(false)
-    const [ allRequest, setAllRequest ] = useState<RequestForm[]>([])
     const [ rows, setRows ] = useState<Row[]>([])
+    const router = useRouter()
 
     useEffect(() => {
         const loadRequests = async () => {
             try {
                 const response: AxiosResponse<RequestForm[]> = await apiClient.get("/v1/requests")
-                setAllRequest(response.data)
-                // let rows = [
-                //         {
-                //             id: "9999991",
-                //             status: "NEW",
-                //             create_date: "2025/09/10",
-                //             update_date: "2025/09/12",
-                //             form_type: "ของเสีย/หาย",
-                //             title: "USB Hub",
-                //             attachment: "",
-                //             owner: "นรากร ธ."
-                //         },
-                // ]
 
                 const row = response.data.map((req) => ({
                     id: req.request_id,
@@ -126,7 +114,9 @@ export default function RequestPage() {
                             <FilesIcon color="black" />
                             <span className="hidden lg:inline text-black">คำร้องของฉัน</span>
                         </Button>
-                        <Button className="w-35 h-10 bg-primary hover:scale-95">
+                        <Button className="w-35 h-10 bg-primary hover:scale-95"
+                            onPress={() => router.push("/request/create")}
+                        >
                             <FilePlusIcon color="white" />
                             <span className="hidden lg:inline text-white">เพิ่มสิ่งของ</span>
                         </Button>
