@@ -13,12 +13,16 @@ export default function ItemCard({
   name,
   status,
   amount,
+  isBorrow,
+  borrowID
 }: {
   id: string;
   image: string
   name: string;
   status: string;
   amount: number;
+  isBorrow: boolean
+  borrowID?: string 
 }) {
   const [itemTags, setItemTags] = useState<ItemTag[]>()
   const [imageURL, setImageURL] = useState<string>()
@@ -48,7 +52,7 @@ export default function ItemCard({
   const [isCardHovered, setIsCardHovered] = useState(false);
   return (
     true && (
-      <Link href={`/borrow-return/item/${id}`}>
+      <Link href={`/borrow-return/item/${id}/${isBorrow}/${borrowID}`}>
       <div className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10">
         <Card className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10 hover:scale-95 transition-all">
         <div
@@ -74,20 +78,20 @@ export default function ItemCard({
               <div className="absolute top-3 right-2 p-3 bg-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
                 จำนวน {amount}
               </div>
+              {isBorrow ?
+                <></>
+                :
+                <div className="absolute top-3 right-2 p-3 bg-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
+                  จำนวน {amount}
+                </div>
+              }
+
             </div>
           </div>
           <div className="px-5 py-3 flex flex-col gap-3">
             <p className="text-lg font-semibold h-fit">{name}</p>
             <p
-              className={`text-sm text-balance font-bold`}
-              style={{
-                color:
-                  status === "AVAILABLE"
-                    ? "rgba(28,172,110,1)"
-                    : status === "DISAPPEARED"
-                      ? "rgba(245,54,92,1)"
-                      : "rgb(0,109,165)",
-              }}
+              className={`text-sm text-balance font-bold ${status === "AVAILABLE" ? "text-success" : "text-error"}`}
             >
               {(status[0] + status.slice(1).toLowerCase())}
             </p>

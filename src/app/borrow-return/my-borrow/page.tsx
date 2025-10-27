@@ -7,6 +7,8 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchItemDetail } from "@/src/utils/itemUtils";
 import BackButton from "@/src/components/BackButton";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/store";
 
 export default function Home() {
     const [itemDetail, setItemDetail] = useState<Item[]>()
@@ -54,14 +56,16 @@ export default function Home() {
               )
           }
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-25 pb-10 items-center">
-            {itemDetail?.map((index) => (
+            {itemDetail?.map((e, index) => (
               <ItemCard
-                key={index.itemID}
-                id={index.itemID}
-                image={index.itemPictureURL}
-                name={index.itemName}
-                amount={index.itemQuantity}
-                status={index.itemStatus}
+                key={index}
+                id={e.itemID}
+                image={e.itemPictureURL}
+                name={e.itemName}
+                amount={e.itemQuantity}
+                status={e.itemStatus}
+                isBorrow={true}
+                borrowID={"haha"}
               />
             ))}
           </div>

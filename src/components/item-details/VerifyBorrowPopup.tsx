@@ -4,15 +4,37 @@ import clsx from "clsx";
 import { Paperclip, Upload, X } from "lucide-react";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/react";
+import { apiClient } from "@/src/services/apiClient";
+import { useToast } from "@/src/hook/ToastContext";
 
 interface VerifyBorrowPopup {
   isOpen: boolean
   closePopup: () => void
   itemName: string | undefined
+  itemID: string | undefined
   itemChild: Item[] | undefined
 }
 
-export default function VerifyBorrowPopup({ isOpen, closePopup, itemName, itemChild }: VerifyBorrowPopup) {
+export default function VerifyBorrowPopup({ isOpen, closePopup, itemName, itemID, itemChild }: VerifyBorrowPopup) {
+  const { showToast } = useToast()
+
+  const handdleBorrowItem = async () => {
+    console.log({ ItemID: itemID })
+    try {
+      if (itemID !== undefined) {
+        const res = await apiClient.post("/v1/borrow", {
+          item_id: itemID
+        })
+        console.log(res.data)
+        showToast(`ยืม ${itemName} สำเร็จ`, "success")
+      }
+    } catch (e: any) {
+      showToast(e.response.data.message, "error")
+    } finally {
+      closePopup()
+    }
+  }
+
   return <>
     <div className={clsx("bg-foreground/35 fixed top-0 bottom-0 left-0 right-0 flex justify-center items-center z-30 transition-all", {
       "opacity-0 pointer-events-none": !isOpen
@@ -49,7 +71,7 @@ export default function VerifyBorrowPopup({ isOpen, closePopup, itemName, itemCh
         </div>
         <div className="w-full max-w-[500px] flex gap-5">
           <Button className="bg-primary text-white flex-1 hover:scale-95 active:scale-100 transition-all" onClick={() => { }} onPress={() => {
-            closePopup()
+            handdleBorrowItem()
           }}>
             <p>ยืนยัน</p>
           </Button>

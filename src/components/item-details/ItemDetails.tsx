@@ -12,7 +12,6 @@ import VerifyBorrowPopup from "./VerifyBorrowPopup";
 // import { fs } from "node:fs"; // Removed because 'fs' is not available in the browser
 
 export default function ItemDetails() {
-  const [isBorrow, setIsBorrow] = useState(false)
   const [returnPopupOpen, setReturnPopupOpen] = useState(false)
   const [verifyPopupOpen, setVerifyPopupOpen] = useState(false)
   const [itemDetail, setItemDetail] = useState<Item>()
@@ -23,6 +22,9 @@ export default function ItemDetails() {
 
   const param = useParams();
   const id = param.id;
+  const isBorrow = param.isborrow === "true"
+  const borrowID = param.borrowid
+  console.log(borrowID)
 
   const fetchImage = async (imageURL: string): Promise<string> => {
     const url = `/v1/image`
@@ -61,6 +63,7 @@ export default function ItemDetails() {
       createdAt: new Date(data["created_at"]),
       updatedAt: new Date(data["updated_at"])
     }
+    console.log(item)
     setImageURL(await fetchImage(item.itemPictureURL))
 
     setItemDetail(item)
@@ -105,20 +108,21 @@ export default function ItemDetails() {
 
   return <>
     <Card className="flex flex-col 2xl:flex-row gap-4 my-10 relative z-0 p-10">
-      <VerifyBorrowPopup isOpen={verifyPopupOpen} closePopup={() => { setVerifyPopupOpen(false) }} itemName={itemDetail?.itemName} itemChild={childItems} />
-      <ReturnItemPopup isOpen={returnPopupOpen} closePopup={() => { setReturnPopupOpen(false) }} />
+      <VerifyBorrowPopup isOpen={verifyPopupOpen} closePopup={() => { setVerifyPopupOpen(false) }} itemName={itemDetail?.itemName} itemChild={childItems} itemID={itemDetail?.itemID} />
+      <ReturnItemPopup isOpen={returnPopupOpen} closePopup={() => { setReturnPopupOpen(false) }} borrowID={String(borrowID)}/>
       <div className="fixed right-0 top-1/2 -translate-y-1/2 flex flex-col gap-3.5 translate-x-[195px]">
-        <button className="rounded-full bg-primary p-3 flex gap-4 text-white  hover:-translate-x-[165px] transition-all cursor-pointer active:scale-95 active:opacity-90">
+        {/* <button className="rounded-full bg-primary p-3 flex gap-4 text-white  hover:-translate-x-[165px] transition-all cursor-pointer active:scale-95 active:opacity-90">
           <NotebookTabs className="stroke-white" />
           <p className="select-none">ดูรายละเอียดอุปกรณ์</p>
-        </button>
+        </button> */}
         <button className="rounded-full bg-primary p-3 pr-10 flex gap-4 text-white hover:-translate-x-[165px] transition-all cursor-pointer active:scale-95 active:opacity-90">
           <Bell className="stroke-white" />
           <p className="select-none">แจ้งเตือนเมื่อพร้อมให้ยืม</p>
         </button>
-        <button className={clsx("rounded-full p-3 flex gap-4 text-white hover:-translate-x-[165px] transition-all cursor-pointer active:scale-95 active:opacity-90", {
-          "bg-primary": !isBorrow,
-          "bg-error": isBorrow
+        <button disabled={itemDetail?.itemStatus === "UNAVAILABLE"} className={clsx("rounded-full p-3 flex gap-4 text-white hover:-translate-x-[165px] transition-all  ", {
+          "bg-error cursor-pointer active:scale-95 active:opacity-90": isBorrow,
+          "bg-neutral": itemDetail?.itemStatus === "UNAVAILABLE" && !isBorrow,
+          "bg-primary cursor-pointer active:scale-95 active:opacity-90": itemDetail?.itemStatus === "AVAILABLE" && !isBorrow
         })} onClick={() => {
           if (isBorrow) {
             setReturnPopupOpen(true)
@@ -126,14 +130,17 @@ export default function ItemDetails() {
             setVerifyPopupOpen(true)
           }
         }}>
-          {isBorrow ? <>
-            <PackageOpen className="stroke-white" />
-            <p className="select-none">คืนของชิ้นนี้</p>
-          </> :
+          {isBorrow ?
+            <>
+              <PackageOpen className="stroke-white" />
+              <p className="select-none">คืนของชิ้นนี้</p>
+            </>
+            :
             <>
               <Package className="stroke-white" />
               <p className="select-none">ยืมของชิ้นนี้</p>
-            </>}
+            </>
+          }
         </button>
       </div>
       {/* <div className="flex 2xl:flex-col flex-row gap-4 overflow-y-auto scrollbar-hide max-h-[500px]">
@@ -183,7 +190,10 @@ export default function ItemDetails() {
           <div className="flex md:flex-row flex-col gap-10">
             <div className="flex gap-3 flex-col justify-center">
               <p className="text-neutral">สถานะ: </p>
-              <p className="font-bold py-2 px-4 rounded-full bg-success text-white w-fit">{itemDetail?.itemStatus}</p>
+              <p className={clsx("font-bold py-2 px-4 rounded-full  text-white w-fit", {
+                "bg-error": itemDetail?.itemStatus === "UNAVAILABLE",
+                "bg-success": itemDetail?.itemStatus === "AVAILABLE",
+              })}>{itemDetail?.itemStatus}</p>
             </div>
             <div className="flex flex-col gap-3 flex-1 ">
               <p className="text-neutral">Tag: </p>
