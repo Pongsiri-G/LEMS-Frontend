@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { fetchItemDetail } from "@/src/utils/itemUtils";
 import { useRoleGuard } from "@/src/hook/useRoleGuard";
+import { Item } from "@/src/types/item";
 
 export default function Home() {
 
@@ -89,7 +90,7 @@ export default function Home() {
                 name={index.itemName}
                 amount={index.itemQuantity}
                 status={index.itemStatus}
-                isBorrow={false}
+                prePage={"borrow-return"}
               />
             ))}
           </div>

@@ -5,6 +5,8 @@ import { Paperclip, Upload, X } from "lucide-react";
 import { Button } from "@heroui/button";
 import { useToast } from "@/src/hook/ToastContext";
 import { apiClient } from "@/src/services/apiClient";
+import { headers } from "next/headers";
+import { useRouter } from "next/navigation";
 
 interface EditPopupProps {
   isOpen: boolean
@@ -14,21 +16,33 @@ interface EditPopupProps {
 
 export default function ReturnItemPopup({ isOpen, closePopup, borrowID }: EditPopupProps) {
   const [imageUrl, setImageUrl] = useState("")
+  const [file, setFile] = useState<File | null>(null)
   const [dragFile, setDragFile] = useState(false)
   const { showToast } = useToast()
-  console.log("INSIDE: ", borrowID)
+  const router = useRouter()
 
   const handdleReturn = async () => {
     try {
-      if (imageUrl.trim() === "") {
+      if (imageUrl.trim() === "" || file === null) {
         showToast("กรุณาอัปโหลดภาพการคืนสิ่งของก่อนคืนของ", "error")
       } else {
-        const res = await apiClient.post("/v1/borrow/return", {
-          borrow_id: borrowID
+        const formData = new FormData()
+        formData.append("file", file)
+        const uploadImage = await apiClient.post("/v1/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          }
         })
+        const imageURL = uploadImage.data.url
+
+        const res = await apiClient.post("/v1/borrow/return", {
+          borrow_id: borrowID,
+          image_url: imageURL
+        })
+
         showToast(`คืนสำเร็จ`, "success")
-        console.log(res.data)
         closePopup()
+        router.replace("/borrow-return/my-borrow")
       }
     } catch (e: any) {
       showToast(e.response.data.message, "error")
@@ -41,6 +55,7 @@ export default function ReturnItemPopup({ isOpen, closePopup, borrowID }: EditPo
     if (event.target.files != null) {
       const file = event.target.files[0]
       if (file) {
+        setFile(file)
         setImageUrl(URL.createObjectURL(file))
         console.log(URL.createObjectURL(file))
       }

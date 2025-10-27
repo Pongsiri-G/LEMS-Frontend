@@ -6,6 +6,8 @@ import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { apiClient } from "@/src/services/apiClient";
 import { useToast } from "@/src/hook/ToastContext";
+import { useRouter } from "next/navigation";
+import { Item } from "@/src/types/item";
 
 interface VerifyBorrowPopup {
   isOpen: boolean
@@ -17,6 +19,7 @@ interface VerifyBorrowPopup {
 
 export default function VerifyBorrowPopup({ isOpen, closePopup, itemName, itemID, itemChild }: VerifyBorrowPopup) {
   const { showToast } = useToast()
+  const router = useRouter()
 
   const handdleBorrowItem = async () => {
     console.log({ ItemID: itemID })
@@ -27,6 +30,7 @@ export default function VerifyBorrowPopup({ isOpen, closePopup, itemName, itemID
         })
         console.log(res.data)
         showToast(`ยืม ${itemName} สำเร็จ`, "success")
+        router.replace("/borrow-return")
       }
     } catch (e: any) {
       showToast(e.response.data.message, "error")

@@ -1,4 +1,5 @@
 import { apiClient } from "../services/apiClient";
+import { Item } from "../types/item";
 
 export const fetchItemDetail = async (name: string, tag:string, status:string, borrowed?: string) => {
     const query = name || tag || status || borrowed
