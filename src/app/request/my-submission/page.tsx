@@ -101,7 +101,7 @@ export default function MySubmission() {
     return (
     <ProtectedRoute>
         <main className="flex flex-col justify-start items-center gap-10 pt-5 mt-5">
-            <div className="relative !gap !mt w-full flex flex-col justify-start items-center max-w-[1500px]">
+            <div className="relative !gap !mt w-full flex flex-col justify-start items-center max-w-[1500px] md:max-w-[1300px]">
                 <MovingCloudBG />
                 <div className="flex flex-col justify-start w-full items-center gap-10 mt-5">
                     <div className="flex flex-col justify-start justify-items-center sm:justify-items-start items-center sm:items-start text-center gap-5">

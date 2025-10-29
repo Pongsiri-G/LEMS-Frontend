@@ -53,7 +53,7 @@ export default function Home() {
               >
                 <div className="flex justify-center items-center gap-3">
                   <BookCheck />
-                  <p className="">การยืมของฉัน</p>
+                  <p className="sm:text-[14px]">การยืมของฉัน</p>
                 </div>
               </Link>
               <Link
@@ -62,7 +62,7 @@ export default function Home() {
               >
                 <div className="p-3 rounded-full bg-primary flex items-center justify-center hover:scale-90 transition-all h-12 w-40 active:scale-100 text-white w-fit gap-3">
                   <History />
-                  <p className="">ตรวจสอบประวัติการยืม</p>
+                  <p className="sm:text-[14px]">ตรวจสอบประวัติการยืม</p>
                 </div>
               </Link>
             </div>

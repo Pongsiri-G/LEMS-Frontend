@@ -102,7 +102,7 @@ export default function SearchBar({ children, onSearch, noFilter, rightChildren,
             {children ?? null}
           </div>
           
-          <div className="relative w-[700px] flex flex-col">
+          <div className="relative w-[700px] sm:w-[550px] flex flex-col">
             <div className=" relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <input
