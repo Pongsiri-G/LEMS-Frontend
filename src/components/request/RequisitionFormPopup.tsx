@@ -76,19 +76,19 @@ export default function RequisitionFormPopup({status, onClose}: FormPopupProps) 
 
     return <div className="fixed inset-0 bg-black/75 flex justify-center items-center z-20 transition-all">
         <div className="flex justify-center items-center w-full h-full px-30 pt-3 pb-3">
-            <div className="bg-white rounded-2xl w-full h-full justify-center items-center p-5 py-3">
+            <div className="bg-white rounded-2xl w-full h-full justify-center items-center p-5 py-3 overflow-auto">
                 <div className="flex justify-end items-start">
                     <CircleXIcon className="text-black hover:scale-120 hover:text-[#d6665e] cursor-pointer transition-all" onClick={onClose}></CircleXIcon>
                 </div>
                 <p className="text-[20px] sm:text-[20px] md:text-[24px] font-bold flex justify-center">ใบเบิกของ</p>
                 <div className="flex flex-col gap-4 px-15">
-                    <div className="flex flex-row gap-15 mt-3">
+                    <div className="flex flex-row gap-15 mt-3 flex-wrap">
                         <div className="flex flex-col">
                             <span className="text-[16px]">
                                 ชื่อสิ่งของ
                                 <span className="text-[#d13f3f]">*</span>
                             </span>
-                            <Input className="w-150"
+                            <Input className="w-150 sm:w-70"
                                 placeholder="GPU สุดแรงสุดเท่"
                                 value={itemNameInput}
                                 onChange={(e) => {
@@ -109,7 +109,7 @@ export default function RequisitionFormPopup({status, onClose}: FormPopupProps) 
                                 ประเภทสิ่งของ
                                 <span className="text-[#d13f3f]">*</span>
                             </span>
-                            <Input className="w-80"
+                            <Input className="w-80 sm:w-50"
                                 placeholder="Electronics, Furniture, ..."
                                 value={itemTypeInput}
                                 onChange={(e) => {
@@ -225,11 +225,11 @@ export default function RequisitionFormPopup({status, onClose}: FormPopupProps) 
                         </Textarea>
                     </div>
                     <div className="flex items-center justify-center">
-                        <div className="flex flex-col relative items-center justify-center gap-2 w-100 h-100">
+                        <div className="flex flex-col relative items-center justify-center gap-2 w-100 h-100 sm:h-65 sm:w-65">
                             <p>ตัวอย่างภาพของที่ต้องการเบิก</p>
                         <div
                             onClick={handleClickUpload}
-                            className="h-90 w-90 border-3 border-dashed border-gray-500 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+                            className="h-90 w-90 sm:h-60 sm:w-60 border-3 border-dashed border-gray-500 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
                         >
                             {selectedImage ? (
                             <img

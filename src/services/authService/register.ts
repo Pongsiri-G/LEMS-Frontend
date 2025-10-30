@@ -12,7 +12,7 @@ export const register = async ({
     phone: string;
 }) => {
     try {
-        const res = await apiClient.post("v1/auth/register", {
+        const res = await apiClient.post("v1/user/register", {
             full_name,
             email,
             password,
