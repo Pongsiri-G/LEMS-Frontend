@@ -2,6 +2,7 @@
 
 import MovingCloudBG from "@/src/components/MovingCloudBG"
 import ProtectedRoute from "@/src/components/ProtectedRoute"
+import FormDetailPopup from "@/src/components/request/FormDetailPopup"
 import { apiClient } from "@/src/services/apiClient"
 import { Button } from "@heroui/button"
 import { getKeyValue, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react"
@@ -69,31 +70,36 @@ const statusColor: Record<string, string> = {
 export default function RequestPage() {
     const [ isReady, setIsReady ] = useState(false)
     const [ rows, setRows ] = useState<Row[]>([])
+    const [ requests, setRequests ] = useState<RequestForm[]>([])
+    const [ showRequestDetailModal, setShowRequestDetailModal ] = useState(false)
+    const [ reqToShow, setReqToShow ] = useState<RequestForm>()
     const router = useRouter()
 
-    useEffect(() => {
-        const loadRequests = async () => {
-            try {
-                const response: AxiosResponse<RequestForm[]> = await apiClient.get("/v1/requests")
+    const loadRequests = async () => {
+        try {
+            const response: AxiosResponse<RequestForm[]> = await apiClient.get("/v1/requests")
 
-                const row = response.data.map((req) => ({
-                    id: req.request_id,
-                    status: req.request_status,
-                    create_date: req.created_date,
-                    update_date: req.updated_date,
-                    form_type: req.request_type === "LOST" ? "ของเสีย/หาย" : "เบิกของ",
-                    title: req.request_item_name,
-                    attachment: req.request_image_url !== "" ? "yes" : "",
-                    owner: req.created_by
-                }))
+            const row = response.data.map((req) => ({
+                id: req.request_id,
+                status: req.request_status,
+                create_date: req.created_date,
+                update_date: req.updated_date,
+                form_type: req.request_type === "LOST" ? "ของเสีย/หาย" : "เบิกของ",
+                title: req.request_item_name,
+                attachment: req.request_image_url !== "" ? "yes" : "",
+                owner: req.created_by
+            }))
 
-                setRows(row)
-                setIsReady(true)
-            } catch(error) {
-                console.log(error)
-            }
-            
+            setRows(row)
+            setRequests(response.data)
+            setIsReady(true)
+        } catch(error) {
+            console.log(error)
         }
+        
+    }
+    
+    useEffect(() => {
         loadRequests()
     }, [])
 
@@ -102,7 +108,7 @@ export default function RequestPage() {
     return (
     <ProtectedRoute>
         <main className="flex flex-col justify-start items-center gap-10 pt-5 mt-5">
-            <div className="relative !gap !mt w-full flex flex-col justify-start items-center max-w-[1500px]">
+            <div className="relative !gap !mt w-full flex flex-col justify-start items-center max-w-[1500px] md:max-w-[1300px]">
                 <MovingCloudBG />
                 <div className="flex flex-col justify-start w-full items-center gap-10 mt-5">
                     <div className="flex flex-col justify-start justify-items-center sm:justify-items-start items-center sm:items-start text-center gap-5 ">
@@ -135,7 +141,13 @@ export default function RequestPage() {
                                 emptyContent={"Nothing to display."}>
                                 {(item) => (
                                     <TableRow key={item.id} className="hover:bg-neutral-100 transition-all cursor-default rounded-xl">
-                                        {(columnKey) => <TableCell className="text-md">{
+                                        {(columnKey) => <TableCell className="text-md  cursor-pointer" onClick={() => {
+                                            const selectedReq = requests.find((req) => req.request_id === item.id)
+                                            if (selectedReq) {
+                                                setReqToShow(selectedReq)
+                                                setShowRequestDetailModal(true)
+                                            }
+                                        }}>{
                                             columnKey === "attachment" && item.attachment === "yes" ? (
                                                 <div className="flex border border-[#3d9ae2] rounded-full bg-[#bddbff] w-8 h-8 items-center justify-center">
                                                     <PaperclipIcon className="inline-block text-[#3d9ae2]" />
@@ -160,6 +172,12 @@ export default function RequestPage() {
                             </TableBody>
                         </Table>
                 </div>
+                {showRequestDetailModal && <FormDetailPopup onClose={()=>{ setShowRequestDetailModal(false) }} 
+                onSuccess={async () => {
+                    setIsReady(false)
+                    await loadRequests()
+                }}
+                req={reqToShow!}></FormDetailPopup>}
             </div>
         </main>
     </ProtectedRoute>

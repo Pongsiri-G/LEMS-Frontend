@@ -3,12 +3,14 @@
 import BackButton from "@/src/components/BackButton"
 import MovingCloudBG from "@/src/components/MovingCloudBG"
 import ProtectedRoute from "@/src/components/ProtectedRoute"
+import FormDetailPopup from "@/src/components/request/FormDetailPopup"
 import { useToast } from "@/src/hook/ToastContext"
 import { apiClient } from "@/src/services/apiClient"
 import { Button } from "@heroui/button"
 import { getKeyValue, TableBody, TableCell, TableColumn, TableHeader, TableRow, Table } from "@heroui/react"
 import { AxiosResponse } from "axios"
 import { PaperclipIcon, TriangleAlertIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 const columns = [
@@ -68,6 +70,9 @@ export default function MySubmission() {
     const [ rows, setRows ] = useState<Row[]>([])
     const [ showModal, setShowModal ] = useState(false)
     const [ selectedCancelRequest, setSelectedCancelRequest ] = useState("")
+    const [ requests, setRequests ] = useState<RequestForm[]>([])
+    const [ showRequestDetailModal, setShowRequestDetailModal ] = useState(false)
+    const [ reqToShow, setReqToShow ] = useState<RequestForm>()
     const {showToast} = useToast()
 
     const loadRequests = async () => {
@@ -86,6 +91,7 @@ export default function MySubmission() {
             }))
 
             setRows(row)
+            setRequests(response.data)
             setIsReady(true)
         } catch(error) {
             console.log(error)
@@ -101,7 +107,7 @@ export default function MySubmission() {
     return (
     <ProtectedRoute>
         <main className="flex flex-col justify-start items-center gap-10 pt-5 mt-5">
-            <div className="relative !gap !mt w-full flex flex-col justify-start items-center max-w-[1500px]">
+            <div className="relative !gap !mt w-full flex flex-col justify-start items-center max-w-[1500px] md:max-w-[1300px]">
                 <MovingCloudBG />
                 <div className="flex flex-col justify-start w-full items-center gap-10 mt-5">
                     <div className="flex flex-col justify-start justify-items-center sm:justify-items-start items-center sm:items-start text-center gap-5">
@@ -124,7 +130,13 @@ export default function MySubmission() {
                             emptyContent={"Nothing to display."}>
                             {(item) => (
                                 <TableRow key={item.id} className="hover:bg-neutral-100 transition-all cursor-default rounded-xl">
-                                    {(columnKey) => <TableCell className="text-md">{
+                                    {(columnKey) => <TableCell className={`text-md ${columnKey != "cancel" ? "cursor-pointer" : ""}`}onClick={() => {
+                                            const selectedReq = requests.find((req) => req.request_id === item.id)
+                                            if (selectedReq) {
+                                                setReqToShow(selectedReq)
+                                                setShowRequestDetailModal(true)
+                                            }
+                                        }}>{
                                         columnKey === "attachment" && item.attachment === "yes" ? (
                                             <div className="flex border border-[#3d9ae2] rounded-full bg-[#bddbff] w-8 h-8 items-center justify-center">
                                                 <PaperclipIcon className="inline-block text-[#3d9ae2]" />
@@ -139,9 +151,10 @@ export default function MySubmission() {
                                                 >
                                                     {item.status}
                                                 </span>
-                                            ) : columnKey === "cancel" && item.status != "CANCELED" ?
+                                            ) : columnKey === "cancel" && (item.status == "NEW" || item.status == "PENDING") ?
                                             <div className="cursor-pointer text-[#f5365c]"
-                                                onClick={() => {
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
                                                     setSelectedCancelRequest(item.id)
                                                     setShowModal(true)
                                                 }}
@@ -198,6 +211,12 @@ export default function MySubmission() {
                         </div>
                     }
                 </div>
+                {showRequestDetailModal && <FormDetailPopup onClose={()=>{ setShowRequestDetailModal(false);  }} 
+                onSuccess={async () => {
+                    setIsReady(false)
+                    await loadRequests()
+                }}
+                req={reqToShow!}></FormDetailPopup>}
             </div>
         </main>
     </ProtectedRoute>
