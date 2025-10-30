@@ -77,13 +77,13 @@ export default function RepairFormPopup({status, onClose}: FormPopupProps) {
 
     return <div className="fixed inset-0 bg-black/75 flex justify-center items-center z-20 transition-all">
         <div className="flex justify-center items-center w-full h-full px-30 pt-10 pb-8">
-            <div className="bg-white rounded-2xl w-full h-full justify-center items-center p-5">
+            <div className="bg-white rounded-2xl w-full h-full justify-center items-center p-5 overflow-auto">
                 <div className="flex justify-end items-start">
                     <CircleXIcon className="text-black hover:scale-120 hover:text-[#d6665e] cursor-pointer transition-all" onClick={onClose}></CircleXIcon>
                 </div>
                 <p className="text-[20px] sm:text-[20px] md:text-[24px] font-bold flex justify-center">ใบแจ้งของเสีย/หาย</p>
                 <div className="flex flex-col gap-7 px-15">
-                    <div className="flex flex-row gap-20 mt-8">
+                    <div className="flex flex-row gap-20 mt-8 flex-wrap">
                         <div className="flex flex-col">
                             <span className="text-[16px]">
                                 เลือกสิ่งของที่ต้องการแจ้งเสียหรือหาย
@@ -91,7 +91,7 @@ export default function RepairFormPopup({status, onClose}: FormPopupProps) {
                             </span>
                             <Dropdown className="hover:scale-95">
                                 <DropdownTrigger>
-                                    <Button className="capitalize w-150 h-10 bg-white justify-start" variant="bordered">
+                                    <Button className="capitalize w-150 sm:w-75 h-10 bg-white justify-start" variant="bordered">
                                     <span className="font-bold"></span>{selected}
                                     </Button>
                                 </DropdownTrigger>
@@ -102,7 +102,7 @@ export default function RepairFormPopup({status, onClose}: FormPopupProps) {
                                     selectionMode="single"
                                     variant="shadow"
                                     onSelectionChange={onSelect}
-                                    className="w-150 overflow-auto max-h-40"
+                                    className="w-150 sm:w-75 overflow-auto max-h-40"
                                 >
                                     {item!.map((i) => (
                                         <DropdownItem key={i.itemName}>{i.itemName}</DropdownItem>
@@ -149,11 +149,11 @@ export default function RepairFormPopup({status, onClose}: FormPopupProps) {
                         </Textarea>
                     </div>
                     <div className="flex items-center justify-center">
-                        <div className="flex flex-col relative items-center justify-center gap-2 w-100 h-100">
+                        <div className="flex flex-col relative items-center justify-center gap-2 w-100 h-100 sm:w-80 sm:h-80">
                             <p>ตัวอย่างภาพของที่เสียหรือหาย</p>
                         <div
                             onClick={handleClickUpload}
-                            className="h-90 w-90 border-3 border-dashed border-gray-500 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+                            className="h-90 w-90 sm:h-70 sm:w-70 border-3 border-dashed border-gray-500 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
                         >
                             {selectedImage ? (
                             <img
