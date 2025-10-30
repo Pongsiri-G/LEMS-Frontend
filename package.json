@@ -20,13 +20,15 @@
     "clsx": "^2.1.1",
     "dotenv": "^17.2.2",
     "framer-motion": "^12.23.16",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.544.0",
     "next": "15.5.3",
     "prettier": "^3.6.2",
     "react": "19.1.0",
     "react-color": "^2.19.3",
     "react-dom": "19.1.0",
-    "react-redux": "^9.2.0"
+    "react-redux": "^9.2.0",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -35,6 +37,7 @@
     "@types/react": "^19",
     "@types/react-color": "^3.0.13",
     "@types/react-dom": "^19",
+    "@types/redux-persist": "^4.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
     "heroui-cli": "^1.2.3",

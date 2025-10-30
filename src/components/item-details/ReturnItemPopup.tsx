@@ -3,20 +3,59 @@ import { useState } from "react";
 import clsx from "clsx";
 import { Paperclip, Upload, X } from "lucide-react";
 import { Button } from "@heroui/button";
+import { useToast } from "@/src/hook/ToastContext";
+import { apiClient } from "@/src/services/apiClient";
+import { headers } from "next/headers";
+import { useRouter } from "next/navigation";
 
 interface EditPopupProps {
   isOpen: boolean
   closePopup: () => void
+  borrowID: string
 }
 
-export default function ReturnItemPopup({ isOpen, closePopup }: EditPopupProps) {
+export default function ReturnItemPopup({ isOpen, closePopup, borrowID }: EditPopupProps) {
   const [imageUrl, setImageUrl] = useState("")
+  const [file, setFile] = useState<File | null>(null)
   const [dragFile, setDragFile] = useState(false)
+  const { showToast } = useToast()
+  const router = useRouter()
+
+  const handdleReturn = async () => {
+    try {
+      if (imageUrl.trim() === "" || file === null) {
+        showToast("กรุณาอัปโหลดภาพการคืนสิ่งของก่อนคืนของ", "error")
+      } else {
+        const formData = new FormData()
+        formData.append("file", file)
+        const uploadImage = await apiClient.post("/v1/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          }
+        })
+        const imageURL = uploadImage.data.url
+
+        const res = await apiClient.post("/v1/borrow/return", {
+          borrow_id: borrowID,
+          image_url: imageURL
+        })
+
+        showToast(`คืนสำเร็จ`, "success")
+        closePopup()
+        router.replace("/borrow-return/my-borrow")
+      }
+    } catch (e: any) {
+      showToast(e.response.data.message, "error")
+      closePopup()
+    } finally {
+    }
+  }
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files != null) {
       const file = event.target.files[0]
       if (file) {
+        setFile(file)
         setImageUrl(URL.createObjectURL(file))
         console.log(URL.createObjectURL(file))
       }
@@ -89,7 +128,7 @@ export default function ReturnItemPopup({ isOpen, closePopup }: EditPopupProps) 
         </div>
         <div className="w-full max-w-[500px] flex gap-5">
           <Button className="bg-primary text-white flex-1" onClick={() => { }} onPress={() => {
-            closePopup()
+            handdleReturn()
           }}>
             <p>ยืนยัน</p>
           </Button>

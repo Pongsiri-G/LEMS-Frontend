@@ -1,6 +1,6 @@
-const userRoles = {
-    ADMIN: "admin",
-    USER: "user"
+const UserRoles = {
+    ADMIN: "ADMIN",
+    USER: "USER"
 }
 
-export { userRoles }
+export { UserRoles }

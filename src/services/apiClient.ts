@@ -4,6 +4,9 @@ import axios, {
     InternalAxiosRequestConfig,
 } from "axios";
 import config from "../configs/config";
+import { store } from "../store";
+import { jwtDecode } from "jwt-decode";
+import { setCredentials } from "../feature/authSlice";
 
 export const apiClient = axios.create({
     baseURL: `${config.publicAPI}`,
@@ -20,7 +23,8 @@ apiClient.interceptors.request.use(
         }
 
         // แนบ token ใน protected routes
-        const token = localStorage.getItem("access_token");
+        const state = store.getState() as any;
+        const token = state.auth?.accessToken;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -60,15 +64,16 @@ apiClient.interceptors.response.use(
                     timeout: 10000,
                 });
 
-                const res = await refreshClient.post("/auth/refresh", { refresh_token });
+                const res = await refreshClient.post("/v1/auth/refresh", { refresh_token });
 
-                const { access_token, refresh_token: newRefreshToken } = res.data;
+                const { access_token, user } = res.data;
                 
                 // บันทึก tokens ใหม่
-                localStorage.setItem("access_token", access_token);
-                if (newRefreshToken) {
-                    localStorage.setItem("refresh_token", newRefreshToken);
-                }
+                const { exp } = jwtDecode<{exp: number}>(access_token)
+                store.dispatch(setCredentials({ user, accessToken: access_token, expiresAt: exp * 1000 }))
+                // if (newRefreshToken) {
+                //     localStorage.setItem("refresh_token", newRefreshToken);
+                // }
 
                 console.log("✅ Token refreshed successfully");
 
