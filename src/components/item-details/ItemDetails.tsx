@@ -118,7 +118,7 @@ export default function ItemDetails() {
     <Card className="flex flex-col 2xl:flex-row gap-4 my-10 relative z-0 p-10">
       <VerifyBorrowPopup isOpen={verifyPopupOpen} closePopup={() => { setVerifyPopupOpen(false) }} itemName={itemDetail?.itemName} itemChild={childItems} itemID={itemDetail?.itemID} />
       <ReturnItemPopup isOpen={returnPopupOpen} closePopup={() => { setReturnPopupOpen(false) }} borrowID={String(borrowID)} />
-      {prePage === "equipment-manage" ?
+      {prePage === "equipment-manage" || prePage === "request" ?
         <></>
         :
         <div className="fixed right-0 top-1/2 -translate-y-1/2 flex flex-col gap-3.5 translate-x-[195px]">
