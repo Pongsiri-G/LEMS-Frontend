@@ -4,7 +4,6 @@ import "./globals.css"
 import { Providers } from "./provider"
 import NavigationBar from "../components/NavigationBar"
 import AuthGuard from "../components/AuthGuard"
-import NotificationPanel from "../components/NotificationPanel"
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -33,7 +32,6 @@ export default function RootLayout({
         <Providers>
           <AuthGuard>
             <NavigationBar />
-            <NotificationPanel />
             {children}
           </AuthGuard>
         </Providers>
