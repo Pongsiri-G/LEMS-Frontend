@@ -6,6 +6,7 @@ type RequestForm = {
     request_image_url: string,
     request_description: string,
     created_by: string,
+    quantity: number,
     created_date: string,
     updated_date: string
     item_requested?: {

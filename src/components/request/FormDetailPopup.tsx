@@ -121,7 +121,7 @@ export default function FormDetailPopup({req, onClose, onSuccess}: FormPopupProp
                             {req.request_type == "LOST"  && req.item_id != undefined ? <div className="flex flex-col gap-3">
                                 <div className="bg-[#ecf8ff] p-4 rounded-2xl">
                                     <span className="font-bold">จำนวนที่มีปัญหา: </span>
-                                    <span>{1} </span>
+                                    <span>{req.quantity} </span>
                                     <span className="font-bold">ชิ้น </span>
                                 </div>
                                 <div className="flex justify-center items-center">
