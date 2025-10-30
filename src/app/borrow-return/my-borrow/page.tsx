@@ -10,12 +10,14 @@ import { useParams } from "next/navigation";
 import { apiClient } from "@/src/services/apiClient";
 import ItemDetails from "@/src/components/item-details/ItemDetails";
 import BackButton from "@/src/components/BackButton";
+import { useWebSocketNotifications } from "@/src/hook/useWebSocketNotifications";
 
 export default function Home() {
   const [itemDetail, setItemDetail] = useState<Item[]>()
 
   const param = useParams();
 
+  useWebSocketNotifications();
 
   const fetchItemDetail = async () => {
     const url = `/v1/item/list`

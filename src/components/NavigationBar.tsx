@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react"
 import {
   Navbar,
   NavbarBrand,
@@ -13,23 +13,57 @@ import {
   DropdownMenu,
   DropdownItem,
   SharedSelection,
-} from "@heroui/react";
-import Image from "next/image";
-import { UserRoles } from "../constants/user";
-import { authSelector, logout } from "../feature/authSlice";
-import { useAppSelector } from "../hook/useAppSelector";
-import { useAppDispatch } from "../store";
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Badge,
+  Listbox,
+  ListboxItem,
+} from "@heroui/react"
+import Image from "next/image"
+import { UserRoles } from "../constants/user"
+import { authSelector, logout } from "../feature/authSlice"
+import { useAppSelector } from "../hook/useAppSelector"
+import { useAppDispatch } from "../store"
+import {
+  clearNotifications,
+  markAllRead,
+  markAsRead,
+  notiSelector,
+} from "../feature/notificationSlice"
+import { NotificationIcon } from "./NotiIcon"
 
 export function NavigationBar() {
-  const [selectedKeys, setSelectedKeys] = useState("TH (ภาษาไทย)");
+  const [selectedKeys, setSelectedKeys] = useState("TH (ภาษาไทย)")
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { user, isAuthenticated } = useAppSelector(authSelector);
+  const { user, isAuthenticated } = useAppSelector(authSelector)
+  const { items: notifications } = useAppSelector(notiSelector)
+
   const dispatch = useAppDispatch()
 
   const onSelect = (key: SharedSelection) => {
     setSelectedKeys(key.currentKey ?? "TH (ภาษาไทย)")
     console.log(key)
   }
+
+  const unreadCount = useMemo(
+    () => notifications.filter((n) => !n.read).length,
+    [notifications],
+  )
+
+  const handleNotiClick = (id: string) => {
+    dispatch(markAsRead(id)) 
+  }
+
+  const handleReadAll = () => {
+    dispatch(markAllRead())
+  }
+
+  const handleClearNotifications = () => {
+    dispatch(clearNotifications())
+  }
+
   return (
     <Navbar
       maxWidth="full"
@@ -99,6 +133,85 @@ export function NavigationBar() {
           </NavbarItem>
         ) : (
           <div className="flex space-x-2 items-center">
+            <NavbarItem className="mr-8">
+              <Popover
+                placement="bottom"
+                offset={10}
+                isOpen={isOpen}
+                onOpenChange={setIsOpen}
+              >
+                <PopoverTrigger>
+                  <div
+                    className="relative cursor-pointer select-none"
+                    onClick={() => {
+                      setIsOpen(!isOpen)
+                    }}
+                  >
+                    <Badge
+                      content={unreadCount > 0 ? unreadCount : null}
+                      color="danger"
+                      shape="circle"
+                      className="absolute right-[0.9rem] z-10"
+                    >
+                      <Button
+                        isIconOnly
+                        variant="light"
+                        aria-label="notifications"
+                      >
+                        <NotificationIcon width={24} />
+                      </Button>
+                    </Badge>
+                  </div>
+                </PopoverTrigger>
+
+                <PopoverContent className="w-72">
+                  <div className="p-2">
+                    <h3 className="font-semibold text-sm">Notifications</h3>
+                    {notifications.length > 0 && (
+                      <div className="flex justify-between">
+                        <div className="" />
+                        <p
+                          className="cursor-pointer hover:underline"
+                          onClick={handleClearNotifications}
+                        >
+                          Clear
+                        </p>
+                      </div>
+                    )}
+                    <Listbox aria-label="Notifications" className="w-[16rem]" classNames={{
+                      "list": "px-0"
+                    }}>
+                      {notifications.length === 0 ? (
+                        <ListboxItem
+                          key="none"
+                          textValue="none"
+                        >
+                          <span className="text-gray-500 text-sm">
+                            No notifications
+                          </span>
+                        </ListboxItem>
+                      ) : (
+                        notifications.map((n, idx) => (
+                          <ListboxItem
+                            key={idx}
+                            textValue={n.message}
+                            onPress={() => handleNotiClick(n.id)}
+                          >
+                            <div>
+                              <p
+                                className={`${!n.read ? "font-semibold" : "text-gray-500"}`}
+                              >
+                                {n.message}
+                              </p>
+                            </div>
+                          </ListboxItem>
+                        ))
+                      )}
+                    </Listbox>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </NavbarItem>
             <NavbarItem>
               <Dropdown className="hover:scale-95">
                 <DropdownTrigger>
@@ -156,4 +269,4 @@ export function NavigationBar() {
   )
 }
 
-export default NavigationBar;
+export default NavigationBar

@@ -10,8 +10,10 @@ import { apiClient } from "@/src/services/apiClient";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useRoleGuard } from "@/src/hook/useRoleGuard";
+import { useWebSocketNotifications } from "@/src/hook/useWebSocketNotifications";
 
 export default function Home() {
+  useWebSocketNotifications();
   // const data: { id: string; status: string; amount: number }[] = [
   //   { id: "Nvidia RTX5090", status: "Available", amount: 10 },
   //   { id: "Router", status: "Available", amount: 7 },

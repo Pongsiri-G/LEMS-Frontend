@@ -1,6 +1,7 @@
 "use client"
 import BackButton from "@/src/components/BackButton";
 import MovingCloudBG from "@/src/components/MovingCloudBG";
+import { useWebSocketNotifications } from "@/src/hook/useWebSocketNotifications";
 import { Button, getKeyValue, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -58,6 +59,8 @@ const columns = [
   },
 ];
 export default function EquipmentLog() {
+  useWebSocketNotifications();
+
   return <>
     <main className="flex flex-col justify-start items-center gap-10 mt-5 pt-5">
       <div className="relative !gap !mt w-full flex flex-col justify-center items-center">
