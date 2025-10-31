@@ -6,11 +6,14 @@ import { useEffect, useState } from "react"
 
 interface CheckBoxProps {
   iconSize: number,
-  item: Item,
-  addItem: (data: Item) => void,
-  removeItem: (data: Item) => void
+  item?: Item,
+  req?: RequestForm,
+  addItem?: (data: Item) => void,
+  addReq?: (data: RequestForm) => void,
+  removeItem?: (data: Item) => void
+  removeReq?: (data: RequestForm) => void
 }
-export default function CheckBox({ iconSize, item, addItem, removeItem }: CheckBoxProps) {
+export default function CheckBox({ iconSize, item, addItem, removeItem, req, addReq, removeReq}: CheckBoxProps) {
   const [check, setCheck] = useState(false)
 
 
@@ -19,10 +22,20 @@ export default function CheckBox({ iconSize, item, addItem, removeItem }: CheckB
       onClick={() => {
         if (!check) {
           console.log("ADD")
-          addItem(item)
+          if (item && addItem) {
+            addItem(item)
+          }
+          if (req && addReq) {
+            addReq(req)
+          }
         } else {
           console.log("REMOVE")
-          removeItem(item)
+          if (item && removeItem) {
+            removeItem(item)
+          }
+          if (req && removeReq) {
+            removeReq(req)
+          }
         }
         setCheck(!check)
       }} className={clsx(`transition-colors rounded  p-1`, {

@@ -1,5 +1,6 @@
 'use client'
 
+import CheckBox from "@/src/components/equipment-mange/CheckBox"
 import MovingCloudBG from "@/src/components/MovingCloudBG"
 import ProtectedRoute from "@/src/components/ProtectedRoute"
 import FormDetailPopup from "@/src/components/request/FormDetailPopup"
@@ -7,7 +8,7 @@ import { apiClient } from "@/src/services/apiClient"
 import { Button } from "@heroui/button"
 import { getKeyValue, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react"
 import { AxiosResponse } from "axios"
-import { FilePlusIcon, FilesIcon, PaperclipIcon } from "lucide-react"
+import { FilePlusIcon, FilesIcon, PaperclipIcon, ArrowUpFromLineIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -24,10 +25,10 @@ interface Row {
 }
 
 const columns = [
-    // {
-    //     key: "id",
-    //     label: "Form ID"
-    // },
+    {
+        key: "checkbox",
+        label: ""
+    },
     {
         key: "status",
         label: "สถานะคำร้อง",
@@ -71,6 +72,7 @@ export default function RequestPage() {
     const [ isReady, setIsReady ] = useState(false)
     const [ rows, setRows ] = useState<Row[]>([])
     const [ requests, setRequests ] = useState<RequestForm[]>([])
+    const [ selectedRequests, setSelectedRequests ] = useState<RequestForm[]>([])
     const [ showRequestDetailModal, setShowRequestDetailModal ] = useState(false)
     const [ reqToShow, setReqToShow ] = useState<RequestForm>()
     const router = useRouter()
@@ -98,13 +100,22 @@ export default function RequestPage() {
         }
         
     }
+
+    const addReq = (req: RequestForm) => {
+        setSelectedRequests(prev => [...prev, req])
+    }
+    
+    const removeReq = (req: RequestForm) => {
+        setSelectedRequests(prev =>
+            prev.filter(r => r.request_id !== req.request_id)
+        )
+    }
     
     useEffect(() => {
         loadRequests()
     }, [])
 
     if (!isReady) return;
-
     return (
     <ProtectedRoute>
         <main className="flex flex-col justify-start items-center gap-10 pt-5 mt-5">
@@ -117,8 +128,14 @@ export default function RequestPage() {
                         </h3>
                     </div>
                     <div className="flex flex-row w-full items-end justify-end gap-3">
-                        <Button className="w-35 h-10 bg-[#ffe16a] hover:scale-95"
+                        {selectedRequests.length != 0 ? <Button className="w-45 h-10 bg-[#ffe16a] hover:scale-95"
                             onPress={() => router.push("/request/my-submission")}
+                        >
+                            <ArrowUpFromLineIcon color="black" />
+                            <span className="hidden lg:inline text-black">export คำร้องที่เลือก</span>
+                        </Button> : ""}
+                        <Button className="w-35 h-10 bg-[#ffe16a] hover:scale-95"
+                            onPress={() => {}}
                         >
                             <FilesIcon color="black" />
                             <span className="hidden lg:inline text-black">คำร้องของฉัน</span>
@@ -162,6 +179,11 @@ export default function RequestPage() {
                                                     >
                                                         {item.status}
                                                     </span>
+                                                    ) : columnKey === "checkbox" ? (
+                                                    // status column
+                                                    <div onClick={(e)=>{e.stopPropagation()}}>
+                                                        <CheckBox iconSize={16} req={requests.find((req) => req.request_id === item.id)} addReq={addReq} removeReq={removeReq}></CheckBox>
+                                                    </div>
                                                     ) : (
                                                 getKeyValue(item, columnKey)
                                             )
