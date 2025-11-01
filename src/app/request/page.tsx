@@ -8,7 +8,7 @@ import { apiClient } from "@/src/services/apiClient"
 import { Button } from "@heroui/button"
 import { getKeyValue, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react"
 import { AxiosResponse } from "axios"
-import { FilePlusIcon, FilesIcon, PaperclipIcon, ArrowUpFromLineIcon, CircleXIcon } from "lucide-react"
+import { FilePlusIcon, FilesIcon, PaperclipIcon, ArrowUpFromLineIcon, CircleXIcon, XIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -76,11 +76,56 @@ export default function RequestPage() {
     const [ showRequestDetailModal, setShowRequestDetailModal ] = useState(false)
     const [ showExportModal, setShowExportModal ] = useState(false)
     const [ reqToShow, setReqToShow ] = useState<RequestForm>()
+    const [ showExportMode, setShowExportMode ] = useState(false)
     const router = useRouter()
+    const [checkMap, setCheckMap] = useState<{ id: string, check: boolean }[]>([])
+    const [renderKey, setRenderKey] = useState(0);
 
-    const loadRequests = async () => {
+    const generateCheckMap = (data: RequestForm[]) => {
+        const selectID: string[] = selectedRequests.map((e) => e.request_id);
+        const map = data.map((e) => ({
+        id: e.request_id,
+        check: selectID.includes(e.request_id)
+        }));
+        return map
+    };
+
+    async function downloadFile(exportType: string) {
         try {
-            const response: AxiosResponse<RequestForm[]> = await apiClient.get("/v1/requests")
+            
+            const reqToExport = selectedRequests.map(i => i.request_id);
+
+            const httpReq = {
+                requests: reqToExport,
+                export_type: exportType
+            }
+            
+            const response = await apiClient.post("/v1/requests/export", httpReq, {
+                responseType: "blob", 
+            });
+            
+
+            const blob = new Blob([response.data], { type: response.data.type || "application/octet-stream" });
+            const url = window.URL.createObjectURL(blob);
+
+            
+            const a = document.createElement("a");
+            a.href = url;
+
+            document.body.appendChild(a);
+            a.click();
+
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Download failed:", error);
+        }
+    }
+
+    const loadRequests = async (exportFilter?: boolean) => {
+        try {
+            const path = exportFilter ? "/v1/requests?status=ACCEPTED&type=REQUEST" : "/v1/requests"
+            const response: AxiosResponse<RequestForm[]> = await apiClient.get(path)
 
             const row = response.data.map((req) => ({
                 id: req.request_id,
@@ -104,17 +149,36 @@ export default function RequestPage() {
 
     const addReq = (req: RequestForm) => {
         setSelectedRequests(prev => [...prev, req])
+        setCheckMap((prev) =>
+            prev.map((m) => (m.id === req.request_id ? { ...m, check: true } : m))
+        );
+        setRenderKey(k => (k + 1) % 100);
     }
     
     const removeReq = (req: RequestForm) => {
         setSelectedRequests(prev =>
             prev.filter(r => r.request_id !== req.request_id)
         )
+        setCheckMap((prev) =>
+            prev.map((m) => (m.id === req.request_id ? { ...m, check: false } : m))
+        );
+        setRenderKey(k => (k + 1) % 100);
+    }
+
+    const loadCheckMap = () => {
+        if (requests.length > 0) {
+            const map = generateCheckMap(requests);
+            setCheckMap([...map]);
+        }
     }
     
     useEffect(() => {
-        loadRequests()
-    }, [])
+        loadRequests();
+    }, []);
+
+    useEffect(() => {
+        loadCheckMap();
+    }, [requests, selectedRequests])
 
     if (!isReady) return;
     return (
@@ -129,11 +193,31 @@ export default function RequestPage() {
                         </h3>
                     </div>
                     <div className="flex flex-row w-full items-end justify-end gap-3">
-                        {selectedRequests.length != 0 ? <Button className="w-45 h-10 bg-[#ffe16a] hover:scale-95"
+                        {!showExportMode ? <Button className="w-35 h-10 bg-[#ffe16a] hover:scale-95"
+                            onPress={async () => {
+                                await loadRequests(true)
+                                setShowExportMode(true)
+                            }}
+                        >
+                            <ArrowUpFromLineIcon color="black" />
+                            <span className="hidden lg:inline text-black">นำออกคำร้อง</span>
+                        </Button> : ""}
+                        {showExportMode ? <Button className={`w-45 h-10 bg-[#ffe16a] hover:scale-95 ${selectedRequests.length != 0 ? "bg-[#7ac272]" : "bg-[#9e9b9b] cursor-not-allowed"}`}
                             onPress={() => setShowExportModal(true)}
+                            disabled={selectedRequests.length == 0}
                         >
                             <ArrowUpFromLineIcon color="black" />
                             <span className="hidden lg:inline text-black">export คำร้องที่เลือก</span>
+                        </Button> : ""}
+                        {showExportMode ? <Button className="w-40 h-10 bg-[#d6665e] hover:scale-95"
+                            onPress={async () => {
+                                await loadRequests()
+                                generateCheckMap(requests)
+                                setShowExportMode(false)
+                            }}
+                        >
+                            <XIcon color="black" />
+                            <span className="hidden lg:inline text-black">ยกเลิกการนำออก</span>
                         </Button> : ""}
                         <Button className="w-35 h-10 bg-[#ffe16a] hover:scale-95"
                             onPress={() => {router.push("/request/my-submission")}}
@@ -148,7 +232,7 @@ export default function RequestPage() {
                             <span className="hidden lg:inline text-white">เพิ่มสิ่งของ</span>
                         </Button>
                     </div>
-                        <Table aria-label="Example table with dynamic content" className="w-full">
+                        <Table aria-label="Example table with dynamic content" className="w-full" key={`${renderKey}`}>
                             <TableHeader columns={columns}>
                                 {columns.map((column) => (
                                 <TableColumn key={column.key} className="text-md ">{column.label}</TableColumn>
@@ -180,10 +264,25 @@ export default function RequestPage() {
                                                     >
                                                         {item.status}
                                                     </span>
-                                                    ) : columnKey === "checkbox" ? (
+                                                    ) : columnKey === "checkbox" && showExportMode ? (
                                                     // status column
                                                     <div onClick={(e)=>{e.stopPropagation()}}>
-                                                        <CheckBox iconSize={16} req={requests.find((req) => req.request_id === item.id)} addReq={addReq} removeReq={removeReq}></CheckBox>
+                                                        {(() => {
+                                                            const req = requests.find((r) => r.request_id === item.id);
+                                                            const mapEntry = checkMap.find((m) => m.id === item.id);
+
+                                                            if (!req || !mapEntry) return null;
+
+                                                            return (
+                                                                    <CheckBox
+                                                                        iconSize={16}
+                                                                        req={req}
+                                                                        addReq={addReq}
+                                                                        removeReq={removeReq}
+                                                                        checkMap={mapEntry}
+                                                                    />
+                                                            );
+                                                            })()}
                                                     </div>
                                                     ) : (
                                                 getKeyValue(item, columnKey)
@@ -204,13 +303,14 @@ export default function RequestPage() {
                 {showExportModal && <div>
                     <div className="fixed inset-0 bg-black/75 flex justify-center items-center z-20 transition-all">
                         <div className="flex justify-center items-center">
-                            <div className="bg-white rounded-2xl w-75 h-75 p-5 overflow-hidden flex flex-col">
+                            <div className="bg-white rounded-2xl w-75 h-45 p-5 overflow-hidden flex flex-col">
                                 <div className="flex justify-end items-start">
                                     <CircleXIcon className="text-black hover:scale-120 hover:text-[#d6665e] cursor-pointer transition-all" onClick={()=>{setShowExportModal(false)}}></CircleXIcon>
                                 </div>
-                                <div className="flex flex-row gap-5 justify-center items-center">
+                                <div className="flex flex-col gap-5 justify-center items-center h-full">
+                                    <p>โปรดเลือกนามสกุลไฟล์ที่ต้องการนำออก</p>
                                     <Button className="w-45 h-10 bg-primary hover:scale-95"
-                                        onPress={() => {}}
+                                        onPress={() => {downloadFile("XLS")}}
                                     >
                                         <img src={"/images/excel.png"} width={32} height={32}></img>
                                         <span className="hidden lg:inline text-white">นำออกเป็นไฟล์ Excel</span>

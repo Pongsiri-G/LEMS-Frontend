@@ -6,19 +6,32 @@ import { useEffect, useState } from "react"
 
 interface CheckBoxProps {
   iconSize: number,
-  item: Item,
-  addItem: (data: Item) => void,
-  removeItem: (data: Item) => void
+  item?: Item,
+  addItem?: (data: Item) => void,
+  removeItem?: (data: Item) => void
+  req?: RequestForm,
+  addReq?: (data: RequestForm) => void,
+  removeReq?: (data: RequestForm) => void
   checkMap: { id: string, check: boolean }
 }
-export default function CheckBox({ iconSize, item, addItem, removeItem, checkMap }: CheckBoxProps) {
+export default function CheckBox({ iconSize, item, addItem, removeItem, req, addReq, removeReq, checkMap }: CheckBoxProps) {
   return <>
     <button
       onClick={() => {
         if (!checkMap.check) {
-          addItem(item)
+          if (item && addItem) {
+            addItem(item)
+          }
+          else if (req && addReq) {
+            addReq(req)
+          }
         } else {
-          removeItem(item)
+          if (item && removeItem) {
+            removeItem(item)
+          }
+          else if (req && removeReq) {
+            removeReq(req)
+          }
         }
       }} className={clsx(`transition-colors rounded  p-1 h-fit`, {
         "bg-primary border-1 border-primary cursor-pointer ": checkMap.check,
