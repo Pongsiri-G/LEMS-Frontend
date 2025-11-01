@@ -5,80 +5,130 @@ import { Modal, ModalContent, ModalBody } from "@heroui/modal";
 import { Input } from "@heroui/input";
 import { Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
-import { useState, useRef } from "react";
-import { Plus, Upload } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Plus, Upload, UploadCloud } from "lucide-react";
 import ColorPickerPopup from "./ColorPickerPopup";
+import DropDownCheckBox from "./DropDownCheckBox";
+import SelectorCopyCat from "./SelectorCopyCat";
+import { apiClient } from "@/src/services/apiClient";
+import { useToast } from "@/src/hook/ToastContext";
+import { fetchItemDetail } from "@/src/utils/itemUtils";
 
 interface PopupProps {
   isOpen: boolean;
   onOpenChange: () => void;
   onOpen: () => void;
+  fetchItemDetails: () => void;
 }
 
 export default function Popup(props: PopupProps) {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [itemName, setItemName] = useState("");
   const [status, setStatus] = useState("");
   const [quantity, setQuantity] = useState("");
   const [description, setDescription] = useState("");
-  const [requirement, setRequirement] = useState("");
-  const [tag, setTag] = useState("เพิ่ม");
+  const [requirement, setRequirement] = useState<{ id: string, name: string }[]>([]);
+  const [tags, setTags] = useState<{ title: string, color: string, id: string }[]>([]);
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isOpenDropDown, setIsOpenDropDown] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { showToast } = useToast()
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      setSelectedImage(file);
     }
   };
+
+  useEffect(() => {
+    console.log(requirement)
+  }, [requirement])
+
+  const clearForm = () => {
+    setItemName("")
+    setStatus("")
+    setQuantity("")
+    setDescription("")
+    setSelectedImage(null)
+    setRequirement([])
+    setTags([])
+    setErrors({})
+  }
 
   const handleClickUpload = () => {
     fileInputRef.current?.click();
   };
 
   const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
-    
+    const newErrors: { [key: string]: string } = {};
+
     if (!itemName.trim()) {
       newErrors.itemName = "กรุณากรอกชื่อสิ่งของ";
     }
-    
+
     if (!status) {
       newErrors.status = "กรุณาเลือกสถานะสิ่งของ";
     }
-    
+
     if (!quantity || parseInt(quantity) <= 0) {
       newErrors.quantity = "กรุณากรอกจำนวนสิ่งของที่ถูกต้อง";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleTagCreated = (newTag: string, color?: string) => {
-    setTag(newTag);
+  const handleTagCreated = (newTag: string, color: string, id: string) => {
+    setTags([...tags, { title: newTag, color: color, id: id }]);
     setIsColorPickerOpen(false);
   };
 
-  const handleSubmit = () => {
+  const uploadImage = async (): Promise<string> => {
+    if (selectedImage !== null) {
+      const formData = new FormData()
+      formData.append("file", selectedImage)
+      const uploadImage = await apiClient.post("/v1/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      })
+      return uploadImage.data.url
+    }
+    return ""
+  }
+
+  const handleSubmit = async () => {
     if (validateForm()) {
-      // Handle form submission here
-      console.log({
-        itemName,
-        status,
-        quantity,
-        description,
-        requirement,
-        tag,
-        selectedImage
-      });
-      props.onOpenChange();
+      try {
+        const imageURL = await uploadImage()
+        const tagsID = await Promise.all(
+          tags.map(async (e) => {
+            const res = await apiClient.post("v1/tag", {
+              name: e.title,
+              color: e.color
+            })
+            return res.data.id
+          })
+        )
+        const prerequisite = requirement.map((e) => e.id)
+        const payload = {
+          name: itemName,
+          description: description || null,
+          image_url: imageURL || null,
+          quantity: parseInt(quantity),
+          status: status || null,
+          prerequisite: prerequisite.length > 0 ? prerequisite : null,
+          tags: tagsID.length > 0 ? tagsID : null,
+        }
+        console.log(payload)
+
+        const res = await apiClient.post("/v1/item", payload)
+        showToast(`เพิ่มข้อมูล ${itemName} สำเร็จ`, "success")
+      } catch (e: any) {
+        showToast(e.response?.data?.message || "เกิดข้อผิดพลาด", "error")
+      }
     }
   };
 
@@ -108,17 +158,13 @@ export default function Popup(props: PopupProps) {
                       >
                         {selectedImage ? (
                           <img
-                            src={selectedImage}
+                            src={URL.createObjectURL(selectedImage)}
                             alt="Preview"
                             className="w-full h-full object-cover rounded-lg"
                           />
                         ) : (
                           <>
-                            <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mb-4">
-                              <div className="w-16 h-20 bg-blue-300 rounded-lg flex items-center justify-center">
-                                <Upload className="w-10 h-10 text-primary" />
-                              </div>
-                            </div>
+                            <UploadCloud className="w-10 h-10 text-primary" />
                             <p className="text-gray-700 font-medium">
                               Click to upload
                             </p>
@@ -156,7 +202,7 @@ export default function Popup(props: PopupProps) {
                       />
 
                       {/* Status and Quantity */}
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="flex gap-4 ">
                         <Select
                           label="สถานะสิ่งของ"
                           placeholder=""
@@ -170,8 +216,8 @@ export default function Popup(props: PopupProps) {
                           <SelectItem key="AVAILABLE">
                             ยืมได้
                           </SelectItem>
-                          <SelectItem key="UNAVAILABLE">
-                            ไม่สามารถยืมได้
+                          <SelectItem key="INLABONLY">
+                            ใช้ได้ภายในแลปเท่านั้น
                           </SelectItem>
                         </Select>
 
@@ -188,8 +234,7 @@ export default function Popup(props: PopupProps) {
                             type="number"
                           />
                           <span
-                            className="inline-flex items-center justify-center px-4 py-2 text-white bg-primary rounded-lg font-medium mb-0.5 text-base"
-                            style={{ height: "40px" }}
+                            className="inline-flex items-center justify-center px-4 py-2 text-white bg-primary rounded-lg font-medium mb-0.5 text-base h-full"
                           >
                             หน่วย
                           </span>
@@ -208,10 +253,24 @@ export default function Popup(props: PopupProps) {
                           input: "min-h-[120px]",
                         }}
                       />
-                      <Select
+                      <div className="relative">
+                        <SelectorCopyCat
+                          selectedItemName={requirement.map((e) => e.name)}
+                          setPopupIsOpen={(status: boolean) => {
+                            setIsOpenDropDown(status)
+                          }} />
+                        <DropDownCheckBox
+                          isOpen={isOpenDropDown}
+                          setSelectedItem={(data: { id: string, name: string }[]) => {
+                            setRequirement([...data])
+                          }}
+                          selectedItem={requirement}
+                        />
+                      </div>
+                      {/* <Select
                         label="ต้องใช้ร่วมกับ"
                         placeholder=""
-                        selectedKeys={requirement ? [requirement] : []}
+                        selectedKeys={requirement ? requirement : []}
                         onSelectionChange={(keys) => setRequirement(Array.from(keys)[0] as string)}
                         variant="bordered"
                       >
@@ -224,7 +283,7 @@ export default function Popup(props: PopupProps) {
                         <SelectItem key="item2">
                           สิ่งของ 2
                         </SelectItem>
-                      </Select>
+                      </Select> */}
                     </div>
                   </div>
 
@@ -241,30 +300,52 @@ export default function Popup(props: PopupProps) {
                     >
                       <Plus className="w-4 h-4" />
                     </Button>
-                    <span className="text-sm px-3 py-1 bg-gray-200 rounded-full">
-                      {tag}
-                    </span>
+                    {
+                      tags.map((element, index) => {
+                        return <span
+                          className="text-sm px-3 py-1 text-white rounded-full flex gap-3"
+                          key={index}
+                          style={{
+                            backgroundColor: element.color
+                          }}
+                        >
+                          {element.title}
+                        </span>
+                      })
+                    }
                   </div>
 
                   {/* Action Buttons */}
                   <div className="grid grid-cols-3 gap-4 mt-4">
                     <Button
-                      className="bg-blue-400 text-white font-medium"
+                      className="bg-primary text-white font-medium"
                       size="lg"
-                      onPress={handleSubmit}
+                      onPress={async () => {
+                        await handleSubmit()
+                        props.fetchItemDetails()
+                        props.onOpenChange()
+                      }}
                     >
                       ยืนยัน
                     </Button>
                     <Button
-                      className="bg-yellow-300 text-gray-800 font-medium"
+                      className="bg-primary text-white font-medium"
                       size="lg"
+                      onPress={async () => {
+                        await handleSubmit()
+                        props.fetchItemDetails()
+                        clearForm()
+                      }}
                     >
-                      เพิ่มของชิ้นอื่น
+                      เพิ่มของต่อเนื่อง
                     </Button>
                     <Button
-                      className="bg-pink-400 text-white font-medium"
+                      className=" text-foreground font-medium border-neutral border-1 bg-background"
                       size="lg"
-                      onPress={onClose}
+                      onPress={() => {
+                        clearForm()
+                        onClose()
+                      }}
                     >
                       ยกเลิก
                     </Button>
@@ -275,7 +356,7 @@ export default function Popup(props: PopupProps) {
           )}
         </ModalContent>
       </Modal>
-      
+
       {/* Color Picker Popup */}
       <ColorPickerPopup
         isOpen={isColorPickerOpen}

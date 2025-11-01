@@ -13,18 +13,16 @@ export default function ItemCard({
   name,
   status,
   amount,
-  setShowPopup,
-  showPopup,
-  setID,
+  prePage,
+  borrowID
 }: {
   id: string;
   image: string
   name: string;
   status: string;
   amount: number;
-  setShowPopup: Function;
-  showPopup: boolean;
-  setID: Function;
+  prePage: string
+  borrowID?: string
 }) {
   const [itemTags, setItemTags] = useState<ItemTag[]>()
   const [imageURL, setImageURL] = useState<string>()
@@ -54,58 +52,63 @@ export default function ItemCard({
   const [isCardHovered, setIsCardHovered] = useState(false);
   return (
     true && (
-      <Link href={`/borrow-return/item/${id}`}>
-        <Card className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10 cursor-pointer hover:scale-95 transition-all">
-          <div
-            className="w-full h-[300px] overflow-hidden "
-            onClick={() => { }}
-          >
+      <Link href={`/borrow-return/item/${id}/${prePage}/${borrowID}`}>
+        <div className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10">
+          <Card className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10 hover:scale-95 transition-all">
             <div
-              className="relative w-full h-[300px] overflow-hidden"
+              className="w-full h-[300px] overflow-hidden rounded-[0px]"
               onClick={() => { }}
             >
-              <img
-                src={imageURL!}
-                alt="logo"
-                className={`transition duration-300 ease-in-out w-full h-full`}
-                style={{
-                  objectFit: "cover",
-                }}
-              />
+              <div
+                className="relative w-full h-[300px] overflow-hidden rounded-[0px]"
+                onClick={() => { }}
+              >
 
-              <div className="absolute top-3 right-2 p-3 bg-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
-                จำนวน {amount}
+                <img
+                  src={imageURL!}
+                  alt="logo"
+                  className={`transition duration-300 ease-in-out hover:scale-105 cursor-pointer object-fit w-full h-full`}
+                  style={{
+                    objectFit: "cover",
+                    borderTopRightRadius: "16px",
+                    borderTopLeftRadius: "16px",
+                  }}
+                />
+
+
+                <div className="absolute top-3 right-2 p-3 bg-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
+                  จำนวน {amount}
+                </div>
+                {prePage === "my-borrow" ?
+                  <></>
+                  :
+                  <div className="absolute top-3 right-2 p-3 bg-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
+                    จำนวน {amount}
+                  </div>
+                }
+
               </div>
             </div>
-          </div>
-          <div className="px-5 py-3 flex flex-col gap-3">
-            <p className="text-lg font-semibold h-fit">{name}</p>
-            <p
-              className={`text-sm text-balance font-bold`}
-              style={{
-                color:
-                  status === "AVAILABLE"
-                    ? "rgba(28,172,110,1)"
-                    : status === "DISAPPEARED"
-                      ? "rgba(245,54,92,1)"
-                      : "rgb(0,109,165)",
-              }}
-            >
-              {(status[0] + status.slice(1).toLowerCase())}
-            </p>
-            <div className="flex items-center w-full">
-              <div className="flex gap-2 flex-wrap flex-1">
-                {itemTags?.map((tag, index) => (
-                  <p
-                    key={index}
-                    className={`text-[rgba(255,255,255,1)] text-xs px-2 py-1 rounded-full whitespace-nowrap`}
-                    style={{ background: tag.color }}
-                  >
-                    {tag.name}
-                  </p>
-                ))}
-              </div>
-              {/* <Link
+            <div className="px-5 py-3 flex flex-col gap-3">
+              <p className="text-lg font-semibold h-fit">{name}</p>
+              <p
+                className={`text-sm text-balance font-bold ${status === "AVAILABLE" ? "text-success" : "text-error"}`}
+              >
+                {(status[0] + status.slice(1).toLowerCase())}
+              </p>
+              <div className="flex items-center w-full">
+                <div className="flex gap-2 flex-wrap flex-1">
+                  {itemTags?.map((tag, index) => (
+                    <p
+                      key={index}
+                      className={`text-[rgba(255,255,255,1)] text-xs px-2 py-1 rounded-full whitespace-nowrap`}
+                      style={{ background: tag.color }}
+                    >
+                      {tag.name}
+                    </p>
+                  ))}
+                </div>
+                {/* <Link
                 href={`/borrow-return/item/${id}`}
                 className={`block cursor-pointer text-sm text-balance`}
                 onClick={() => {
@@ -119,9 +122,10 @@ export default function ItemCard({
               >
                 <MaximizeIcon isHovered={isCardHovered} />
               </Link> */}
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </Link>
     )
   );
