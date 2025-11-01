@@ -8,7 +8,7 @@ import { apiClient } from "@/src/services/apiClient"
 import { Button } from "@heroui/button"
 import { getKeyValue, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react"
 import { AxiosResponse } from "axios"
-import { FilePlusIcon, FilesIcon, PaperclipIcon, ArrowUpFromLineIcon } from "lucide-react"
+import { FilePlusIcon, FilesIcon, PaperclipIcon, ArrowUpFromLineIcon, CircleXIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -74,6 +74,7 @@ export default function RequestPage() {
     const [ requests, setRequests ] = useState<RequestForm[]>([])
     const [ selectedRequests, setSelectedRequests ] = useState<RequestForm[]>([])
     const [ showRequestDetailModal, setShowRequestDetailModal ] = useState(false)
+    const [ showExportModal, setShowExportModal ] = useState(false)
     const [ reqToShow, setReqToShow ] = useState<RequestForm>()
     const router = useRouter()
 
@@ -129,13 +130,13 @@ export default function RequestPage() {
                     </div>
                     <div className="flex flex-row w-full items-end justify-end gap-3">
                         {selectedRequests.length != 0 ? <Button className="w-45 h-10 bg-[#ffe16a] hover:scale-95"
-                            onPress={() => router.push("/request/my-submission")}
+                            onPress={() => setShowExportModal(true)}
                         >
                             <ArrowUpFromLineIcon color="black" />
                             <span className="hidden lg:inline text-black">export คำร้องที่เลือก</span>
                         </Button> : ""}
                         <Button className="w-35 h-10 bg-[#ffe16a] hover:scale-95"
-                            onPress={() => {}}
+                            onPress={() => {router.push("/request/my-submission")}}
                         >
                             <FilesIcon color="black" />
                             <span className="hidden lg:inline text-black">คำร้องของฉัน</span>
@@ -200,6 +201,27 @@ export default function RequestPage() {
                     await loadRequests()
                 }}
                 req={reqToShow!}></FormDetailPopup>}
+                {showExportModal && <div>
+                    <div className="fixed inset-0 bg-black/75 flex justify-center items-center z-20 transition-all">
+                        <div className="flex justify-center items-center">
+                            <div className="bg-white rounded-2xl w-75 h-75 p-5 overflow-hidden flex flex-col">
+                                <div className="flex justify-end items-start">
+                                    <CircleXIcon className="text-black hover:scale-120 hover:text-[#d6665e] cursor-pointer transition-all" onClick={()=>{setShowExportModal(false)}}></CircleXIcon>
+                                </div>
+                                <div className="flex flex-row gap-5 justify-center items-center">
+                                    <Button className="w-45 h-10 bg-primary hover:scale-95"
+                                        onPress={() => {}}
+                                    >
+                                        <img src={"/images/excel.png"} width={32} height={32}></img>
+                                        <span className="hidden lg:inline text-white">นำออกเป็นไฟล์ Excel</span>
+                                    </Button>
+
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+                }
             </div>
         </main>
     </ProtectedRoute>
