@@ -12,12 +12,13 @@ import { useParams } from "next/navigation";
 import { fetchItemDetail } from "@/src/utils/itemUtils";
 import { useRoleGuard } from "@/src/hook/useRoleGuard";
 import { Item } from "@/src/types/item";
+import { useWebSocketNotifications } from "@/src/hook/useWebSocketNotifications";
 
 export default function Home() {
 
   const [itemDetail, setItemDetail] = useState<Item[]>()
 
-
+  useWebSocketNotifications()
   
   const fetchItem = async (name: string, tag:string, status:string) => {
     const items = await fetchItemDetail(name, tag, status);
@@ -85,11 +86,7 @@ export default function Home() {
             {itemDetail?.map((index) => (
               <ItemCard
                 key={index.itemID}
-                id={index.itemID}
-                image={index.itemPictureURL}
-                name={index.itemName}
-                amount={index.itemQuantity}
-                status={index.itemStatus}
+                item={index}
                 prePage={"borrow-return"}
               />
             ))}

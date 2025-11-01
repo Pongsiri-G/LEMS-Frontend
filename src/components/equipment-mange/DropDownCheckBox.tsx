@@ -6,22 +6,49 @@ import CheckBox from "./CheckBox"
 import { apiClient } from "@/src/services/apiClient"
 import { Item, toItem } from "@/src/types/item"
 
-export default function DropDownCheckBox({ isOpen, setSelectedItem, selectedItem }:
+export default function DropDownCheckBox({ isOpen, setSelectedItem, selectedItem, itemID }:
   {
+    itemID: string | undefined
     isOpen: boolean,
     setSelectedItem: (data: { id: string, name: string }[]) => void
     selectedItem: { id: string, name: string }[]
   }
 ) {
   const [item, setItem] = useState<Item[]>([])
+  const [checkMap, setCheckMap] = useState<{ id: string, check: boolean }[]>([])
+
+  const generateCheckMap = (data: Item[]) => {
+    const selectID: string[] = selectedItem.map((e) => e.id);
+    const map = data.map((e) => ({
+      id: e.itemID,
+      check: selectID.includes(e.itemID)
+    }));
+    return map
+  };
+
+  useEffect(() => {
+    if (item.length > 0) {
+      const map = generateCheckMap(item);
+      setCheckMap(map);
+    }
+  }, [selectedItem])
+
 
   const fetchAllItem = async () => {
     const res = await apiClient.get("/v1/item/list")
-    console.log(res.data)
-    const newItem = res.data.map((e: any) => {
-      return toItem(e)
-    })
-    setItem(newItem)
+    if (res.data !== null) {
+      const newItem: Item[] = res.data.map((e: any) => {
+        return toItem(e)
+      })
+      const filtItem = newItem.filter((e) => {
+        if (e.itemID !== itemID) {
+          return e
+        }
+      })
+      setItem(filtItem)
+      const map = generateCheckMap(filtItem);
+      setCheckMap(map);
+    }
   }
 
   useEffect(() => {
@@ -33,9 +60,10 @@ export default function DropDownCheckBox({ isOpen, setSelectedItem, selectedItem
     })}>
       {
 
-        item.map((element) => {
+        item.map((element, index) => {
           return <div className="flex p-3 gap-3" key={element.itemID}>
             <CheckBox
+              checkMap={checkMap[index]}
               iconSize={15}
               item={element}
               addItem={(data: Item) => {

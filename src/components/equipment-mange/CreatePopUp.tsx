@@ -6,19 +6,22 @@ import { Input } from "@heroui/input";
 import { Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { useState, useRef, useEffect } from "react";
-import { Plus, Upload, UploadCloud } from "lucide-react";
+import { Plus, Upload, UploadCloud, X } from "lucide-react";
 import ColorPickerPopup from "./ColorPickerPopup";
 import DropDownCheckBox from "./DropDownCheckBox";
 import SelectorCopyCat from "./SelectorCopyCat";
 import { apiClient } from "@/src/services/apiClient";
 import { useToast } from "@/src/hook/ToastContext";
 import { fetchItemDetail } from "@/src/utils/itemUtils";
+import { Item, toItem } from "@/src/types/item";
+import { Tag, toTag } from "@/src/types/Tag";
 
 interface PopupProps {
   isOpen: boolean;
   onOpenChange: () => void;
   onOpen: () => void;
   fetchItemDetails: () => void;
+  item?: Item
 }
 
 export default function Popup(props: PopupProps) {
@@ -28,10 +31,13 @@ export default function Popup(props: PopupProps) {
   const [quantity, setQuantity] = useState("");
   const [description, setDescription] = useState("");
   const [requirement, setRequirement] = useState<{ id: string, name: string }[]>([]);
-  const [tags, setTags] = useState<{ title: string, color: string, id: string }[]>([]);
+  const [oldRequirement, setOldRequirement] = useState<{ id: string, name: string }[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [oldTags, setOldTags] = useState<Tag[]>([]);
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isOpenDropDown, setIsOpenDropDown] = useState(false)
+  const [isOpenDropDownAddTag, setIsOpenDropDownAddTag] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { showToast } = useToast()
 
@@ -42,19 +48,130 @@ export default function Popup(props: PopupProps) {
     }
   };
 
+  const updateTags = () => {
+    try {
+      const addTags = tags.filter((e, i) => {
+        if (!oldTags.some(item => item.id === tags[i].id)) {
+          return e
+        }
+      })
+      console.log(addTags)
+      addTags.forEach(async (e) => {
+        // const res = await apiClient.post(`/v1/tag`, {
+        //   name: e.name,
+        //   color: e.color
+        // })
+        await apiClient.post(`/v1/tag/assign/${props.item?.itemID}/${e.id}`)
+      })
+
+      const removeTags = oldTags.filter((e, i) => {
+        if (!tags.some(item => item.id === oldTags[i].id)) {
+          return e
+        }
+      })
+      // console.log("REMOVE", removeTags)
+      removeTags.forEach(async (e) => {
+        await apiClient.delete(`/v1/tag/unassign/${props.item?.itemID}/${e.id}`)
+      })
+    } catch (e: any) {
+      throw e
+    }
+  }
+
+  const updateRequirement = () => {
+    try {
+      const addRequireItem = requirement.filter((e, i) => {
+        if (!oldRequirement.some(item => item.id === requirement[i].id)) {
+          return e
+        }
+      })
+      addRequireItem.forEach(async (e) => {
+        await apiClient.post(`/v1/item/assign-item-set/${props.item?.itemID}/${e.id}`)
+      })
+      const removeRequireItem = oldRequirement.filter((e, i) => {
+        if (!requirement.some(item => item.id === oldRequirement[i].id)) {
+          return e
+        }
+      })
+      removeRequireItem.forEach(async (e) => {
+        await apiClient.post(`/v1/item/remove-item-set/${props.item?.itemID}/${e.id}`)
+      })
+    } catch (e: any) {
+      throw e
+    }
+  }
+
+  const handdleUpdate = async () => {
+    try {
+      if (props.item !== undefined) {
+        const newImage = await uploadImage()
+        const res = await apiClient.put("/v1/item", {
+          item_id: props.item.itemID,
+          name: itemName,
+          description: description || null,
+          image_url: newImage || null,
+          quantity: parseInt(quantity),
+          status: status || null,
+        })
+        await updateTags()
+        await updateRequirement()
+        showToast("อัปเดตข้อมูลสำเร็จ", "success")
+        props.fetchItemDetails()
+        props.onOpenChange()
+      }
+    } catch (e: any) {
+      showToast("เกิดข้อผิดพลาด: " + e.data.message, "error")
+    }
+  }
+
+  const initDataForUpdate = async () => {
+    if (props.item !== undefined) {
+      const currentItem = props.item
+      setItemName(currentItem.itemName)
+      setStatus(currentItem.itemStatus)
+      setQuantity(String(currentItem.itemQuantity))
+      setDescription(currentItem.itemDescription)
+
+      const url = `/v1/image`
+      const res = await apiClient.post(url, {
+        "url": currentItem.itemPictureURL
+      }, { responseType: 'blob' })
+      const blob = res.data as File
+      setSelectedImage(blob)
+
+      const childItemRes = await apiClient.get(`/v1/item/child/${currentItem.itemID}`)
+      const childItems: { id: string, name: string }[] = childItemRes.data.map((element: any) => {
+        const newChild = toItem(element)
+        return { id: newChild.itemID, name: newChild.itemName }
+      })
+      setRequirement([...childItems])
+      setOldRequirement([...childItems])
+
+      const tags = await apiClient.get(`/v1/tag/${currentItem.itemID}`)
+      const targetTags: Tag[] = tags.data.map((e: any) => toTag(e))
+      setTags([...targetTags])
+      setOldTags([...targetTags])
+    }
+  }
+
   useEffect(() => {
-    console.log(requirement)
+    initDataForUpdate()
+  }, [])
+
+  useEffect(() => {
   }, [requirement])
 
   const clearForm = () => {
-    setItemName("")
-    setStatus("")
-    setQuantity("")
-    setDescription("")
-    setSelectedImage(null)
-    setRequirement([])
-    setTags([])
-    setErrors({})
+    if (props.item === undefined) {
+      setItemName("")
+      setStatus("")
+      setQuantity("")
+      setDescription("")
+      setSelectedImage(null)
+      setRequirement([])
+      setTags([])
+      setErrors({})
+    }
   }
 
   const handleClickUpload = () => {
@@ -80,8 +197,20 @@ export default function Popup(props: PopupProps) {
     return Object.keys(newErrors).length === 0;
   };
 
+  const deleteTag = (id: string) => {
+    const index = tags.findIndex(item => item.id === id);
+    tags.splice(index, 1)
+    setTags([...tags])
+    console.log(tags)
+  }
+
+
+
   const handleTagCreated = (newTag: string, color: string, id: string) => {
-    setTags([...tags, { title: newTag, color: color, id: id }]);
+    if (tags.some((item) => item.id === id)) {
+      throw Error("ไม่สามารถเลือก tag ซ้ำได้")
+    }
+    setTags([...tags, { name: newTag, color: color, id: id }]);
     setIsColorPickerOpen(false);
   };
 
@@ -103,15 +232,7 @@ export default function Popup(props: PopupProps) {
     if (validateForm()) {
       try {
         const imageURL = await uploadImage()
-        const tagsID = await Promise.all(
-          tags.map(async (e) => {
-            const res = await apiClient.post("v1/tag", {
-              name: e.title,
-              color: e.color
-            })
-            return res.data.id
-          })
-        )
+        const tagsID = tags.map((e) => e.id)
         const prerequisite = requirement.map((e) => e.id)
         const payload = {
           name: itemName,
@@ -124,7 +245,9 @@ export default function Popup(props: PopupProps) {
         }
         console.log(payload)
 
-        const res = await apiClient.post("/v1/item", payload)
+        await apiClient.post("/v1/item", payload)
+        props.fetchItemDetails()
+        props.onOpenChange()
         showToast(`เพิ่มข้อมูล ${itemName} สำเร็จ`, "success")
       } catch (e: any) {
         showToast(e.response?.data?.message || "เกิดข้อผิดพลาด", "error")
@@ -260,6 +383,7 @@ export default function Popup(props: PopupProps) {
                             setIsOpenDropDown(status)
                           }} />
                         <DropDownCheckBox
+                          itemID={props.item?.itemID}
                           isOpen={isOpenDropDown}
                           setSelectedItem={(data: { id: string, name: string }[]) => {
                             setRequirement([...data])
@@ -302,45 +426,63 @@ export default function Popup(props: PopupProps) {
                     </Button>
                     {
                       tags.map((element, index) => {
-                        return <span
-                          className="text-sm px-3 py-1 text-white rounded-full flex gap-3"
-                          key={index}
-                          style={{
-                            backgroundColor: element.color
-                          }}
-                        >
-                          {element.title}
-                        </span>
+                        return (
+                          <div className="flex items-center justify-center rounded-full p-2 gap-2" key={element.id}
+                            style={{
+                              backgroundColor: element.color
+                            }}
+                          >
+                            <span
+                              className="text-sm text-white flex gap-3"
+                              key={index}
+                            >
+                              {element.name}
+                            </span>
+                            <button onClick={() => {
+                              deleteTag(element.id)
+                            }}>
+                              <X className="stroke-white cursor-pointer" size={15} />
+                            </button>
+                          </div>
+                        )
+
                       })
                     }
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="grid grid-cols-3 gap-4 mt-4">
+                  <div className="flex gap-4 mt-4">
                     <Button
-                      className="bg-primary text-white font-medium"
+                      className="bg-primary text-white font-medium flex-1"
                       size="lg"
                       onPress={async () => {
-                        await handleSubmit()
-                        props.fetchItemDetails()
-                        props.onOpenChange()
+                        if (props.item !== undefined) {
+                          await handdleUpdate()
+                        } else {
+                          await handleSubmit()
+                        }
                       }}
                     >
-                      ยืนยัน
+                      {props.item !== undefined ? "อัปเดตข้อมูล" : "ยืนยัน"}
                     </Button>
+                    {
+                      props.item !== undefined ?
+                        <></>
+                        :
+                        <Button
+                          className="bg-primary text-white font-medium flex-1"
+                          size="lg"
+                          onPress={async () => {
+                            await handleSubmit()
+                            props.fetchItemDetails()
+                            clearForm()
+                          }}
+                        >
+                          เพิ่มของต่อเนื่อง
+                        </Button>
+                    }
                     <Button
-                      className="bg-primary text-white font-medium"
-                      size="lg"
-                      onPress={async () => {
-                        await handleSubmit()
-                        props.fetchItemDetails()
-                        clearForm()
-                      }}
-                    >
-                      เพิ่มของต่อเนื่อง
-                    </Button>
-                    <Button
-                      className=" text-foreground font-medium border-neutral border-1 bg-background"
+                      className=" text-foreground font-medium border-neutral border-1 bg-background flex-1"
                       size="lg"
                       onPress={() => {
                         clearForm()

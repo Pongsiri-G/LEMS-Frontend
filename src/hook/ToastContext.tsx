@@ -34,7 +34,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={{ showToast }}>
       {children}
       {
-        <div className={clsx("transition-all fixed bg-white right-5 bottom-5 flex gap-3 items-center p-3 rounded-xl shadow-xl z-50", {
+        <div className={clsx("transition-all fixed bg-white right-5 bottom-5 flex gap-3 items-center p-3 rounded-xl shadow-xl z-[10000]", {
           "translate-y-28": !toast?.show,
           "translate-y-0": toast?.show,
         })}>
