@@ -26,29 +26,11 @@ export default function Home() {
     setItemDetail(items);
   }
 
-  // const fetchItemDetail = async () => {
-  //   const url = `/v1/item/list`
-  //   const res = await apiClient.get(url)
-  //   const data = res.data
-  //   var response: Item[] = data
-  //   var items: Item[] = []
-  //   console.log(response[0])
-  //   for (let i = 0; i < response.length; i++) {
-  //     const item: Item = {
-  //       itemID: data[i]["id"],
-  //       itemName: data[i]["name"],
-  //       itemDescription: data[i]["desc"],
-  //       itemPictureURL: data[i]["picture_url"],
-  //       itemStatus: data[i]["status"],
-  //       itemQuantity: data[i]["quantity"],
-  //       itemCurrentQuantity: data[i]["current_quantity"],
-  //       createdAt: new Date(data[i]["created_at"]),
-  //       updatedAt: new Date(data[i]["updated_at"])
-  //     }
-  //     items.push(item)
-  //   }
-  //   setItemDetail(items)
-  // }
+  const deleteItem = async (itemID: string) => {
+    const res = await apiClient.delete(`/v1/item/${itemID}`)
+    fetchItem("", "", "")
+  }
+
 
   useEffect(() => {
     fetchItem("", "", "")
@@ -154,12 +136,10 @@ export default function Home() {
             {itemDetail?.map((index) => (
               <ItemCard
                 key={index.itemID}
-                id={index.itemID}
-                name={index.itemName}
-                image={index.itemPictureURL}
-                amount={index.itemQuantity}
-                status={index.itemStatus}
+                item={index}
                 prePage={"equipment-manage"}
+                deleteItem={deleteItem}
+                fetchItem={fetchItem}
               />
             ))}
           </div>

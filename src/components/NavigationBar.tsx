@@ -82,26 +82,22 @@ export function NavigationBar() {
       </NavbarBrand>
 
       <NavbarContent justify="start" className="flex gap-5 items-center">
-        {user && user.userRole === UserRoles.USER && (
-          <NavbarItem>
-            <Link
-              href="/borrow-return"
-              className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
-            >
-              ยืม-คืนสิ่งของ
-            </Link>
-          </NavbarItem>
-        )}
-        {user && user.userRole === UserRoles.USER && (
-          <NavbarItem>
-            <Link
-              href="/request"
-              className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
-            >
-              คำร้อง
-            </Link>
-          </NavbarItem>
-        )}
+        <NavbarItem>
+          <Link
+            href="/borrow-return"
+            className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
+          >
+            ยืม-คืนสิ่งของ
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link
+            href="/request"
+            className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
+          >
+            คำร้อง
+          </Link>
+        </NavbarItem>
         {user && user.userRole === UserRoles.ADMIN && (
           <NavbarItem>
             <Link
