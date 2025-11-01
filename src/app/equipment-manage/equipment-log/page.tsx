@@ -1,6 +1,7 @@
 "use client"
 import BackButton from "@/src/components/BackButton";
 import MovingCloudBG from "@/src/components/MovingCloudBG";
+import { useWebSocketNotifications } from "@/src/hook/useWebSocketNotifications";
 import { apiClient } from "@/src/services/apiClient";
 import { Log, toLog } from "@/src/types/log";
 import { getKeyValue, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
@@ -34,6 +35,8 @@ const columns = [
 ];
 export default function AllLog() {
   const [log, setLog] = useState<Log[]>([])
+
+  useWebSocketNotifications();
 
   const fetchAllLog = async () => {
     const res = await apiClient.get("/v1/admin/logs")

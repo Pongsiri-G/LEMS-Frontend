@@ -11,12 +11,15 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure
 import Popup from "@/src/components/equipment-mange/CreatePopUp";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/src/services/apiClient";
+import { useWebSocketNotifications } from "@/src/hook/useWebSocketNotifications";
 import { Item } from "@/src/types/item";
 import { fetchItemDetail } from "@/src/utils/itemUtils";
 
 export default function Home() {
   const [itemDetail, setItemDetail] = useState<Item[]>()
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  useWebSocketNotifications();
 
   const fetchItem = async (name: string, tag: string, status: string) => {
     const items = await fetchItemDetail(name, tag, status);

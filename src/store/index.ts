@@ -1,16 +1,21 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import { useDispatch } from "react-redux";
-import auth from "../feature/authSlice";
 import { FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE } from "redux-persist";
 import storage from "redux-persist/lib/storage"; 
 import { persistStore } from "redux-persist";
+import authReducer from "../feature/authSlice";
+import notiReducer from "../feature/notificationSlice";
 
-const rootReducer = combineReducers({ auth });
+
+const rootReducer = combineReducers({ 
+    auth: authReducer,
+    noti: notiReducer,
+});
 
 const persistConfig = {
     key: "root",
     storage,
-    whitelist: ["auth"], // persist only auth
+    whitelist: ["auth", "noti"], // persist only auth
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

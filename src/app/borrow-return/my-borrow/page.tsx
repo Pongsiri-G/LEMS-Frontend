@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchItemDetail } from "@/src/utils/itemUtils";
 import BackButton from "@/src/components/BackButton";
+import { useWebSocketNotifications } from "@/src/hook/useWebSocketNotifications";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { Item } from "@/src/types/item";
@@ -15,6 +16,7 @@ export default function Home() {
   const [itemDetail, setItemDetail] = useState<Item[]>()
 
 
+  useWebSocketNotifications();
 
   const fetchItem = async (name: string, tag: string, status: string) => {
     const items = await fetchItemDetail(name, tag, status, "borrowed");
