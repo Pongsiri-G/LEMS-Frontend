@@ -40,11 +40,13 @@ export default function AllLog() {
 
   const fetchAllLog = async () => {
     const res = await apiClient.get("/v1/admin/logs")
-    const newLog: Log[] = res.data.map((e: any) => {
-      return toLog(e)
-    })
-    console.log(newLog)
-    setLog(newLog)
+    if (res.data !== null) {
+      const newLog: Log[] = res.data.map((e: any) => {
+        return toLog(e)
+      })
+      console.log(newLog)
+      setLog(newLog)
+    }
   }
 
   useEffect(() => {

@@ -62,11 +62,7 @@ export default function Home() {
             {itemDetail?.map((e, index) => (
               <ItemCard
                 key={index}
-                id={e.itemID}
-                image={e.itemPictureURL}
-                name={e.itemName}
-                amount={e.itemQuantity}
-                status={e.itemStatus}
+                item={e}
                 prePage="my-borrow"
                 borrowID={"haha"}
               />

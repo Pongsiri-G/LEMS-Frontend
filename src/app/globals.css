@@ -30,6 +30,10 @@
   .scrollbar-hide {
     scrollbar-width: none;
   }
+
+  .button-effect {
+    @apply cursor-pointer hover:scale-95 active:scale-100 transition-all;
+  }
 }
 
 @keyframes floatX {

@@ -48,7 +48,7 @@ export default function VerifyBorrowPopup({ isOpen, closePopup, itemName, itemID
       })}
       >
         <p className="text-large font-bold">หากยืมอุปกรณ์ {itemName} จะยืมอุปกรณ์ต่อไปนี้โดยปริยาย</p>
-        <div className="flex overflow-x-auto p-4 justify-center">
+        <div className="flex overflow-x-auto p-4 justify-center gap-4">
           {
             itemChild !== undefined && itemChild.length !== 0 ? itemChild.map((element) => {
               return (
