@@ -27,7 +27,7 @@ export default function Home() {
     fetchItem("", "", "")
   }, [])
   return (
-    <main className="flex flex-col justify-start items-start gap-10 mt-5 pt-5">
+    <main className="flex flex-col justify-start items-start gap-10 mt-5 pt-5 mx-3.5">
       <MovingCloudBG />
       <div className="relative !gap !mt w-full flex flex-col justify-start items-center max-w-[1500px] mx-auto">
         <div className="w-full">

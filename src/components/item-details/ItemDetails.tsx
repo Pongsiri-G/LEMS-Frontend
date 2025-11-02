@@ -19,6 +19,7 @@ export default function ItemDetails() {
   const [itemTags, setItemTags] = useState<ItemTag[]>()
   const [childItems, setChildItems] = useState<Item[]>()
   const [imageURL, setImageURL] = useState<string>()
+  const [allowBorrow, setAllowBorrow] = useState(true)
   const [childImageURL, setChildImageURL] = useState<string[]>()
   const [borrowID, setBorrowID] = useState("")
   const [queue, setQueue] = useState<BorrowQueue | null>(null)
@@ -28,6 +29,13 @@ export default function ItemDetails() {
   const prePage = param.prepage
 
   const { showToast } = useToast()
+
+  const fetchFrontQueue = async () => {
+    const res = await apiClient.get(`/v1/bq/front/${id}`)
+    if (res.data !== null) {
+    }
+    console.log(res.data)
+  }
 
   const fetchImage = async (imageURL: string): Promise<string> => {
     const url = `/v1/image`
@@ -148,6 +156,7 @@ export default function ItemDetails() {
     fetchItemTag()
     fetchChildItem()
     fetchBorrowID()
+    fetchFrontQueue()
     fetchMyQueue()
   }, [])
 
@@ -178,14 +187,17 @@ export default function ItemDetails() {
             )}
           <button disabled={itemDetail?.itemStatus === "UNAVAILABLE"} className={clsx("rounded-full p-3 flex gap-4 text-white hover:-translate-x-[165px] transition-all  ", {
             "bg-error cursor-pointer active:scale-95 active:opacity-90": prePage === "my-borrow",
-            "bg-neutral": itemDetail?.itemStatus === "UNAVAILABLE" && prePage === "borrow-return",
+            "bg-neutral": itemDetail?.itemStatus === "UNAVAILABLE" || itemDetail?.itemStatus === "INLABONLY" && prePage === "borrow-return",
             "bg-primary cursor-pointer active:scale-95 active:opacity-90": itemDetail?.itemStatus === "AVAILABLE" && prePage === "borrow-return"
           })} onClick={() => {
-                if (prePage === "my-borrow") {
-                  setReturnPopupOpen(true)
-                } else {
-                  setVerifyPopupOpen(true)
-                }
+            if (itemDetail?.itemStatus === "UNAVAILABLE" || itemDetail?.itemStatus === "INLABONLY") {
+              return
+            }
+            if (prePage === "my-borrow") {
+              setReturnPopupOpen(true)
+            } else {
+              setVerifyPopupOpen(true)
+            }
           }}>
             {prePage === "my-borrow" ?
                 <>
@@ -201,15 +213,7 @@ export default function ItemDetails() {
             </button>
           </div>
       }
-        {/* <div className="flex 2xl:flex-col flex-row gap-4 overflow-y-auto scrollbar-hide max-h-[500px]">
-        <img src={"/CPU.jpg"} className="max-w-[200px] w-full rounded-xl" />
-        <img src={"/GPU.jpg"} className="max-w-[200px] w-full rounded-xl" />
-        <img src={"/Cooling.jpg"} className="max-w-[200px] w-full rounded-xl" />
-        <img src={"/CPU.jpg"} className="max-w-[200px] w-full rounded-xl" />
-        <img src={"/GPU.jpg"} className="max-w-[200px] w-full rounded-xl" />
-        <img src={"/Cooling.jpg"} className="max-w-[200px] w-full rounded-xl" />
-      </div> */}
-        <div className="flex xl:flex-row flex-col flex-1 gap-5 h-fit">
+      <div className="flex xl:flex-row flex-col flex-1 gap-5 h-fit">
         <img src={imageURL} className="xl:max-w-[500px] h-fit flex-1 rounded-xl" />
           <div className="flex-1 gap-6 flex flex-col">
             <p className="text-2xl font-bold">ชื่อ: {itemDetail?.itemName}</p>
@@ -249,8 +253,9 @@ export default function ItemDetails() {
               <div className="flex gap-3 flex-col justify-center">
                 <p className="text-neutral">สถานะ: </p>
               <p className={clsx("font-bold py-2 px-4 rounded-full  text-white w-fit", {
-                      "bg-error": itemDetail?.itemStatus === "UNAVAILABLE",
-                      "bg-success": itemDetail?.itemStatus === "AVAILABLE",
+                "bg-error": itemDetail?.itemStatus === "UNAVAILABLE",
+                "bg-success": itemDetail?.itemStatus === "AVAILABLE",
+                "bg-amber-400": itemDetail?.itemStatus === "INLABONLY",
               })}>{itemDetail?.itemStatus}</p>
               </div>
               <div className="flex flex-col gap-3 flex-1 ">

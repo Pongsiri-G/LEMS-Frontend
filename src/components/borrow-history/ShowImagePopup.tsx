@@ -14,6 +14,9 @@ export default function ShowImagePopup(props: ShowImagePopupProps) {
 
   const getImage = async (url: string) => {
     console.log("URL", url)
+    if (url === "" || url === undefined || url === null) {
+      return
+    }
     const res = await apiClient.post("/v1/image", {
       "url": url
     }, { responseType: 'blob' })
@@ -33,7 +36,9 @@ export default function ShowImagePopup(props: ShowImagePopupProps) {
         <ModalBody>
           {
             image === "" ?
-              <></>
+              <>
+                <p>ไม่พบข้อมูลรูปภาพการคืน</p>
+              </>
               :
               <img
                 className="rounded-2xl max-w-[500px] max-h-[500px] object-cover"
