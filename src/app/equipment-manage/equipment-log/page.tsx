@@ -36,7 +36,7 @@ const columns = [
 export default function AllLog() {
   const [log, setLog] = useState<Log[]>([])
 
-  useWebSocketNotifications();
+  // useWebSocketNotifications();
 
   const fetchAllLog = async () => {
     const res = await apiClient.get("/v1/admin/logs")

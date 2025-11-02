@@ -16,7 +16,7 @@ export default function Home() {
   const [itemDetail, setItemDetail] = useState<Item[]>()
 
 
-  useWebSocketNotifications();
+  // useWebSocketNotifications();
 
   const fetchItem = async (name: string, tag: string, status: string) => {
     const items = await fetchItemDetail(name, tag, status, "borrowed");

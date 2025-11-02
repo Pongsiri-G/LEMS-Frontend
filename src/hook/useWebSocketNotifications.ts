@@ -7,13 +7,14 @@ import { useAppSelector } from "./useAppSelector";
 import { authSelector } from "../feature/authSlice";
 import { addNotification } from "../feature/notificationSlice";
 import { addToast } from "@heroui/react";
+import { UserRoles } from "../constants/user";
 
 export function useWebSocketNotifications() {
     const { user, isAuthenticated, accessToken } = useAppSelector(authSelector);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (!isAuthenticated || !user) return;
+        if (!isAuthenticated || !user || (user.userRole !== UserRoles.USER)) return;
 
         const ws = connectWebSocket(user.userId);
 

@@ -135,85 +135,88 @@ export function NavigationBar() {
           </NavbarItem>
         ) : (
           <div className="flex space-x-2 items-center">
-            <NavbarItem className="mr-8">
-              <Popover
-                placement="bottom"
-                offset={10}
-                isOpen={isOpen}
-                onOpenChange={setIsOpen}
-              >
-                <PopoverTrigger>
-                  <div
-                    className="relative cursor-pointer select-none"
-                    onClick={() => {
-                      setIsOpen(!isOpen)
-                    }}
-                  >
-                    <Badge
-                      content={unreadCount > 0 ? unreadCount : null}
-                      color="danger"
-                      shape="circle"
-                      className="absolute right-[0.9rem] z-10"
+            {user && user.userRole === UserRoles.USER && (
+              <NavbarItem className="mr-8">
+                <Popover
+                  placement="bottom"
+                  offset={10}
+                  isOpen={isOpen}
+                  onOpenChange={setIsOpen}
+                >
+                  <PopoverTrigger>
+                    <div
+                      className="relative cursor-pointer select-none"
+                      onClick={() => {
+                        setIsOpen(!isOpen)
+                      }}
                     >
-                      <Button
-                        isIconOnly
-                        variant="light"
-                        aria-label="notifications"
+                      <Badge
+                        content={unreadCount > 0 ? unreadCount : null}
+                        color="danger"
+                        shape="circle"
+                        className="absolute right-[0.9rem] z-10"
                       >
-                        <NotificationIcon width={24} />
-                      </Button>
-                    </Badge>
-                  </div>
-                </PopoverTrigger>
+                        <Button
+                          isIconOnly
+                          variant="light"
+                          aria-label="notifications"
+                        >
+                          <NotificationIcon width={24} />
+                        </Button>
+                      </Badge>
+                    </div>
+                  </PopoverTrigger>
 
-                <PopoverContent className="w-72">
-                  <div className="p-2">
-                    <h3 className="font-semibold text-sm">Notifications</h3>
-                    {notifications.length > 0 && (
-                      <div className="flex justify-between">
-                        <div className="" />
-                        <p
-                          className="cursor-pointer hover:underline"
-                          onClick={handleClearNotifications}
-                        >
-                          Clear
-                        </p>
-                      </div>
-                    )}
-                    <Listbox aria-label="Notifications" className="w-[16rem]" classNames={{
-                      "list": "px-0"
-                    }}>
-                      {notifications.length === 0 ? (
-                        <ListboxItem
-                          key="none"
-                          textValue="none"
-                        >
-                          <span className="text-gray-500 text-sm">
-                            No notifications
-                          </span>
-                        </ListboxItem>
-                      ) : (
-                        notifications.map((n, idx) => (
-                          <ListboxItem
-                            key={idx}
-                            textValue={n.message}
-                            onPress={() => handleNotiClick(n.id)}
+                  <PopoverContent className="w-72">
+                    <div className="p-2">
+                      <h3 className="font-semibold text-sm">Notifications</h3>
+                      {notifications.length > 0 && (
+                        <div className="flex justify-between">
+                          <div className="" />
+                          <p
+                            className="cursor-pointer hover:underline"
+                            onClick={handleClearNotifications}
                           >
-                            <div>
-                              <p
-                                className={`${!n.read ? "font-semibold" : "text-gray-500"}`}
-                              >
-                                {n.message}
-                              </p>
-                            </div>
-                          </ListboxItem>
-                        ))
+                            Clear
+                          </p>
+                        </div>
                       )}
-                    </Listbox>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </NavbarItem>
+                      <Listbox
+                        aria-label="Notifications"
+                        className="w-[16rem]"
+                        classNames={{
+                          list: "px-0",
+                        }}
+                      >
+                        {notifications.length === 0 ? (
+                          <ListboxItem key="none" textValue="none">
+                            <span className="text-gray-500 text-sm">
+                              No notifications
+                            </span>
+                          </ListboxItem>
+                        ) : (
+                          notifications.map((n, idx) => (
+                            <ListboxItem
+                              key={idx}
+                              textValue={n.message}
+                              onPress={() => handleNotiClick(n.id)}
+                            >
+                              <div>
+                                <p
+                                  className={`${!n.read ? "font-semibold" : "text-gray-500"}`}
+                                >
+                                  {n.message}
+                                </p>
+                              </div>
+                            </ListboxItem>
+                          ))
+                        )}
+                      </Listbox>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </NavbarItem>
+            )}
             <NavbarItem>
               <Dropdown className="hover:scale-95">
                 <DropdownTrigger>

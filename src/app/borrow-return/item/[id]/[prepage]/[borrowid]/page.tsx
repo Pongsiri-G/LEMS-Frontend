@@ -3,7 +3,7 @@ import { useWebSocketNotifications } from "@/src/hook/useWebSocketNotifications"
 import Image from "next/image";
 
 export default function BorrowReturnPage() {
-  useWebSocketNotifications();
+  // useWebSocketNotifications();
 
   return <>
     <ItemDetailsHeader />
