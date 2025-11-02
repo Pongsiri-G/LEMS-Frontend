@@ -19,6 +19,9 @@ import {
   Badge,
   Listbox,
   ListboxItem,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
 } from "@heroui/react"
 import Image from "next/image"
 import { UserRoles } from "../constants/user"
@@ -32,6 +35,7 @@ import {
   notiSelector,
 } from "../feature/notificationSlice"
 import { NotificationIcon } from "./NotiIcon"
+import { Menu } from "lucide-react"
 
 export function NavigationBar() {
   const [selectedKeys, setSelectedKeys] = useState("TH (ภาษาไทย)")
@@ -39,6 +43,8 @@ export function NavigationBar() {
 
   const { user, isAuthenticated } = useAppSelector(authSelector)
   const { items: notifications } = useAppSelector(notiSelector)
+
+  const [navPopup, setNavPopup] = useState(false)
 
   const dispatch = useAppDispatch()
 
@@ -53,7 +59,7 @@ export function NavigationBar() {
   )
 
   const handleNotiClick = (id: string) => {
-    dispatch(markAsRead(id)) 
+    dispatch(markAsRead(id))
   }
 
   const handleReadAll = () => {
@@ -69,7 +75,7 @@ export function NavigationBar() {
       maxWidth="full"
       className="border-b border-[1px] border-[rgba(0,0,0,0.045)] py-[1px] sm:px-[10px] md:px-[45px] px-[25px] relative z-10"
     >
-      <NavbarBrand className="!flex-none mr-3">
+      <NavbarBrand className="!flex-none mr-3 lg:flex hidden">
         <Link href="/" className="font-bold text-xl flex items-center">
           <Image
             src="/images/cnclogo.png"
@@ -80,8 +86,10 @@ export function NavigationBar() {
           />
         </Link>
       </NavbarBrand>
-
-      <NavbarContent justify="start" className="flex gap-5 items-center">
+      <NavbarContent className="lg:hidden">
+        <NavbarMenuToggle aria-label={navPopup ? "Close menu" : "Open menu"} className="w-fit" />
+      </NavbarContent>
+      <NavbarContent justify="start" className="lg:flex gap-5 items-center hidden">
         <NavbarItem>
           <Link
             href="/borrow-return"
@@ -136,7 +144,7 @@ export function NavigationBar() {
         ) : (
           <div className="flex space-x-2 items-center">
             {user && user.userRole === UserRoles.USER && (
-              <NavbarItem className="mr-8">
+              <NavbarItem className="">
                 <Popover
                   placement="bottom"
                   offset={10}
@@ -218,9 +226,9 @@ export function NavigationBar() {
               </NavbarItem>
             )}
             <NavbarItem>
-              <Dropdown className="hover:scale-95">
+              <Dropdown className="hover:scale-95 hidden">
                 <DropdownTrigger>
-                  <Button className="capitalize" variant="bordered">
+                  <Button className="capitalize hidden" variant="bordered">
                     {selectedKeys}
                   </Button>
                 </DropdownTrigger>
@@ -270,6 +278,44 @@ export function NavigationBar() {
           </div>
         )}
       </NavbarContent>
+      <NavbarMenu>
+        <NavbarMenuItem>
+          <Link
+            href="/borrow-return"
+            className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
+          >
+            ยืม-คืนสิ่งของ
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem>
+          <Link
+            href="/request"
+            className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
+          >
+            คำร้อง
+          </Link>
+        </NavbarMenuItem>
+        {user && user.userRole === UserRoles.ADMIN && (
+          <NavbarMenuItem>
+            <Link
+              href="/equipment-manage"
+              className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
+            >
+              จัดการสิ่งของ
+            </Link>
+          </NavbarMenuItem>
+        )}
+        {user && user.userRole === UserRoles.ADMIN && (
+          <NavbarMenuItem>
+            <Link
+              href="/user-mgnt"
+              className="text-foreground hover:text-primary transition hover:text-[rgba(27,160,240,1)]"
+            >
+              จัดการผู้ใช้
+            </Link>
+          </NavbarMenuItem>
+        )}
+      </NavbarMenu>
     </Navbar>
   )
 }

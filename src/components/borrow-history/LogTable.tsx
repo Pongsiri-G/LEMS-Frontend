@@ -27,7 +27,7 @@ export default function LogTable<T>(props: LogTableProps<T>) {
     <div className="mt-5 w-full max-w-[1300px] px-10">
       <ShowImagePopup imageURL={targetImageURL} isOpen={isOpen} onOpenChange={onOpenChange} key={targetImageURL} />
       <BackButton />
-      <h3 className="text-3xl sm:text-3xl md:text-4xl font-bold w-full text-center">
+      <h3 className="text-3xl sm:text-3xl md:text-4xl font-bold w-full text-center mt-5">
         <span className="">{props.title} </span>
       </h3>
       <div className="flex flex-col gap-6 w-full mt-4">

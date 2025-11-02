@@ -29,6 +29,19 @@ export default function ItemCard({
   const { showToast } = useToast()
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  const getStatusName = (name: string): string => {
+    switch (name) {
+      case "IN-LAB ONLY":
+        return "In-Lab Only"
+      case "AVAILABLE":
+        return "Available"
+      case "UNAVAILABLE":
+        return "UnAvailable"
+      default:
+        return ""
+    }
+  }
+
 
   const fetchImage = async (imageURL: string) => {
     const url = `/v1/image`
@@ -55,8 +68,8 @@ export default function ItemCard({
   const [isCardHovered, setIsCardHovered] = useState(false);
   return (
     true && (
-      <div className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10">
-        <Card className="flex flex-col items-start gap-2 w-[300px] h-[450px] flex-shrink-0 mt-5 z-10 ">
+      <div className="flex flex-col items-start gap-2 w-full max-w-[300px] h-[450px] flex-shrink-0 mt-5 z-10">
+        <Card className="flex flex-col items-start gap-2 w-full max-w-[300px] h-[450px] flex-shrink-0 mt-5 z-10 ">
           <div
             className="relative w-full h-[300px] overflow-hidden rounded-[0px] "
             onClick={() => { }}
@@ -106,9 +119,9 @@ export default function ItemCard({
           <div className="px-5 py-3 flex flex-col gap-3 w-full">
             <p className="text-lg font-semibold h-fit">{item.itemName}</p>
             <p
-              className={`text-sm text-balance font-bold ${item.itemStatus === "AVAILABLE" ? "text-success" : "text-error"}`}
+              className={`text-sm text-balance text-neutral`}
             >
-              {(item.itemStatus[0] + item.itemStatus.slice(1).toLowerCase())}
+              สถานะสิ่งของ: <span className={`${item.itemStatus === "AVAILABLE" ? "text-success" : item.itemStatus === "IN-LAB ONLY" ? "text-amber-400" : "text-error"}`}>{getStatusName(item.itemStatus)}</span>
             </p>
             <div className="flex items-center w-full">
               <div className="flex gap-2 flex-wrap flex-1">

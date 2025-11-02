@@ -48,10 +48,10 @@ export default function BorrowHistory() {
   }, [])
 
   return <>
-    <main className="flex flex-col justify-start items-center gap-10 mt-5 pt-5">
+    <main className="flex flex-col justify-start items-center gap-10 mt-5 pt-5 mx-3.5">
       <div className="relative !gap !mt w-full flex flex-col justify-center items-center">
         <MovingCloudBG />
-        <LogTable column={columns} title="ระบบยืมคืนสิ่งของ" description="ตารางบันทึกประวัติการจัดยืมคืนสิ่งของ" data={data} />
+        <LogTable column={columns} title="ระบบยืมคืนสิ่งของ" description="ตารางบันทึกประวัติการยืมคืนสิ่งของ" data={data} />
       </div>
     </main>
   </>
