@@ -1,15 +1,17 @@
 "use client"
 import clsx from "clsx";
 import { Bell, NotebookTabs, Package, PackageOpen, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReturnItemPopup from "./ReturnItemPopup";
 import { apiClient } from "@/src/services/apiClient";
 import { useParams } from "next/navigation";
-import { blob } from "node:stream/consumers";
-import path from "node:path";
 import { Card, CardBody } from "@heroui/react";
 import VerifyBorrowPopup from "./VerifyBorrowPopup";
 import { Item } from "@/src/types/item";
+import { useToast } from "@/src/hook/ToastContext";
+import { RootState } from "@/src/store";
+import { useSelector } from "react-redux";
+import { BorrowQueue, ResponseBody } from "@/src/types";
 // import { fs } from "node:fs"; // Removed because 'fs' is not available in the browser
 
 export default function ItemDetails() {
@@ -19,12 +21,29 @@ export default function ItemDetails() {
   const [itemTags, setItemTags] = useState<ItemTag[]>()
   const [childItems, setChildItems] = useState<Item[]>()
   const [imageURL, setImageURL] = useState<string>()
+  const [allowBorrow, setAllowBorrow] = useState(true)
   const [childImageURL, setChildImageURL] = useState<string[]>()
   const [borrowID, setBorrowID] = useState("")
+  const user = useSelector((state: RootState) => state.auth.user);
+  const [queue, setQueue] = useState<BorrowQueue | null>(null)
 
   const param = useParams();
   const id = param.id;
   const prePage = param.prepage
+
+  const { showToast } = useToast()
+
+  const fetchFrontQueue = async () => {
+    const res = await apiClient.get(`/v1/bq/front/${id}`)
+    if (res.data === null) {
+      return
+    }
+    if (user?.userId === res.data["user_id"]) {
+      setAllowBorrow(true)
+    } else {
+      setAllowBorrow(false)
+    }
+  }
 
   const fetchImage = async (imageURL: string): Promise<string> => {
     const url = `/v1/image`
@@ -107,11 +126,46 @@ export default function ItemDetails() {
     setChildItems([...items])
   }
 
+  const fetchMyQueue = async () => {
+    const url = `/v1/bq/myqueue/${id}`
+    await apiClient.get<BorrowQueue>(url).then((res) => {
+      setQueue(res.data)
+    })
+  }
+
+  const handleNotifyWhenAvailable = async (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    const url = `/v1/bq/enqueue`
+    await apiClient.post(url, {
+      itemId: id,
+    }).then(() => {
+      fetchMyQueue()
+      showToast("บันทึกสำเร็จ", "success")
+    }).catch((err) => {
+      showToast("เกิดข้อผิดพลาด กรุณาลองใหม่ภายหลัง", "error")
+    })
+  }
+
+  const handleCancelNotification = async (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    const url = `/v1/bq/${queue?.queue_id}`
+    await apiClient.patch(url).then(() => {
+      showToast("ยกเลิกคิวสำเร็จ", "success")
+      setQueue(null)
+    }).catch((err) => {
+      showToast("เกิดข้อผิดพลาด กรุณาลองใหม่ภายหลัง", "error")
+    })
+  }
+
   useEffect(() => {
     fetchItemDetail()
     fetchItemTag()
     fetchChildItem()
     fetchBorrowID()
+    fetchFrontQueue()
+    fetchMyQueue()
   }, [])
 
   return <>
@@ -122,18 +176,40 @@ export default function ItemDetails() {
         <></>
         :
         <div className="fixed right-0 top-1/2 -translate-y-1/2 flex flex-col gap-3.5 translate-x-[195px]">
-          <button className="rounded-full bg-primary p-3 pr-10 flex gap-4 text-white hover:-translate-x-[165px] transition-all cursor-pointer active:scale-95 active:opacity-90">
-            <Bell className="stroke-white" />
-            <p className="select-none">แจ้งเตือนเมื่อพร้อมให้ยืม</p>
-          </button>
-          <button disabled={itemDetail?.itemStatus === "UNAVAILABLE"} className={clsx("rounded-full p-3 flex gap-4 text-white hover:-translate-x-[165px] transition-all  ", {
+          {queue ? (
+            <button
+              className="rounded-full bg-error p-3 pr-10 flex gap-4 text-white hover:-translate-x-[165px] transition-all cursor-pointer active:scale-95 active:opacity-90"
+              onClick={(e) => handleCancelNotification(e)}
+            >
+              <Bell className="stroke-white" />
+              <p className="select-none">ยกเลิกการแจ้งเตือน.......</p>
+            </button>
+          ) : (
+            <button
+              className="rounded-full bg-primary p-3 pr-10 flex gap-4 text-white hover:-translate-x-[165px] transition-all cursor-pointer active:scale-95 active:opacity-90"
+              onClick={(e) => handleNotifyWhenAvailable(e)}
+            >
+              <Bell className="stroke-white" />
+              <p className="select-none">แจ้งเตือนเมื่อพร้อมให้ยืม</p>
+            </button>
+          )}
+          <button disabled={itemDetail?.itemStatus === "UNAVAILABLE" && prePage !== "my-borrow"} className={clsx("rounded-full p-3 flex gap-4 text-white hover:-translate-x-[165px] transition-all  ", {
             "bg-error cursor-pointer active:scale-95 active:opacity-90": prePage === "my-borrow",
-            "bg-neutral": itemDetail?.itemStatus === "UNAVAILABLE" && prePage === "borrow-return",
-            "bg-primary cursor-pointer active:scale-95 active:opacity-90": itemDetail?.itemStatus === "AVAILABLE" && prePage === "borrow-return"
+            "bg-neutral": ((itemDetail?.itemStatus === "UNAVAILABLE" || itemDetail?.itemStatus === "IN-LAB ONLY" || !allowBorrow) && prePage === "borrow-return"),
+            "bg-primary cursor-pointer active:scale-95 active:opacity-90": itemDetail?.itemStatus === "AVAILABLE" && prePage === "borrow-return" && allowBorrow
           })} onClick={() => {
+            if (itemDetail?.itemStatus === "IN-LAB ONLY") {
+              return
+            }
             if (prePage === "my-borrow") {
               setReturnPopupOpen(true)
             } else {
+              if (!allowBorrow) {
+                return
+              }
+              if (itemDetail?.itemStatus === "UNAVAILABLE") {
+                return
+              }
               setVerifyPopupOpen(true)
             }
           }}>
@@ -151,14 +227,6 @@ export default function ItemDetails() {
           </button>
         </div>
       }
-      {/* <div className="flex 2xl:flex-col flex-row gap-4 overflow-y-auto scrollbar-hide max-h-[500px]">
-        <img src={"/CPU.jpg"} className="max-w-[200px] w-full rounded-xl" />
-        <img src={"/GPU.jpg"} className="max-w-[200px] w-full rounded-xl" />
-        <img src={"/Cooling.jpg"} className="max-w-[200px] w-full rounded-xl" />
-        <img src={"/CPU.jpg"} className="max-w-[200px] w-full rounded-xl" />
-        <img src={"/GPU.jpg"} className="max-w-[200px] w-full rounded-xl" />
-        <img src={"/Cooling.jpg"} className="max-w-[200px] w-full rounded-xl" />
-      </div> */}
       <div className="flex xl:flex-row flex-col flex-1 gap-5 h-fit">
         <img src={imageURL} className="xl:max-w-[500px] h-fit flex-1 rounded-xl" />
         <div className="flex-1 gap-6 flex flex-col">
@@ -201,6 +269,7 @@ export default function ItemDetails() {
               <p className={clsx("font-bold py-2 px-4 rounded-full  text-white w-fit", {
                 "bg-error": itemDetail?.itemStatus === "UNAVAILABLE",
                 "bg-success": itemDetail?.itemStatus === "AVAILABLE",
+                "bg-amber-400": itemDetail?.itemStatus === "IN-LAB ONLY",
               })}>{itemDetail?.itemStatus}</p>
             </div>
             <div className="flex flex-col gap-3 flex-1 ">

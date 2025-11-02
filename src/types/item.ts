@@ -1,3 +1,9 @@
+export enum PrePage {
+  MYBORROW = "my-borrow",
+  BORROWRETURN = "borrow-return",
+  EQUIPMENTMANAGE = "equipment-manage",
+}
+
 export interface Item {
   itemID: string
   itemName: string
@@ -10,7 +16,7 @@ export interface Item {
   updatedAt: Date
 }
 
-export const toItem = (data: any) : Item => {
+export const toItem = (data: any): Item => {
   return {
     itemID: data["id"],
     itemName: data["name"],

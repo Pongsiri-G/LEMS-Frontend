@@ -11,6 +11,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure
 import Popup from "@/src/components/equipment-mange/CreatePopUp";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/src/services/apiClient";
+import { useWebSocketNotifications } from "@/src/hook/useWebSocketNotifications";
 import { Item } from "@/src/types/item";
 import { fetchItemDetail } from "@/src/utils/itemUtils";
 
@@ -18,34 +19,18 @@ export default function Home() {
   const [itemDetail, setItemDetail] = useState<Item[]>()
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  // useWebSocketNotifications();
+
   const fetchItem = async (name: string, tag: string, status: string) => {
     const items = await fetchItemDetail(name, tag, status);
     setItemDetail(items);
   }
 
-  // const fetchItemDetail = async () => {
-  //   const url = `/v1/item/list`
-  //   const res = await apiClient.get(url)
-  //   const data = res.data
-  //   var response: Item[] = data
-  //   var items: Item[] = []
-  //   console.log(response[0])
-  //   for (let i = 0; i < response.length; i++) {
-  //     const item: Item = {
-  //       itemID: data[i]["id"],
-  //       itemName: data[i]["name"],
-  //       itemDescription: data[i]["desc"],
-  //       itemPictureURL: data[i]["picture_url"],
-  //       itemStatus: data[i]["status"],
-  //       itemQuantity: data[i]["quantity"],
-  //       itemCurrentQuantity: data[i]["current_quantity"],
-  //       createdAt: new Date(data[i]["created_at"]),
-  //       updatedAt: new Date(data[i]["updated_at"])
-  //     }
-  //     items.push(item)
-  //   }
-  //   setItemDetail(items)
-  // }
+  const deleteItem = async (itemID: string) => {
+    const res = await apiClient.delete(`/v1/item/${itemID}`)
+    fetchItem("", "", "")
+  }
+
 
   useEffect(() => {
     fetchItem("", "", "")
@@ -66,10 +51,10 @@ export default function Home() {
     { id: "USB Hub", status: "Disappeared", amount: 0 },
   ];
   return (
-    <main className="flex flex-col justify-start items-center gap-10 mt-5 pt-5">
+    <main className="flex flex-col justify-start items-center gap-10 mt-5 pt-5 mx-5">
       <div className="relative !gap !mt w-full flex flex-col justify-start items-center max-w-[1300px]">
         <MovingCloudBG />
-        <div className="flex flex-col justify-start items-center gap-10 mt-5">
+        <div className="flex flex-col justify-start items-center gap-10 mt-5 w-full">
           <div className="flex flex-col justify-start justify-items-center sm:justify-items-start items-center sm:items-start text-center gap-5 ">
             <h3 className="text-3xl sm:text-3xl md:text-4xl font-bold">
               <span className="">ระบบจัดการสิ่งของ </span>
@@ -118,7 +103,7 @@ export default function Home() {
                     >
                       <div className="p-3 rounded-xl bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white gap-3 w-full">
                         <History />
-                        <p className="">ตรวจสอบประวัติการยืม</p>
+                        <p className="hidden lg:inline">ตรวจสอบประวัติการยืม</p>
                       </div>
                     </Link>
                   </div>
@@ -147,16 +132,14 @@ export default function Home() {
 
 
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-25 pb-10 items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4  lg:grid-cols-3 gap-x-10 gap-y-25 pb-10 items-center">
             {itemDetail?.map((index) => (
               <ItemCard
                 key={index.itemID}
-                id={index.itemID}
-                name={index.itemName}
-                image={index.itemPictureURL}
-                amount={index.itemQuantity}
-                status={index.itemStatus}
+                item={index}
                 prePage={"equipment-manage"}
+                deleteItem={deleteItem}
+                fetchItem={fetchItem}
               />
             ))}
           </div>

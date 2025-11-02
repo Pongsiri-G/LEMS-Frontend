@@ -5,7 +5,6 @@ import { setCredentials, setUser } from "@/src/feature/authSlice"
 import { useHandleGetMe } from "@/src/services/userService/handlers"
 import { useAppDispatch } from "@/src/store"
 import { jwtDecode } from "jwt-decode"
-import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 
@@ -53,7 +52,6 @@ export default function OAuthCallback() {
       return (
         <div className="flex flex-col items-center justify-center min-h-screen">
           <h1 className="text-2xl text-red-500">{massage}</h1>
-          <Link href="/login" className="text-lg mt-2 text-primary underline">Login</Link>
         </div>
       )
     }
