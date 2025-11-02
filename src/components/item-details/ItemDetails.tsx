@@ -9,6 +9,8 @@ import { Card, CardBody } from "@heroui/react";
 import VerifyBorrowPopup from "./VerifyBorrowPopup";
 import { Item } from "@/src/types/item";
 import { useToast } from "@/src/hook/ToastContext";
+import { RootState } from "@/src/store";
+import { useSelector } from "react-redux";
 import { BorrowQueue, ResponseBody } from "@/src/types";
 // import { fs } from "node:fs"; // Removed because 'fs' is not available in the browser
 
@@ -22,6 +24,7 @@ export default function ItemDetails() {
   const [allowBorrow, setAllowBorrow] = useState(true)
   const [childImageURL, setChildImageURL] = useState<string[]>()
   const [borrowID, setBorrowID] = useState("")
+  const user = useSelector((state: RootState) => state.auth.user);
   const [queue, setQueue] = useState<BorrowQueue | null>(null)
 
   const param = useParams();
@@ -32,9 +35,17 @@ export default function ItemDetails() {
 
   const fetchFrontQueue = async () => {
     const res = await apiClient.get(`/v1/bq/front/${id}`)
-    if (res.data !== null) {
+    if (res.data === null) {
+      return
+    }
+    if (user?.userId === res.data["user_id"]) {
+      setAllowBorrow(true)
+    } else {
+      setAllowBorrow(false)
     }
     console.log(res.data)
+    console.log("USER:", user?.userId)
+    console.log(res.data["uesr_id"])
   }
 
   const fetchImage = async (imageURL: string): Promise<string> => {
@@ -161,11 +172,11 @@ export default function ItemDetails() {
   }, [])
 
   return <>
-      <Card className="flex flex-col 2xl:flex-row gap-4 my-10 relative z-0 p-10">
+    <Card className="flex flex-col 2xl:flex-row gap-4 my-10 relative z-0 p-10">
       <VerifyBorrowPopup isOpen={verifyPopupOpen} closePopup={() => { setVerifyPopupOpen(false) }} itemName={itemDetail?.itemName} itemChild={childItems} itemID={itemDetail?.itemID} />
       <ReturnItemPopup isOpen={returnPopupOpen} closePopup={() => { setReturnPopupOpen(false) }} borrowID={String(borrowID)} />
       {prePage === "equipment-manage" || prePage === "request" ?
-          <></>
+        <></>
         :
           <div className="fixed right-0 top-1/2 -translate-y-1/2 flex flex-col gap-3.5 translate-x-[195px]">
             {queue ? (
@@ -185,98 +196,104 @@ export default function ItemDetails() {
                 <p className="select-none">แจ้งเตือนเมื่อพร้อมให้ยืม</p>
               </button>
             )}
-          <button disabled={itemDetail?.itemStatus === "UNAVAILABLE"} className={clsx("rounded-full p-3 flex gap-4 text-white hover:-translate-x-[165px] transition-all  ", {
+          <button disabled={itemDetail?.itemStatus === "UNAVAILABLE" && prePage !== "my-borrow"} className={clsx("rounded-full p-3 flex gap-4 text-white hover:-translate-x-[165px] transition-all  ", {
             "bg-error cursor-pointer active:scale-95 active:opacity-90": prePage === "my-borrow",
-            "bg-neutral": itemDetail?.itemStatus === "UNAVAILABLE" || itemDetail?.itemStatus === "INLABONLY" && prePage === "borrow-return",
-            "bg-primary cursor-pointer active:scale-95 active:opacity-90": itemDetail?.itemStatus === "AVAILABLE" && prePage === "borrow-return"
+            "bg-neutral": ((itemDetail?.itemStatus === "UNAVAILABLE" || itemDetail?.itemStatus === "INLABONLY" || !allowBorrow) && prePage === "borrow-return"),
+            "bg-primary cursor-pointer active:scale-95 active:opacity-90": itemDetail?.itemStatus === "AVAILABLE" && prePage === "borrow-return" && allowBorrow
           })} onClick={() => {
-            if (itemDetail?.itemStatus === "UNAVAILABLE" || itemDetail?.itemStatus === "INLABONLY") {
+            if (itemDetail?.itemStatus === "INLABONLY") {
               return
             }
             if (prePage === "my-borrow") {
               setReturnPopupOpen(true)
             } else {
+              if (!allowBorrow) {
+                return
+              }
+              if (itemDetail?.itemStatus === "UNAVAILABLE") {
+                return
+              }
               setVerifyPopupOpen(true)
             }
           }}>
             {prePage === "my-borrow" ?
-                <>
-                  <PackageOpen className="stroke-white" />
-                  <p className="select-none">คืนของชิ้นนี้</p>
-                </>
+              <>
+                <PackageOpen className="stroke-white" />
+                <p className="select-none">คืนของชิ้นนี้</p>
+              </>
               :
-                <>
-                  <Package className="stroke-white" />
-                  <p className="select-none">ยืมของชิ้นนี้</p>
-                </>
+              <>
+                <Package className="stroke-white" />
+                <p className="select-none">ยืมของชิ้นนี้</p>
+              </>
             }
-            </button>
-          </div>
+          </button>
+        </div>
       }
       <div className="flex xl:flex-row flex-col flex-1 gap-5 h-fit">
         <img src={imageURL} className="xl:max-w-[500px] h-fit flex-1 rounded-xl" />
-          <div className="flex-1 gap-6 flex flex-col">
-            <p className="text-2xl font-bold">ชื่อ: {itemDetail?.itemName}</p>
-            <div className="flex gap-4">
-              <div className="flex-1 bg-neutral-second p-4 rounded-xl h-fit">
-                <p className="text-neutral">จำนวนทั้งหมด</p>
+        <div className="flex-1 gap-6 flex flex-col">
+          <p className="text-2xl font-bold">ชื่อ: {itemDetail?.itemName}</p>
+          <div className="flex gap-4">
+            <div className="flex-1 bg-neutral-second p-4 rounded-xl h-fit">
+              <p className="text-neutral">จำนวนทั้งหมด</p>
               <p className="text-xl font-bold">{itemDetail?.itemQuantity} ชิ้น</p>
-              </div>
-              <div className="flex-1 bg-neutral-second p-4 rounded-xl h-fit">
-                <p className="text-neutral">จำนวนคงเหลือ</p>
-              <p className="text-xl font-bold">{itemDetail?.itemCurrentQuantity} ชิ้น</p>
-              </div>
             </div>
             <div className="flex-1 bg-neutral-second p-4 rounded-xl h-fit">
-              <p className="text-neutral">ต้องยืมร่วมกับ</p>
-              <div className="text-xl font-bold flex flex-wrap">
-                <ul className="list-disc list-inside">
+              <p className="text-neutral">จำนวนคงเหลือ</p>
+              <p className="text-xl font-bold">{itemDetail?.itemCurrentQuantity} ชิ้น</p>
+            </div>
+          </div>
+          <div className="flex-1 bg-neutral-second p-4 rounded-xl h-fit">
+            <p className="text-neutral">ต้องยืมร่วมกับ</p>
+            <div className="text-xl font-bold flex flex-wrap">
+              <ul className="list-disc list-inside">
                 {
                   childItems !== undefined && childItems.length !== 0 ? childItems?.map((element) => {
-                      return (
-                        <li key={element.itemID} className="text-medium">
-                          {element.itemName}
-                        </li>
-                      )
-                    })
+                    return (
+                      <li key={element.itemID} className="text-medium">
+                        {element.itemName}
+                      </li>
+                    )
+                  })
                     :
                     <p className="text-medium">ไม่มีอุปกรณ์ที่ต้องยืมเพิ่มเติม</p>
                 }
-                </ul>
-              </div>
+              </ul>
             </div>
+          </div>
+          <div className="flex gap-3 flex-col justify-center">
+            <p className="text-neutral">คำอธิบาย: </p>
+            <p className="">{itemDetail?.itemDescription}</p>
+          </div>
+          <div className="flex md:flex-row flex-col gap-10">
             <div className="flex gap-3 flex-col justify-center">
-              <p className="text-neutral">คำอธิบาย: </p>
-              <p className="">{itemDetail?.itemDescription}</p>
-            </div>
-            <div className="flex md:flex-row flex-col gap-10">
-              <div className="flex gap-3 flex-col justify-center">
-                <p className="text-neutral">สถานะ: </p>
+              <p className="text-neutral">สถานะ: </p>
               <p className={clsx("font-bold py-2 px-4 rounded-full  text-white w-fit", {
                 "bg-error": itemDetail?.itemStatus === "UNAVAILABLE",
                 "bg-success": itemDetail?.itemStatus === "AVAILABLE",
                 "bg-amber-400": itemDetail?.itemStatus === "INLABONLY",
               })}>{itemDetail?.itemStatus}</p>
-              </div>
-              <div className="flex flex-col gap-3 flex-1 ">
-                <p className="text-neutral">Tag: </p>
-                <div className="flex gap-3 flex-wrap">
-                  {itemTags?.map((element) => {
-                    return (
-                      <div
-                        key={element.id}
-                        className={`flex gap-2 justify-center items-center  rounded-full w-fit px-4 py-2`}
+            </div>
+            <div className="flex flex-col gap-3 flex-1 ">
+              <p className="text-neutral">Tag: </p>
+              <div className="flex gap-3 flex-wrap">
+                {itemTags?.map((element) => {
+                  return (
+                    <div
+                      key={element.id}
+                      className={`flex gap-2 justify-center items-center  rounded-full w-fit px-4 py-2`}
                       style={{ backgroundColor: element.color }}>
                       <p className="text-white cursor-default font-bold">{element.name}</p>
-                        {/* <X className="stroke-white" /> */}
-                      </div>
-                    )
-                  })}
-                </div>
+                      {/* <X className="stroke-white" /> */}
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>
         </div>
-      </Card>
-    </>
+      </div>
+    </Card>
+  </>
 }

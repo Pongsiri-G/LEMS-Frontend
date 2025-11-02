@@ -31,8 +31,8 @@ export default function ItemCard({
 
   const getStatusName = (name: string): string => {
     switch (name) {
-      case "INLABONLY":
-        return "InLabOnly"
+      case "IN-LAB ONLY":
+        return "In-Lab Only"
       case "AVAILABLE":
         return "Available"
       case "UNAVAILABLE":
@@ -121,7 +121,7 @@ export default function ItemCard({
             <p
               className={`text-sm text-balance text-neutral`}
             >
-              สถานะสิ่งของ: <span className={`${item.itemStatus === "AVAILABLE" ? "text-success" : item.itemStatus === "INLABONLY" ? "text-amber-400" : "text-error"}`}>{getStatusName(item.itemStatus)}</span>
+              สถานะสิ่งของ: <span className={`${item.itemStatus === "AVAILABLE" ? "text-success" : item.itemStatus === "IN-LAB ONLY" ? "text-amber-400" : "text-error"}`}>{getStatusName(item.itemStatus)}</span>
             </p>
             <div className="flex items-center w-full">
               <div className="flex gap-2 flex-wrap flex-1">

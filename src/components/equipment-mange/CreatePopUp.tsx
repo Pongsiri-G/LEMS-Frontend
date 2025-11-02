@@ -346,7 +346,7 @@ export default function Popup(props: PopupProps) {
                           <SelectItem key="AVAILABLE">
                             ยืมได้
                           </SelectItem>
-                          <SelectItem key="INLABONLY">
+                          <SelectItem key="IN-LAB ONLY">
                             ใช้ได้ภายในแลปเท่านั้น
                           </SelectItem>
                         </Select>

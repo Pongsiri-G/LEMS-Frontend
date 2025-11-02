@@ -148,8 +148,8 @@ export default function SearchBar({ children, onSearch, noFilter, rightChildren,
                 >
                   <DropdownItem key="All" className="">All</DropdownItem>
                   <DropdownItem key="Available">Available </DropdownItem>
-                  <DropdownItem key="Unavailable">UnAvailable </DropdownItem>
-                  <DropdownItem key="InLabOnly">InLabOnly </DropdownItem>
+                  <DropdownItem key="Unavailable">Unavailable </DropdownItem>
+                  <DropdownItem key="In-Lab Only">In-Lab Only </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             </div>
@@ -203,8 +203,8 @@ export default function SearchBar({ children, onSearch, noFilter, rightChildren,
               >
                 <DropdownItem key="All" className="">All</DropdownItem>
                 <DropdownItem key="Available">Available </DropdownItem>
-                <DropdownItem key="Unavailable">UnAvailable </DropdownItem>
-                <DropdownItem key="InLabOnly">InLabOnly </DropdownItem>
+                <DropdownItem key="Unavailable">Unavailable </DropdownItem>
+                <DropdownItem key="In-Lab Only">In-Lab Only </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
