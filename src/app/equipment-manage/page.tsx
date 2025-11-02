@@ -51,10 +51,10 @@ export default function Home() {
     { id: "USB Hub", status: "Disappeared", amount: 0 },
   ];
   return (
-    <main className="flex flex-col justify-start items-center gap-10 mt-5 pt-5">
+    <main className="flex flex-col justify-start items-center gap-10 mt-5 pt-5 mx-5">
       <div className="relative !gap !mt w-full flex flex-col justify-start items-center max-w-[1300px]">
         <MovingCloudBG />
-        <div className="flex flex-col justify-start items-center gap-10 mt-5">
+        <div className="flex flex-col justify-start items-center gap-10 mt-5 w-full">
           <div className="flex flex-col justify-start justify-items-center sm:justify-items-start items-center sm:items-start text-center gap-5 ">
             <h3 className="text-3xl sm:text-3xl md:text-4xl font-bold">
               <span className="">ระบบจัดการสิ่งของ </span>
@@ -103,7 +103,7 @@ export default function Home() {
                     >
                       <div className="p-3 rounded-xl bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white gap-3 w-full">
                         <History />
-                        <p className="">ตรวจสอบประวัติการยืม</p>
+                        <p className="hidden lg:inline">ตรวจสอบประวัติการยืม</p>
                       </div>
                     </Link>
                   </div>
@@ -132,7 +132,7 @@ export default function Home() {
 
 
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-25 pb-10 items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4  lg:grid-cols-3 gap-x-10 gap-y-25 pb-10 items-center">
             {itemDetail?.map((index) => (
               <ItemCard
                 key={index.itemID}

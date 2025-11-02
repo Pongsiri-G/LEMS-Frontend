@@ -94,7 +94,18 @@ export default function ReturnItemPopup({ isOpen, closePopup, borrowID }: EditPo
         "scale-90": !isOpen
       })}
       >
-        <p>อัปโหลดรูปของที่คืน (ภาพควรให้เห็นชัดเจนว่าของอยู่ที่ไหน)</p>
+        <ul className=" list-disc list-inside">
+          <p className="font-semibold">อัปโหลดรูปของที่คืน (เงื่อนไขดังนี้)</p>
+          <li>
+            ภาพควรให้เห็นชัดเจนว่าของอยู่ที่ไหน
+          </li>
+          <li>
+            ถ้ามีของที่ต้องยืมด้วยกันจะคืนทั้งหมดโดยปริยาย
+          </li>
+          <li>
+            กรุณาถ่ายภาพของที่ต้องคืนด้วยกันให้ครบหากมี
+          </li>
+        </ul>
         <div className="relative flex flex-col justify-center items-center w-full outline-dashed rounded-xl outline-neutral outline-[2px] px-5  gap-2  z-10 overflow-auto py-3.5"
           onDrop={handleDrop}
           onDragOver={handleDragOver}

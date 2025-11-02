@@ -37,7 +37,7 @@ export default function Popup(props: PopupProps) {
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isOpenDropDown, setIsOpenDropDown] = useState(false)
-  const [isOpenDropDownAddTag, setIsOpenDropDownAddTag] = useState(false)
+  const [currentQuantity, setCurrentQuantity] = useState(0)
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { showToast } = useToast()
 
@@ -104,6 +104,9 @@ export default function Popup(props: PopupProps) {
   const handdleUpdate = async () => {
     try {
       if (props.item !== undefined) {
+        if (parseInt(quantity) < currentQuantity) {
+          throw Error("กรุณากรอกจำนวนสิ่งของไม่น้อยกว่า " + currentQuantity)
+        }
         const newImage = await uploadImage()
         const res = await apiClient.put("/v1/item", {
           item_id: props.item.itemID,
@@ -120,6 +123,10 @@ export default function Popup(props: PopupProps) {
         props.onOpenChange()
       }
     } catch (e: any) {
+      if (e.data === undefined || e.data === null) {
+        showToast("เกิดข้อผิดพลาด: " + e.message, "error")
+        return
+      }
       showToast("เกิดข้อผิดพลาด: " + e.data.message, "error")
     }
   }
@@ -130,6 +137,7 @@ export default function Popup(props: PopupProps) {
       setItemName(currentItem.itemName)
       setStatus(currentItem.itemStatus)
       setQuantity(String(currentItem.itemQuantity))
+      setCurrentQuantity(currentItem.itemCurrentQuantity)
       setDescription(currentItem.itemDescription)
 
       const url = `/v1/image`
@@ -156,7 +164,7 @@ export default function Popup(props: PopupProps) {
 
   useEffect(() => {
     initDataForUpdate()
-  }, [])
+  }, [props.isOpen])
 
   useEffect(() => {
   }, [requirement])
@@ -247,7 +255,6 @@ export default function Popup(props: PopupProps) {
 
         await apiClient.post("/v1/item", payload)
         props.fetchItemDetails()
-        props.onOpenChange()
         showToast(`เพิ่มข้อมูล ${itemName} สำเร็จ`, "success")
       } catch (e: any) {
         showToast(e.response?.data?.message || "เกิดข้อผิดพลาด", "error")
@@ -339,7 +346,7 @@ export default function Popup(props: PopupProps) {
                           <SelectItem key="AVAILABLE">
                             ยืมได้
                           </SelectItem>
-                          <SelectItem key="INLABONLY">
+                          <SelectItem key="IN-LAB ONLY">
                             ใช้ได้ภายในแลปเท่านั้น
                           </SelectItem>
                         </Select>
@@ -460,6 +467,7 @@ export default function Popup(props: PopupProps) {
                           await handdleUpdate()
                         } else {
                           await handleSubmit()
+                          props.onOpenChange()
                         }
                       }}
                     >
@@ -474,7 +482,6 @@ export default function Popup(props: PopupProps) {
                           size="lg"
                           onPress={async () => {
                             await handleSubmit()
-                            props.fetchItemDetails()
                             clearForm()
                           }}
                         >

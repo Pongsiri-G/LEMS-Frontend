@@ -55,7 +55,7 @@ export default function AllLog() {
 
 
   return <>
-    <main className="flex flex-col justify-start items-center gap-10 mt-5 pt-5">
+    <main className="flex flex-col justify-start items-center gap-10 mt-5 pt-5 mx-3.5">
       <div className="relative !gap !mt w-full flex flex-col justify-center items-center">
         <MovingCloudBG />
         <div className="mt-5 w-full max-w-[1300px] px-10">

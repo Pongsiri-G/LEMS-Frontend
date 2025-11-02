@@ -14,7 +14,7 @@ export function useWebSocketNotifications() {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (!isAuthenticated || !user || (user.userRole !== UserRoles.USER)) return;
+        if (!isAuthenticated || !user ) return;
 
         const ws = connectWebSocket(user.userId);
 
