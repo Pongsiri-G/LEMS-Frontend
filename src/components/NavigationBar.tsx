@@ -143,8 +143,8 @@ export function NavigationBar() {
           </NavbarItem>
         ) : (
           <div className="flex space-x-2 items-center">
-            {user && user.userRole === UserRoles.USER && (
-              <NavbarItem className="">
+            {user && (
+              <NavbarItem>
                 <Popover
                   placement="bottom"
                   offset={10}
@@ -152,35 +152,43 @@ export function NavigationBar() {
                   onOpenChange={setIsOpen}
                 >
                   <PopoverTrigger>
-                    <div
-                      className="relative cursor-pointer select-none"
-                      onClick={() => {
-                        setIsOpen(!isOpen)
-                      }}
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      aria-label="notifications"
+                      className="relative cursor-pointer select-none overflow-visible"
+                      onClick={() => setIsOpen(!isOpen)}
                     >
-                      <Badge
-                        content={unreadCount > 0 ? unreadCount : null}
-                        color="danger"
-                        shape="circle"
-                        className="absolute right-[0.9rem] z-10"
-                      >
-                        <Button
-                          isIconOnly
-                          variant="light"
-                          aria-label="notifications"
+                      {/* Icon */}
+                      <div className="z-10 relative">
+                        <NotificationIcon width={24} />
+                      </div>
+
+                      {/* Badge */}
+                      {unreadCount > 0 && (
+                        <span
+                          className="
+              absolute -top-1 -right-1
+              bg-danger text-white text-xs
+              rounded-full min-w-[18px] h-[18px]
+              flex items-center justify-center
+              px-1 leading-none
+              z-20 pointer-events-none
+            "
                         >
-                          <NotificationIcon width={24} />
-                        </Button>
-                      </Badge>
-                    </div>
+                          {unreadCount}
+                        </span>
+                      )}
+                    </Button>
                   </PopoverTrigger>
 
                   <PopoverContent className="w-72">
                     <div className="p-2">
                       <h3 className="font-semibold text-sm">Notifications</h3>
+
                       {notifications.length > 0 && (
                         <div className="flex justify-between">
-                          <div className="" />
+                          <div />
                           <p
                             className="cursor-pointer hover:underline"
                             onClick={handleClearNotifications}
@@ -189,6 +197,7 @@ export function NavigationBar() {
                           </p>
                         </div>
                       )}
+
                       <Listbox
                         aria-label="Notifications"
                         className="w-[16rem]"
@@ -198,9 +207,7 @@ export function NavigationBar() {
                       >
                         {notifications.length === 0 ? (
                           <ListboxItem key="none" textValue="none">
-                            <span className="text-gray-500 text-sm">
-                              No notifications
-                            </span>
+                            <span className="text-gray-500 text-sm">No notifications</span>
                           </ListboxItem>
                         ) : (
                           notifications.map((n, idx) => (
@@ -224,6 +231,7 @@ export function NavigationBar() {
                   </PopoverContent>
                 </Popover>
               </NavbarItem>
+
             )}
             <NavbarItem>
               <Dropdown className="hover:scale-95 hidden">

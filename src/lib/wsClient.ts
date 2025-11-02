@@ -10,7 +10,7 @@ export function connectWebSocket(userId: string) {
 
     ws.onopen = () => console.log("[WebSocket] Connected");
     ws.onclose = () => console.log("[WebSocket] Disconnected");
-    ws.onerror = (err) => console.error("[WebSocket] Error", err);
+    // ws.onerror = (err) => console.error("[WebSocket] Error", err);
 
     socket = ws;
     return ws;

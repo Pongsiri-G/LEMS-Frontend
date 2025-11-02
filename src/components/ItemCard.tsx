@@ -36,7 +36,7 @@ export default function ItemCard({
       case "AVAILABLE":
         return "Available"
       case "UNAVAILABLE":
-        return "UnAvailable"
+        return "Unavailable"
       default:
         return ""
     }
@@ -65,7 +65,6 @@ export default function ItemCard({
     fetchItemTag()
   }, [item])
 
-  const [isCardHovered, setIsCardHovered] = useState(false);
   return (
     true && (
       <div className="flex flex-col items-start gap-2 w-full max-w-[300px] h-[450px] flex-shrink-0 mt-5 z-10">

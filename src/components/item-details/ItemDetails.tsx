@@ -43,9 +43,6 @@ export default function ItemDetails() {
     } else {
       setAllowBorrow(false)
     }
-    console.log(res.data)
-    console.log("USER:", user?.userId)
-    console.log(res.data["uesr_id"])
   }
 
   const fetchImage = async (imageURL: string): Promise<string> => {
@@ -132,8 +129,8 @@ export default function ItemDetails() {
   const fetchMyQueue = async () => {
     const url = `/v1/bq/myqueue/${id}`
     await apiClient.get<BorrowQueue>(url).then((res) => {
-          setQueue(res.data)
-        })
+      setQueue(res.data)
+    })
   }
 
   const handleNotifyWhenAvailable = async (e: React.MouseEvent) => {
@@ -152,7 +149,7 @@ export default function ItemDetails() {
 
   const handleCancelNotification = async (e: React.MouseEvent) => {
     e.preventDefault()
-    
+
     const url = `/v1/bq/${queue?.queue_id}`
     await apiClient.patch(url).then(() => {
       showToast("ยกเลิกคิวสำเร็จ", "success")
@@ -178,30 +175,30 @@ export default function ItemDetails() {
       {prePage === "equipment-manage" || prePage === "request" ?
         <></>
         :
-          <div className="fixed right-0 top-1/2 -translate-y-1/2 flex flex-col gap-3.5 translate-x-[195px]">
-            {queue ? (
-              <button
-                className="rounded-full bg-error p-3 pr-10 flex gap-4 text-white hover:-translate-x-[165px] transition-all cursor-pointer active:scale-95 active:opacity-90"
-                onClick={(e) => handleCancelNotification(e)}
-              >
-                <Bell className="stroke-white" />
-                <p className="select-none">ยกเลิกการแจ้งเตือน</p>
-              </button>
-            ) : (
-              <button
-                className="rounded-full bg-primary p-3 pr-10 flex gap-4 text-white hover:-translate-x-[165px] transition-all cursor-pointer active:scale-95 active:opacity-90"
-                onClick={(e) => handleNotifyWhenAvailable(e)}
-              >
-                <Bell className="stroke-white" />
-                <p className="select-none">แจ้งเตือนเมื่อพร้อมให้ยืม</p>
-              </button>
-            )}
+        <div className="fixed right-0 top-1/2 -translate-y-1/2 flex flex-col gap-3.5 translate-x-[195px]">
+          {queue ? (
+            <button
+              className="rounded-full bg-error p-3 pr-10 flex gap-4 text-white hover:-translate-x-[165px] transition-all cursor-pointer active:scale-95 active:opacity-90"
+              onClick={(e) => handleCancelNotification(e)}
+            >
+              <Bell className="stroke-white" />
+              <p className="select-none">ยกเลิกการแจ้งเตือน.......</p>
+            </button>
+          ) : (
+            <button
+              className="rounded-full bg-primary p-3 pr-10 flex gap-4 text-white hover:-translate-x-[165px] transition-all cursor-pointer active:scale-95 active:opacity-90"
+              onClick={(e) => handleNotifyWhenAvailable(e)}
+            >
+              <Bell className="stroke-white" />
+              <p className="select-none">แจ้งเตือนเมื่อพร้อมให้ยืม</p>
+            </button>
+          )}
           <button disabled={itemDetail?.itemStatus === "UNAVAILABLE" && prePage !== "my-borrow"} className={clsx("rounded-full p-3 flex gap-4 text-white hover:-translate-x-[165px] transition-all  ", {
             "bg-error cursor-pointer active:scale-95 active:opacity-90": prePage === "my-borrow",
-            "bg-neutral": ((itemDetail?.itemStatus === "UNAVAILABLE" || itemDetail?.itemStatus === "INLABONLY" || !allowBorrow) && prePage === "borrow-return"),
+            "bg-neutral": ((itemDetail?.itemStatus === "UNAVAILABLE" || itemDetail?.itemStatus === "IN-LAB ONLY" || !allowBorrow) && prePage === "borrow-return"),
             "bg-primary cursor-pointer active:scale-95 active:opacity-90": itemDetail?.itemStatus === "AVAILABLE" && prePage === "borrow-return" && allowBorrow
           })} onClick={() => {
-            if (itemDetail?.itemStatus === "INLABONLY") {
+            if (itemDetail?.itemStatus === "IN-LAB ONLY") {
               return
             }
             if (prePage === "my-borrow") {
@@ -272,7 +269,7 @@ export default function ItemDetails() {
               <p className={clsx("font-bold py-2 px-4 rounded-full  text-white w-fit", {
                 "bg-error": itemDetail?.itemStatus === "UNAVAILABLE",
                 "bg-success": itemDetail?.itemStatus === "AVAILABLE",
-                "bg-amber-400": itemDetail?.itemStatus === "INLABONLY",
+                "bg-amber-400": itemDetail?.itemStatus === "IN-LAB ONLY",
               })}>{itemDetail?.itemStatus}</p>
             </div>
             <div className="flex flex-col gap-3 flex-1 ">
