@@ -37,7 +37,7 @@ export default function Popup(props: PopupProps) {
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isOpenDropDown, setIsOpenDropDown] = useState(false)
-  const [currentQuantity, setCurrentQuantity] = useState(0)
+  const [allowQuantity, setAllowQuantity] = useState(0)
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { showToast } = useToast()
 
@@ -104,8 +104,8 @@ export default function Popup(props: PopupProps) {
   const handdleUpdate = async () => {
     try {
       if (props.item !== undefined) {
-        if (parseInt(quantity) < currentQuantity) {
-          throw Error("กรุณากรอกจำนวนสิ่งของไม่น้อยกว่า " + currentQuantity)
+        if (parseInt(quantity) < allowQuantity) {
+          throw Error("กรุณากรอกจำนวนสิ่งของไม่น้อยกว่า " + allowQuantity)
         }
         const newImage = await uploadImage()
         const res = await apiClient.put("/v1/item", {
@@ -137,7 +137,7 @@ export default function Popup(props: PopupProps) {
       setItemName(currentItem.itemName)
       setStatus(currentItem.itemStatus)
       setQuantity(String(currentItem.itemQuantity))
-      setCurrentQuantity(currentItem.itemCurrentQuantity)
+      setAllowQuantity(currentItem.itemQuantity - currentItem.itemCurrentQuantity)
       setDescription(currentItem.itemDescription)
 
       const url = `/v1/image`

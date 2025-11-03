@@ -41,7 +41,7 @@ export default function DropDownCheckBox({ isOpen, setSelectedItem, selectedItem
         return toItem(e)
       })
       const filtItem = newItem.filter((e) => {
-        if (e.itemID !== itemID) {
+        if (e.itemID !== itemID && e.itemStatus !== "IN-LAB ONLY" ) {
           return e
         }
       })
