@@ -312,7 +312,7 @@ export default function RequestPage() {
                                     <Button className="w-45 h-10 bg-primary hover:scale-95"
                                         onPress={() => {downloadFile("XLS")}}
                                     >
-                                        <img src={"/images/excel.png"} alt="excel icon image" width={32} height={32}></img>
+                                        <img src={"/images/excel.png"} alt="" aria-hidden="true" width={32} height={32}></img>
                                         <span className="hidden lg:inline text-white">นำออกเป็นไฟล์ Excel</span>
                                     </Button>
 

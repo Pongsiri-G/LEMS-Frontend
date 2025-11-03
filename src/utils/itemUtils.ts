@@ -3,14 +3,14 @@ import { Item } from "../types/item";
 
 export const fetchItemDetail = async (name: string, tag:string, status:string, borrowed?: string) => {
     const query = name || tag || status || borrowed
-    var url = query
+    let url = query
     ? `/v1/item/list/search?name=${encodeURIComponent(name ?? "")}&tags=${encodeURIComponent(tag ?? "")}&status=${encodeURIComponent(status ?? "")}&user=${encodeURIComponent(borrowed ?? "")}`
     : `/v1/item/list`
     console.log("Fetching from URL:", url);
     const res = await apiClient.get(url)
     const data = res.data
-    var response: Item[] = data
-    var items: Item[] = []
+    let response: Item[] = data
+    let items: Item[] = []
     if (!response || response.length === 0) {
         return items;
     }
