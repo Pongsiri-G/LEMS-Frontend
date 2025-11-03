@@ -67,8 +67,8 @@ export default function ItemCard({
 
   return (
     true && (
-      <div className="flex flex-col items-start gap-2 w-full max-w-[300px] h-[450px] flex-shrink-0 mt-5 z-10">
-        <Card className="flex flex-col items-start gap-2 w-full max-w-[300px] h-[450px] flex-shrink-0 mt-5 z-10 ">
+      <div className="flex flex-col items-start gap-2 w-full max-w-[300px] h-[450px] flex-shrink-0 z-10">
+        <Card className="flex flex-col items-start gap-2 w-full max-w-[300px] h-[450px] flex-shrink-0 z-10 ">
           <div
             className="relative w-full h-[300px] overflow-hidden rounded-[0px] "
             onClick={() => { }}
@@ -84,9 +84,14 @@ export default function ItemCard({
                 borderTopLeftRadius: "16px",
               }}
             />
-            <div className="absolute top-3 left-2 p-3 bg-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
-              จำนวน {item.itemCurrentQuantity}
-            </div>
+            {
+              prePage === PrePage.MYBORROW ?
+                <></>
+                :
+                <div className="absolute top-3 left-2 p-3 bg-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
+                  จำนวน {item.itemCurrentQuantity}
+                </div>
+            }
             {
               prePage === PrePage.EQUIPMENTMANAGE ?
                 <div className="absolute top-3 right-2 p-3 bg-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">

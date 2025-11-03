@@ -11,9 +11,12 @@ import { useWebSocketNotifications } from "@/src/hook/useWebSocketNotifications"
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { Item } from "@/src/types/item";
+import { Button } from "@heroui/button";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [itemDetail, setItemDetail] = useState<Item[]>()
+  const router = useRouter()
 
 
   // useWebSocketNotifications();
@@ -31,7 +34,14 @@ export default function Home() {
       <MovingCloudBG />
       <div className="relative !gap !mt w-full flex flex-col justify-start items-center max-w-[1500px] mx-auto">
         <div className="w-full">
-          <BackButton />
+          <Button variant="bordered" className="w-fit hover:scale-95 transition-all bg-white" onPress={() => {
+            router.replace("/borrow-return")
+          }}>
+            <div className="flex gap-3 items-center justify-center ">
+              <ArrowLeft />
+              <p>ย้อนกลับ</p>
+            </div>
+          </Button>
         </div>
         <div className="flex flex-col justify-start items-center gap-10 mt-5">
           <div className="flex flex-col justify-start justify-items-center sm:justify-items-start items-center sm:items-start text-center gap-5 ">

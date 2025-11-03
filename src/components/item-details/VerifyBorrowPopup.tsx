@@ -47,12 +47,12 @@ export default function VerifyBorrowPopup({ isOpen, closePopup, itemName, itemID
         "scale-90": !isOpen
       })}
       >
-        <p className="text-large font-bold">หากยืมอุปกรณ์ {itemName} จะยืมอุปกรณ์ต่อไปนี้โดยปริยาย</p>
-        <div className="flex overflow-x-auto p-4 justify-center gap-4">
+        <p className="text-large font-bold overflow-auto">หากยืมอุปกรณ์ {itemName} จะยืมอุปกรณ์ต่อไปนี้โดยปริยาย</p>
+        <div className="flex overflow-x-auto p-4 gap-4 no-scrollbar snap-x snap-mandatory">
           {
             itemChild !== undefined && itemChild.length !== 0 ? itemChild.map((element) => {
               return (
-                <Card className="py-4 max-w-[200px]" key={element.itemID}>
+                <Card className="py-4 w-[200px] min-w-[200px]" key={element.itemID}>
                   <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                     <h4 className="text-small">{element.itemName}</h4>
                   </CardHeader>
