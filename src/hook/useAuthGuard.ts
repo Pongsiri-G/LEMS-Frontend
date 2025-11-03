@@ -2,25 +2,24 @@
 
 import { useEffect } from "react";
 import { useAppDispatch } from "../store";
-// import { useAppSelector } from "@/hooks/useAppSelector";
-import { authSelector, logout, setCredentials } from "../feature/authSlice";
-import { jwtDecode } from "jwt-decode";
+import { authSelector, logout, setCredentials, setUser } from "../feature/authSlice";
 import { useSelector } from "react-redux";
 import { useHandleRefreshToken } from "../services/authService/handlers";
-
-type Jwt = { exp: number;[k: string]: any };
+import { useHandleGetMe } from "../services/userService/handlers";
 
 export default function useAuthGuard(tryRefresh = true) {
     const dispatch = useAppDispatch();
     const { accessToken, expiresAt, user } = useSelector(authSelector);
     const handleRefreshToken = useHandleRefreshToken();
+    // const handleGetMe = useHandleGetMe()
 
     useEffect(() => {
         // no token -> nothing to do
         if (!accessToken || !expiresAt) return;
 
+        getUser();
+
         const now = Date.now();
-        console.log(now)
 
         if (expiresAt <= now) {
             if (tryRefresh) attemptRefresh();
@@ -32,7 +31,7 @@ export default function useAuthGuard(tryRefresh = true) {
         const msLeft = expiresAt - now;
         const id = setTimeout(() => (tryRefresh ? attemptRefresh() : dispatch(logout())), Math.max(msLeft - 30_000, 0));
         return () => clearTimeout(id);
-    }, [accessToken, expiresAt, dispatch, tryRefresh, user]);
+    }, [accessToken, expiresAt, dispatch, tryRefresh]);
 
     const attemptRefresh = async () => {
         try {
@@ -43,4 +42,13 @@ export default function useAuthGuard(tryRefresh = true) {
             dispatch(logout());
         }
     };
+
+    const getUser = async () => {
+        const result = await useHandleGetMe()
+        const { user: newUser } = result ?? {}
+        if (!newUser || (user && user?.userRole !== newUser.userRole)) {
+            dispatch(logout())
+            return;
+        }
+    }
 }

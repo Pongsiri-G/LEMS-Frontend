@@ -1,7 +1,9 @@
 "use client";
 
+import { authSelector } from "@/src/feature/authSlice";
 import { User } from "@/src/types/user";
 import { ShieldMinus } from "lucide-react";
+import { useSelector } from "react-redux";
 
 interface Props {
   admins: User[];
@@ -10,6 +12,7 @@ interface Props {
 }
 
 export default function AdminTable({ admins, busyId, onRevoke }: Props) {
+  const { user } = useSelector(authSelector)
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
       {/* เลื่อนเฉพาะในตาราง */}
@@ -34,7 +37,7 @@ export default function AdminTable({ admins, busyId, onRevoke }: Props) {
                   <button
                     type="button"
                     onClick={() => onRevoke(u.userId)}
-                    disabled={busyId === u.userId}
+                    disabled={busyId === u.userId || user?.userId === u.userId}
                     className="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-red-500"
                     title="Revoke admin"
                   >
