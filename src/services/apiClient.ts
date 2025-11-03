@@ -6,7 +6,7 @@ import axios, {
 import config from "../configs/config";
 import { store } from "../store";
 import { jwtDecode } from "jwt-decode";
-import { setCredentials } from "../feature/authSlice";
+import { logout, setCredentials } from "../feature/authSlice";
 
 export const apiClient = axios.create({
     baseURL: `${config.publicAPI}`,
@@ -96,13 +96,22 @@ apiClient.interceptors.response.use(
             } catch (refreshError) {
                 console.error("❌ Failed to refresh token:", refreshError);
                 
-                // Clear tokens และ redirect
-                localStorage.removeItem("access_token");
-                localStorage.removeItem("refresh_token");
+                // logout and redirect
+                store.dispatch(logout())
                 window.location.href = "/login";
                 
                 return Promise.reject(toError(refreshError));
             }
+        }
+
+        if (error.response?.status === 403) {
+            store.dispatch(logout());
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+            window.location.href = "/login";
+            return Promise.reject(
+                new Error("Account inactive or no permission to access this resource.")
+            );
         }
 
         return Promise.reject(toError(error));
