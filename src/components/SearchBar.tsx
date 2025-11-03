@@ -1,16 +1,14 @@
 import { Search } from "lucide-react";
-
-import { ReactNode, useEffect, useState } from "react";
+import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Selection, SharedSelection } from "@heroui/react";
 import { apiClient } from "../services/apiClient";
 import { AxiosResponse } from "axios";
 
 type UserButtonProps = {
-  children?: ReactNode;
   rightChildren?: ReactNode
 };
 
-type SearchBarProps = UserButtonProps & {
+type SearchBarProps = PropsWithChildren<UserButtonProps> & {
   onSearch?: (params: { name?: string, tag?: string, status?: string }) => void;
   noFilter?: boolean
   wrap?: boolean
@@ -26,14 +24,11 @@ export default function SearchBar({ children, onSearch, noFilter, rightChildren,
   const selectedTagsString = Array.from(selectedTags).join(",") || "All";
 
   const onSelectTag = (keys: Selection) => {
-    // Convert Selection to Set<string>
     const keysSet = keys === "all"
       ? new Set(allTags)
       : new Set(Array.from(keys).map(String));
 
-    // Handle "All" selection logic
     if (keysSet.has("All")) {
-      // If "All" was just selected, clear other selections
       if (!selectedTags.has("All")) {
         setSelectedTags(new Set(["All"]));
       } else if (keysSet.size > 1) {
@@ -41,7 +36,6 @@ export default function SearchBar({ children, onSearch, noFilter, rightChildren,
         setSelectedTags(keysSet);
       }
     } else if (keysSet.size === 0) {
-      // If nothing is selected, default to "All"
       setSelectedTags(new Set(["All"]));
     } else {
       setSelectedTags(keysSet);
@@ -57,7 +51,7 @@ export default function SearchBar({ children, onSearch, noFilter, rightChildren,
     const delay = setTimeout(() => {
       console.log(selectedTagsString)
       if (onSearch) onSearch({ name: query.trim(), status: selected === "All" ? "" : selected, tag: selectedTagsString === "All" ? "" : selectedTagsString });
-    }, 400); // debounce 400ms
+    }, 400);
 
     return () => clearTimeout(delay);
   }, [query, selected, selectedTagsString]);
@@ -85,7 +79,6 @@ export default function SearchBar({ children, onSearch, noFilter, rightChildren,
   }, [])
 
   if (!isReady) return;
-
 
   return <div className="flex justify-center w-full mt-5 z-10">
     <div className="flex flex-col items-center w-full max-w gap-4">
@@ -210,17 +203,6 @@ export default function SearchBar({ children, onSearch, noFilter, rightChildren,
           </div>
         )}
       </div>
-
-
-
-      {/* <button className="z-10 h-10 px-6 w-45 rounded-full  text-foreground font-[400] text-[16px] cursor-pointer 
-                            hover:scale-90 transition-all flex items-center justify-center active:scale-100 
-                            border-neutral border-1 backdrop-blur-2xl"
-                            onClick={() => onSearch?.(query.trim())}
-                            >
-          ค้นหา
-        </button> */}
-
     </div>
   </div>
 }
