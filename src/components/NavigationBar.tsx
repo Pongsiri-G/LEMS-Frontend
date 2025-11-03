@@ -189,12 +189,12 @@ export function NavigationBar() {
                       {notifications.length > 0 && (
                         <div className="flex justify-between">
                           <div />
-                          <p
+                          <button
                             className="cursor-pointer hover:underline"
                             onClick={handleClearNotifications}
                           >
                             Clear
-                          </p>
+                          </button>
                         </div>
                       )}
 

@@ -110,6 +110,8 @@ export default function ReturnItemPopup({ isOpen, closePopup, borrowID }: EditPo
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
+          role="button"
+          tabIndex={0}
         >
           {
             imageUrl == "" ?

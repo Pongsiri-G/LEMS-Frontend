@@ -19,9 +19,6 @@ interface FormPopupProps {
 
 const validStatus = [
     {
-        status: "NEW"
-    },
-    {
         status: "PENDING"
     },
     {
@@ -35,7 +32,6 @@ const validStatus = [
     },
 ]
 const statusColor: Record<string, string> = {
-    NEW:  "#c5ab45",
     PENDING:  "#5cc7ff",
     ACCEPTED:  "#1cac6e",
     REJECTED:  "#f5365c",
@@ -91,7 +87,7 @@ export default function FormDetailPopup({req, onClose, onSuccess}: FormPopupProp
                             <div>
                                 <p>ภาพประกอบ</p>
                                 <div className="flex justify-center items-center w-80 h-80 border-dashed border rounded-lg">
-                                    <img src={imageURL} className="w-70 h-70 object-contain "></img>
+                                    <img src={imageURL} alt="form-related image" className="w-70 h-70 object-contain "></img>
                                 </div>
                             </div>
                             {req.request_type == "REQUEST"  && req.item_requested != undefined ? <div className="flex flex-col gap-3">

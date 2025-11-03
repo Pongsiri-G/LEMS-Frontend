@@ -152,7 +152,7 @@ export default function MySubmission() {
                                                     {item.status}
                                                 </span>
                                             ) : columnKey === "cancel" && (item.status == "NEW" || item.status == "PENDING") ?
-                                            <div className="cursor-pointer text-[#f5365c]"
+                                            <button className="cursor-pointer text-[#f5365c]"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     setSelectedCancelRequest(item.id)
@@ -160,7 +160,7 @@ export default function MySubmission() {
                                                 }}
                                             >
                                                 <p className="text-[#f5365c]">ยกเลิก</p>
-                                            </div>
+                                            </button>
                                             : (
                                             getKeyValue(item, columnKey)
                                         )

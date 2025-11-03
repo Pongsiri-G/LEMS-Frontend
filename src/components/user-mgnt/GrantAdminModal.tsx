@@ -110,7 +110,7 @@ export default function GrantAdminModal({ open, onClose, onAfterGrant }: Props) 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* backdrop */}
-      <div className="absolute inset-0 bg-black/40" onClick={handleCancel} />
+      <div className="absolute inset-0 bg-black/40" onClick={handleCancel} role="button" tabIndex={0} onKeyDown={(e)=>{}}/>
 
       {/* modal card */}
       <div className="relative bg-white w-[95vw] max-w-4xl rounded-xl shadow-lg border border-gray-200 overflow-hidden">

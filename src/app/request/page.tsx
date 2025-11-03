@@ -229,7 +229,7 @@ export default function RequestPage() {
                             onPress={() => router.push("/request/create")}
                         >
                             <FilePlusIcon color="white" />
-                            <span className="hidden lg:inline text-white">เพิ่มสิ่งของ</span>
+                            <span className="hidden lg:inline text-white">เพิ่มใบคำร้อง</span>
                         </Button>
                     </div>
                         <Table aria-label="Example table with dynamic content" className="w-full" key={`${renderKey}`}>
@@ -266,7 +266,7 @@ export default function RequestPage() {
                                                     </span>
                                                     ) : columnKey === "checkbox" && showExportMode ? (
                                                     // status column
-                                                    <div onClick={(e)=>{e.stopPropagation()}}>
+                                                    <div onClick={(e)=>{e.stopPropagation()}} role="button" tabIndex={0} onKeyDown={(e)=>{}}>
                                                         {(() => {
                                                             const req = requests.find((r) => r.request_id === item.id);
                                                             const mapEntry = checkMap.find((m) => m.id === item.id);
@@ -312,7 +312,7 @@ export default function RequestPage() {
                                     <Button className="w-45 h-10 bg-primary hover:scale-95"
                                         onPress={() => {downloadFile("XLS")}}
                                     >
-                                        <img src={"/images/excel.png"} width={32} height={32}></img>
+                                        <img src={"/images/excel.png"} alt="excel icon image" width={32} height={32}></img>
                                         <span className="hidden lg:inline text-white">นำออกเป็นไฟล์ Excel</span>
                                     </Button>
 

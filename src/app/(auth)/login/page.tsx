@@ -38,7 +38,7 @@ export default function LoginPage() {
           isLoading={loading}
         >
           <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
-            <img src="/icons/google-icon.svg" className="w-5 h-5" />
+            <img src="/icons/google-icon.svg" alt={"google icon"} className="w-5 h-5" />
           </div>
           Continue with Google
         </Button>

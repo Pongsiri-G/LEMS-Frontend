@@ -282,7 +282,7 @@ export default function Popup(props: PopupProps) {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Left Column - Image Upload */}
                     <div className="flex flex-col gap-4">
-                      <div
+                      <button
                         onClick={handleClickUpload}
                         className="h-64 border-3 border-dashed border-gray-500 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
                       >
@@ -307,7 +307,7 @@ export default function Popup(props: PopupProps) {
                           onChange={handleImageUpload}
                           className="hidden"
                         />
-                      </div>
+                      </button>
                       <Button
                         variant="flat"
                         className="bg-gray-300 text-gray-700"
