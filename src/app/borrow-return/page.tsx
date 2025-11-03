@@ -81,7 +81,7 @@ export default function Home() {
               </div>
             )
             }
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 gap-x-10 gap-y-25 pb-10 items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 gap-x-10 gap-y-10 pb-10 items-center mt-5">
               {itemDetail?.map((index) => (
                 <ItemCard
                   key={index.itemID}

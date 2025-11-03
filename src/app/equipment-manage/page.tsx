@@ -80,7 +80,7 @@ export default function Home() {
                 onSearch={({ name, tag, status }) => fetchItem(name ?? "", tag ?? "", status ?? "")}
                 children={
                   <div className="flex flex-col gap-4">
-                    <Button
+                    {/* <Button
                       as={Link}
                       href="/equipment-manage/equipment-log"
                       className="
@@ -96,7 +96,7 @@ export default function Home() {
                     >
                       <ClipboardPlus />
                       <span className="hidden lg:inline">ดูบันทึกการจัดการสิ่งของ</span>
-                    </Button>
+                    </Button> */}
                     <Link
                       href="/equipment-manage/all-borrow-log"
                       className=""
@@ -132,7 +132,7 @@ export default function Home() {
 
 
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4  lg:grid-cols-3 gap-x-10 gap-y-25 pb-10 items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4  lg:grid-cols-3 gap-x-10 gap-y-10 pb-10 items-center mt-5">
             {itemDetail?.map((index) => (
               <ItemCard
                 key={index.itemID}
