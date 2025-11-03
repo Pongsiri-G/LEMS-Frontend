@@ -1,25 +1,21 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import MovingCloudBG from "../../components/MovingCloudBG";
 import ItemCard from "../../components/ItemCard";
 import SearchBar from "@/src/components/SearchBar";
-import { BookCheck, ClipboardPlus, History, Plus, Search } from "lucide-react";
+import { History, Plus } from "lucide-react";
 import { Button } from "@heroui/button";
 
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/modal";
+import { useDisclosure } from "@heroui/modal";
 import Popup from "@/src/components/equipment-mange/CreatePopUp";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/src/services/apiClient";
-import { useWebSocketNotifications } from "@/src/hook/useWebSocketNotifications";
 import { Item } from "@/src/types/item";
 import { fetchItemDetail } from "@/src/utils/itemUtils";
 
 export default function Home() {
   const [itemDetail, setItemDetail] = useState<Item[]>()
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
-  // useWebSocketNotifications();
 
   const fetchItem = async (name: string, tag: string, status: string) => {
     const items = await fetchItemDetail(name, tag, status);
@@ -67,48 +63,25 @@ export default function Home() {
                 rightChildren={
                   <Button
                     color="primary"
-                    className="text-[16px]
-              p-6
-            hover:scale-90 
-            transition-all"
+                    className="text-[16px] p-6 hover:scale-90 transition-all"
                     onPress={onOpen}
                   >
                     <Plus color="white" />
                     <span className="hidden lg:inline">เพิ่มสิ่งของ</span>
                   </Button>
                 }
-                onSearch={({ name, tag, status }) => fetchItem(name ?? "", tag ?? "", status ?? "")}
-                children={
-                  <div className="flex flex-col gap-4">
-                    {/* <Button
-                      as={Link}
-                      href="/equipment-manage/equipment-log"
-                      className="
-            rounded-xl
-            bg-primary  
-            flex items-center justify-center
-            text-white 
-            hover:scale-90 
-            transition-all gap-2
-            p-6 text-[16px]
-            w-fit
-            "
-                    >
-                      <ClipboardPlus />
-                      <span className="hidden lg:inline">ดูบันทึกการจัดการสิ่งของ</span>
-                    </Button> */}
-                    <Link
-                      href="/equipment-manage/all-borrow-log"
-                      className=""
-                    >
-                      <div className="p-3 rounded-xl bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white gap-3 w-full">
-                        <History />
-                        <p className="hidden lg:inline">ตรวจสอบประวัติการยืม</p>
-                      </div>
-                    </Link>
-                  </div>
-
-                }>
+                onSearch={({ name, tag, status }) =>
+                  fetchItem(name ?? "", tag ?? "", status ?? "")
+                }
+              >
+                <div className="flex flex-col gap-4">
+                  <Link href="/equipment-manage/all-borrow-log">
+                    <div className="p-3 rounded-xl bg-primary flex items-center justify-center hover:scale-90 transition-all active:scale-100 text-white gap-3 w-full">
+                      <History />
+                      <p className="hidden lg:inline">ตรวจสอบประวัติการยืม</p>
+                    </div>
+                  </Link>
+                </div>
               </SearchBar>
               {itemDetail?.length === 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-65 gap-y-25 pb-10 items-center">
