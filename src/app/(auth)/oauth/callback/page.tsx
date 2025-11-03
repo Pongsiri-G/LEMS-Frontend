@@ -14,6 +14,8 @@ export default function OAuthCallback() {
 
   const dispatch = useAppDispatch()
 
+  const handleGetMe = useHandleGetMe()
+
   const accessToken = searchParams.get("accessToken")
   const refreshToken = searchParams.get("refreshToken")
   const massage = searchParams.get("msg")
@@ -31,32 +33,22 @@ export default function OAuthCallback() {
       )
 
       onGetMe()
-      router.push("/")
-    } else if ((!accessToken || !refreshToken) && !massage) {
+    } else if (massage) {
+      // Redirect to login page with error/success message
+      router.replace("/login?msg=" + encodeURIComponent(massage))
+    } else if (!accessToken || !refreshToken) {
       router.back()
     }
   }, [])
 
   const onGetMe = async () => {
-    const { user }= await useHandleGetMe()
+    const result = await handleGetMe
+    const { user } = result ?? {}
     if (user) {
-      
-      dispatch(
-        setUser({ user }),
-      )
+      dispatch(setUser({ user }))
+      router.push("/")
     }
   }
-
-  if (!accessToken || !refreshToken) {
-    if (massage) {
-      return (
-        <div className="flex flex-col items-center justify-center min-h-screen">
-          <h1 className="text-2xl text-red-500">{massage}</h1>
-        </div>
-      )
-    }
-    return null
-  } 
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">

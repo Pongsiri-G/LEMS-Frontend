@@ -42,7 +42,7 @@ export default function ShowImagePopup(props: ShowImagePopupProps) {
               :
               <img
                 className="rounded-2xl max-w-[500px] max-h-[500px] object-cover"
-                src={image}
+                src={image} alt="return submitted image"
               />
           }
         </ModalBody>

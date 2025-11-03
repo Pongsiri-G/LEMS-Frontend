@@ -5,7 +5,7 @@ import useAuthGuard from "../hook/useAuthGuard"
 import { useWebSocketNotifications } from "../hook/useWebSocketNotifications"
 
 type GuardProps = {
-  children: ReactNode
+  readonly children: ReactNode
 }
 
 export default function AuthGuard({

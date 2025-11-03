@@ -86,8 +86,7 @@ export default function RepairFormPopup({status, onClose}: FormPopupProps) {
                     <div className="flex flex-row gap-20 mt-8 flex-wrap">
                         <div className="flex flex-col">
                             <span className="text-[16px]">
-                                เลือกสิ่งของที่ต้องการแจ้งเสียหรือหาย
-                                <span className="text-[#d13f3f]">*</span>
+                                เลือกสิ่งของที่ต้องการแจ้งเสียหรือหาย <span className="text-[#d13f3f]">*</span>
                             </span>
                             <Dropdown className="hover:scale-95">
                                 <DropdownTrigger>
@@ -113,8 +112,7 @@ export default function RepairFormPopup({status, onClose}: FormPopupProps) {
                         </div>
                         <div className="flex flex-col">
                             <span className="text-[16px]">
-                                จำนวนของที่มีปัญหา
-                                <span className="text-[#d13f3f]">*</span>
+                                จำนวนของที่มีปัญหา <span className="text-[#d13f3f]">*</span>
                             </span>
                             <Input className=""
                                 placeholder="1,2,3"
@@ -151,7 +149,7 @@ export default function RepairFormPopup({status, onClose}: FormPopupProps) {
                     <div className="flex items-center justify-center">
                         <div className="flex flex-col relative items-center justify-center gap-2 w-100 h-100 sm:w-80 sm:h-80">
                             <p>ตัวอย่างภาพของที่เสียหรือหาย</p>
-                        <div
+                        <button
                             onClick={handleClickUpload}
                             className="h-90 w-90 sm:h-70 sm:w-70 border-3 border-dashed border-gray-500 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
                         >
@@ -180,7 +178,7 @@ export default function RepairFormPopup({status, onClose}: FormPopupProps) {
                             onChange={handleImageUpload}
                             className="hidden"
                             />
-                        </div>
+                        </button>
                         </div>
                     </div>
                     <div className="flex justify-center items-center">

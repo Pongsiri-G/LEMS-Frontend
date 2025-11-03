@@ -85,8 +85,7 @@ export default function RequisitionFormPopup({status, onClose}: FormPopupProps) 
                     <div className="flex flex-row gap-15 mt-3 flex-wrap">
                         <div className="flex flex-col">
                             <span className="text-[16px]">
-                                ชื่อสิ่งของ
-                                <span className="text-[#d13f3f]">*</span>
+                                ชื่อสิ่งของ <span className="text-[#d13f3f]">*</span>
                             </span>
                             <Input className="w-150 sm:w-70"
                                 placeholder="GPU สุดแรงสุดเท่"
@@ -106,8 +105,7 @@ export default function RequisitionFormPopup({status, onClose}: FormPopupProps) 
                         </div>
                         <div className="flex flex-col">
                             <span className="text-[16px]">
-                                ประเภทสิ่งของ
-                                <span className="text-[#d13f3f]">*</span>
+                                ประเภทสิ่งของ <span className="text-[#d13f3f]">*</span>
                             </span>
                             <Input className="w-80 sm:w-50"
                                 placeholder="Electronics, Furniture, ..."
@@ -127,8 +125,7 @@ export default function RequisitionFormPopup({status, onClose}: FormPopupProps) 
                         </div>
                         <div className="flex flex-col">
                             <span className="text-[16px]">
-                                จำนวน
-                                <span className="text-[#d13f3f]">*</span>
+                                จำนวน <span className="text-[#d13f3f]">*</span>
                             </span>
                             <Input className="w-38"
                                 placeholder="1,2,3"
@@ -162,8 +159,7 @@ export default function RequisitionFormPopup({status, onClose}: FormPopupProps) 
                         </div>
                         <div className="flex flex-col">
                             <span className="text-[16px]">
-                                ราคาต่อหน่วย (บาท)
-                                <span className="text-[#d13f3f]">*</span>
+                                ราคาต่อหน่วย (บาท) <span className="text-[#d13f3f]">*</span>
                             </span>
                             <Input className="w-35"
                                 placeholder="1,299"
@@ -227,7 +223,7 @@ export default function RequisitionFormPopup({status, onClose}: FormPopupProps) 
                     <div className="flex items-center justify-center">
                         <div className="flex flex-col relative items-center justify-center gap-2 w-100 h-100 sm:h-65 sm:w-65">
                             <p>ตัวอย่างภาพของที่ต้องการเบิก</p>
-                        <div
+                        <button
                             onClick={handleClickUpload}
                             className="h-90 w-90 sm:h-60 sm:w-60 border-3 border-dashed border-gray-500 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
                         >
@@ -256,7 +252,7 @@ export default function RequisitionFormPopup({status, onClose}: FormPopupProps) 
                             onChange={handleImageUpload}
                             className="hidden"
                             />
-                        </div>
+                        </button>
                         </div>
                     </div>
                     <div className="flex flex-row justify-center gap-4 items-center">

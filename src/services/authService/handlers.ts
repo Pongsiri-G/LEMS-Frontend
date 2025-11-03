@@ -94,7 +94,8 @@ export const useHandleRegisterSubmit = () => {
         const result = await register({ full_name, email, password, phone });
 
         if (result.success) {
-            router.replace("/login");
+            // Redirect to login with success message
+            router.replace("/login?msg=" + encodeURIComponent(result.message ?? "ลงทะเบียนสำเร็จ กรุณารอผู้ดูแลระบบอนุมัติ"));
         } else {
             setMsg(result.error ?? "Register failed");
         }

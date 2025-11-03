@@ -66,12 +66,11 @@ export default function ItemCard({
   }, [item])
 
   return (
-    true && (
+      (
       <div className="flex flex-col items-start gap-2 w-full max-w-[300px] h-[450px] flex-shrink-0 z-10">
         <Card className="flex flex-col items-start gap-2 w-full max-w-[300px] h-[450px] flex-shrink-0 z-10 ">
           <div
             className="relative w-full h-[300px] overflow-hidden rounded-[0px] "
-            onClick={() => { }}
           >
 
             <img

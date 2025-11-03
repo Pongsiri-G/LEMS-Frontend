@@ -13,6 +13,7 @@ type Jwt = { exp: number;[k: string]: any };
 export default function useAuthGuard(tryRefresh = true) {
     const dispatch = useAppDispatch();
     const { accessToken, expiresAt, user } = useSelector(authSelector);
+    const handleRefreshToken = useHandleRefreshToken();
 
     useEffect(() => {
         // no token -> nothing to do
@@ -35,8 +36,8 @@ export default function useAuthGuard(tryRefresh = true) {
 
     const attemptRefresh = async () => {
         try {
-            const { user, accessToken, expiresAt } = await useHandleRefreshToken()
-            console.log(user)
+            const { user, accessToken, expiresAt } = await handleRefreshToken
+            
             dispatch(setCredentials({ user, accessToken, expiresAt }));
         } catch {
             dispatch(logout());

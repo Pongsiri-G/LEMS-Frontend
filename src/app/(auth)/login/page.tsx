@@ -3,18 +3,27 @@
 import CustomInput from "@/src/components/CustomInput"
 import { Button, Link } from "@heroui/react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import {
   useHandleGoogleLogin,
   useHandleLoginSubmit,
 } from "@/src/services/authService/handlers"
 
 export default function LoginPage() {
+  const searchParams = useSearchParams()
   const [msg, setMsg] = useState("")
   const [loading, setLoading] = useState(false)
 
   const handleLogin = useHandleLoginSubmit()
   const handleGoogleLogin = useHandleGoogleLogin()
+
+  useEffect(() => {
+    const message = searchParams.get("msg")
+    if (message) {
+      setMsg(decodeURIComponent(message))
+    }
+  }, [searchParams])
 
   const onLocalSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -38,7 +47,7 @@ export default function LoginPage() {
           isLoading={loading}
         >
           <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
-            <img src="/icons/google-icon.svg" className="w-5 h-5" />
+            <img src="/icons/google-icon.svg" alt={"google icon"} className="w-5 h-5" />
           </div>
           Continue with Google
         </Button>
@@ -62,7 +71,17 @@ export default function LoginPage() {
           isRequired
         />
 
-        {msg && <p className="text-center text-red-600 text-sm">{msg}</p>}
+        {msg && (
+          <p 
+            className={`text-center text-sm ${
+              msg.includes("สำเร็จ") 
+                ? "text-success" 
+                : "text-error"
+            }`}
+          >
+            {msg}
+          </p>
+        )}
 
         <div className="text-center">
           <Button

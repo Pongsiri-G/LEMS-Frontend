@@ -149,7 +149,6 @@ export default function ItemDetails() {
 
   const handleCancelNotification = async (e: React.MouseEvent) => {
     e.preventDefault()
-
     const url = `/v1/bq/${queue?.queue_id}`
     await apiClient.patch(url).then(() => {
       showToast("ยกเลิกคิวสำเร็จ", "success")
@@ -228,7 +227,7 @@ export default function ItemDetails() {
         </div>
       }
       <div className="flex xl:flex-row flex-col flex-1 gap-5 h-fit">
-        <img src={imageURL} className="xl:max-w-[500px] h-fit flex-1 rounded-xl" />
+        <img src={imageURL} alt="item image" className="xl:max-w-[500px] h-fit flex-1 rounded-xl" />
         <div className="flex-1 gap-6 flex flex-col">
           <p className="text-2xl font-bold">ชื่อ: {itemDetail?.itemName}</p>
           <div className="flex gap-4">

@@ -13,6 +13,18 @@ export const apiClient = axios.create({
     timeout: 10000,
 });
 
+// Helper 
+const toError = (err: unknown): Error =>
+    err instanceof Error
+        ? err
+        : new Error(
+            typeof err === "string"
+                ? err
+                : err && (err as any).message
+                    ? String((err as any).message)
+                    : String(err),
+        );
+
 // Request Interceptor
 apiClient.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
@@ -30,7 +42,7 @@ apiClient.interceptors.request.use(
         }
         return config;
     },
-    (error: AxiosError) => Promise.reject(error)
+    (error: AxiosError) => Promise.reject(toError(error))
 );
 
 // Response Interceptor
@@ -89,10 +101,10 @@ apiClient.interceptors.response.use(
                 localStorage.removeItem("refresh_token");
                 window.location.href = "/login";
                 
-                return Promise.reject(refreshError);
+                return Promise.reject(toError(refreshError));
             }
         }
 
-        return Promise.reject(error);
+        return Promise.reject(toError(error));
     }
 );
