@@ -12,14 +12,18 @@ export const register = async ({
     phone: string;
 }) => {
     try {
-        const res = await apiClient.post("v1/user/register", {
+        const res = await apiClient.post<{ message: string }>("v1/user/register", {
             full_name,
             email,
             password,
             phone,
         });
 
-        return { success: res.status === 201, status: res.status };
+        return { 
+            success: res.status === 201, 
+            status: res.status,
+            message: res.data?.message || "ลงทะเบียนสำเร็จ กรุณารอผู้ดูแลระบบอนุมัติ"
+        };
     } catch (err: any) {
         return {
             success: false,

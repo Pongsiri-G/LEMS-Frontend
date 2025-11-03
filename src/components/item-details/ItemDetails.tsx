@@ -149,7 +149,6 @@ export default function ItemDetails() {
 
   const handleCancelNotification = async (e: React.MouseEvent) => {
     e.preventDefault()
-
     const url = `/v1/bq/${queue?.queue_id}`
     await apiClient.patch(url).then(() => {
       showToast("ยกเลิกคิวสำเร็จ", "success")
