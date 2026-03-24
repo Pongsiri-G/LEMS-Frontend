@@ -9,7 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import { logout, setCredentials } from "../feature/authSlice";
 
 export const apiClient = axios.create({
-    baseURL: `${config.publicAPI}`,
+    baseURL: config.publicAPI,
     timeout: 10000,
 });
 
