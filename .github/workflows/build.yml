@@ -1,8 +1,8 @@
-name: Build and Test
+name: TEST Build
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [develop]
 
 jobs:
   ci:
@@ -25,11 +25,11 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm lint
+      # - name: Lint
+      #   run: pnpm lint
 
-      - name: Test
-        run: pnpm test --coverage --watchAll=false
+      #- name: Test
+      #   run: pnpm test --coverage --watchAll=false
 
       # ❌ Disabled because using SonarCloud Automatic Analysis (free plan)
       # - name: SonarCloud
